@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Text, View, Button, Platform, TouchableOpacity } from 'react-native';
+import { Text, View, Button, Platform, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Moment from 'react-moment';
 
@@ -26,7 +26,12 @@ const MyDateTimePicker = (props: any) => {
     <View>
       {(Platform.OS === 'android') && (
       <TouchableOpacity onPress={showDatepicker}>
-        <Moment element={Text} format="DD/MM/YYYY">{props.date.toDateString()}</Moment>
+        <View style={styles.momentContainer}>
+          <Image style={[styles.calendarIcon,{alignSelf: 'flex-end'}]}
+            source={require('../../assets/calendar.png')
+          }></Image>
+          <Moment element={Text} format="DD/MM/YYYY">{props.date.toDateString()}</Moment>
+        </View>
       </TouchableOpacity>
       )}
       {show && (
@@ -54,5 +59,23 @@ const MyDateTimePicker = (props: any) => {
   );
 };
 
+const styles = StyleSheet.create({
+  momentContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    borderColor: 'black',
+    borderWidth: 1,
+    backgroundColor: 'white',
+    alignItems: 'center',
+    width: '100%',
+    
+  },
+  calendarIcon: {
+    marginHorizontal: 10,
+    width: 20,
+    height: 20
+  }
+})
 
 export default MyDateTimePicker;
