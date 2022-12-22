@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import {colors} from '../config/colors';
+import {colors} from '../../app/config/colors';
 
 const {black} = colors;
 

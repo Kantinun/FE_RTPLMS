@@ -3,8 +3,8 @@ import {NavigationProp, useNavigation} from '@react-navigation/native';
 import * as React from 'react';
 import styled from 'styled-components/native';
 import {colors} from '../config/colors';
-import BigText from '../Texts/BigText';
-import RegularText from '../Texts/RegularText';
+import BigText from '../../assets/Texts/BigText';
+import RegularText from '../../assets/Texts/RegularText';
 
 const {white, black, primary} = colors;
 
