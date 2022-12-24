@@ -1,6 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import * as React from 'react';
+import { useWindowDimensions } from 'react-native';
 import styled from 'styled-components/native';
 import {colors} from '../config/colors';
 import BigText from '../Texts/BigText';
@@ -10,10 +11,11 @@ const {white, black, primary} = colors;
 
 const CardView = styled.View`
   flex-direction: column;
-  width: 296px;
+  //width: 296px;
+  width: 100%;
   height: 158px;
-  padding-vertical: 16px;
-  margin-top: 16px;
+  padding-vertical: 10px;
+  margin-top: 8px;
   background-color: ${white};
   border-width: 0.5px;
   border-radius: 4px;

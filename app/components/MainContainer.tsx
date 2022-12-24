@@ -6,9 +6,9 @@ const {white} = colors;
 
 const StyledMain = styled.View`
   flex: 1;
-  padding: 24px;
+  padding: 24px 8px;
   backgroundcolor: ${white};
-  alignitems: center;
+  align-items: center;
   overflow: scroll;
 `;
 
