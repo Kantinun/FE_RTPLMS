@@ -11,7 +11,6 @@ const {white, black, primary} = colors;
 
 const CardView = styled.View`
   flex-direction: column;
-  //width: 296px;
   width: 100%;
   height: 158px;
   padding-vertical: 10px;
