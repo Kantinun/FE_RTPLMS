@@ -3,7 +3,7 @@ import {departmentCardData} from '../../assets/typings';
 import {Button, FlatList, StyleSheet} from 'react-native';
 import DepartmentCard from '../components/DepartmentCard';
 import MainContainer from '../components/MainContainer';
-import BigText from '../Texts/BigText';
+import BigText from '../../assets/Texts/BigText';
 import env from '../config/env';
 
 const DashboardScreen = ({navigation}: any) => {
@@ -103,6 +103,9 @@ const styles = StyleSheet.create({
   header: {
     textAlign: 'left',
     width: '100%',
+  },
+  card_list: {
+    justifyContent: 'center',
   },
 });
 
