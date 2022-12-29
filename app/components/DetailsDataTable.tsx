@@ -37,7 +37,7 @@ function DetailsDataTable(props) {
     )
     return (
         <View>
-            <View style={styles.container}>
+            {/* <View style={styles.container}>
                 <View style={[styles.container,{flex:2}]}>
                     <TextInput
                         value={searchText}
@@ -66,7 +66,7 @@ function DetailsDataTable(props) {
                         />
                     </View>
                 </View>
-            </View>
+            </View> */}
             {(props.mode==='work_plan') &&
             (<Table borderStyle={{borderWidth: 2, borderColor: '#eee'}}>
                <Row data={work_plan_data.tableHead} style={styles.head} textStyle={styles.text}/>

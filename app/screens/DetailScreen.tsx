@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {Dimensions, StyleSheet, Text, View, Image, Animated, TouchableOpacity} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Modal, Dimensions, StyleSheet, Text, View, Image, Animated, TouchableOpacity, TextInput, SafeAreaView} from 'react-native';
 
 import DetailsDataTable from '../components/DetailsDataTable';
 import MainContainer from '../components/MainContainer';
@@ -10,7 +10,10 @@ import { getToday, getFormatedDate } from 'react-native-modern-datepicker';
 import moment from 'moment';
 import Carousel from 'react-native-reanimated-carousel';
 import { TabView, SceneMap } from 'react-native-tab-view';
-
+import Icon from 'react-native-vector-icons/AntDesign';
+import { colors } from '../config/colors';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import MyModal from '../components/MyModal';
 
 type Route = {
   key: string;
@@ -20,9 +23,16 @@ type Route = {
 type Props = {};
 
 const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
+  
+  const navigation = useNavigation<NavigationProp<any>>();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [searchText, setSearchText] = useState('');
   const [date, setDate] = useState(new Date());
   const width = Dimensions.get('window').width;
-  const myData = [{uri: 'https://picsum.photos/200'},{uri: 'https://picsum.photos/200/300'},{uri: 'https://picsum.photos/seed/picsum/200/300'}]
+  
+  navigation.setOptions({title: route.params.title});
+  
+  // const myData = [{uri: 'https://picsum.photos/200'},{uri: 'https://picsum.photos/200/300'},{uri: 'https://picsum.photos/seed/picsum/200/300'}]
   const myData2 = {
     page1:{
       product: '10/100 kg',
@@ -83,6 +93,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
   
   return (
     <MainContainer>
+      <MyModal visible={modalVisible} clickHandler={setModalVisible}></MyModal>
       <RegularText>
         Department ID: {route.params.id}
       </RegularText>
@@ -95,7 +106,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
                 width={width}
                 height={width / 2}
                 autoPlay={true}
-                autoPlayInterval={1500}
+                autoPlayInterval={5000}
                 mode="parallax"
                 data={Object.keys(myData2)}
                 scrollAnimationDuration={1000}
@@ -123,10 +134,44 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
               )}
             />
         </View>
+        <View style={{flexDirection: 'row',justifyContent: 'center'}}>
+          <View style={[styles.container,{flex:2}]}>
+              <TextInput
+                  value={searchText}
+                  onChangeText={setSearchText}
+                  placeholder="Search here.."
+                  style={{flex:1, borderWidth:1,textAlign:'center', borderColor:'#bbbb', backgroundColor:'white'}}
+              />
+              <Icon.Button
+                  name='search1'
+                  iconStyle={{ marginRight: 0}}
+              ></Icon.Button>
+          </View>
+          <View style={styles.button_container}>
+              <View style={styles.button}>
+                  <Icon.Button
+                      name="pluscircleo"
+                      style={styles.Icon}
+                      iconStyle={{marginRight: 0}}
+                      backgroundColor={colors.primary} 
+                      onPress={()=>{setModalVisible(true)}}                          
+                      />
+              </View>
+              <View style={styles.button}>
+              <Icon.Button
+                      name="minuscircleo"
+                      style={styles.Icon}
+                      iconStyle={{marginRight: 0}}
+                      backgroundColor='#F5222D'
+                      onPress={()=>{setModalVisible(true)}}
+                  />
+              </View>
+                </View>
+          </View> 
         <TabView
           navigationState={{ index, routes }}
           renderScene={renderScene}
-          onIndexChange={setIndex}r
+          onIndexChange={setIndex}
           renderTabBar={renderTabBar}
         />
     </MainContainer>
@@ -134,10 +179,10 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    backgroundColor: 'red',
+  container:{
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginVertical: 10,
   },
   scene: {
     flex: 1,
@@ -147,7 +192,11 @@ const styles = StyleSheet.create({
   },
   tabItem: {
     alignItems: 'flex-start',
-    padding: 16,
+    // padding: 16,
+    paddingBottom: 10,
+    paddingHorizontal: 10,
+    // backgroundColor: 'red'
+
   },
   tabIndicator: {
     backgroundColor: 'black'
@@ -169,6 +218,23 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     flex: 1,
     alignSelf: 'stretch'
-  }
+  },
+  button_container: {
+    flex:1, 
+    flexDirection:'row', 
+    marginVertical: 10,
+    marginHorizontal: 10,
+    justifyContent: 'center'
+  },
+  button: {
+      flex: 1,
+      marginHorizontal: 5
+  },
+  Icon: {
+      alignItems: 'center',
+      alignSelf: 'center',
+      justifyContent: 'center',
+      marginRight: 0,
+  },
 })
 export default DetailScreen;

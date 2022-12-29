@@ -8,6 +8,8 @@ import env from '../config/env';
 
 const DashboardScreen = ({navigation}: any) => {
   const [Data, setData] = React.useState(Array<departmentCardData>);
+  
+  navigation.setOptions({title: 'ภาพรวมแผนก'});
   // const DATA: Array<departmentCardData> = [
   //   {
   //     detailID: 1,
@@ -57,7 +59,7 @@ const dataHandler = (data) => {
   let res: any = [];
   const len = data.department.length;
   for(let i=0; i < len ; i++){
-    let shift = data.shifts[i].pop();
+    let shift = (data.shifts).flatMap(arr => arr)[i];
     let newData = {
       detailID: parseInt(data.department[i].department_id),
       title: String(data.department[i].name),
@@ -89,7 +91,6 @@ const dataHandler = (data) => {
 
   return (
     <MainContainer>
-      <BigText style={styles.header}>ภาพรวมแผนก</BigText>
       <FlatList style={ {width: '100%'}} data={Data} renderItem={renderDepartmentCard} />
       <Button
         title="Go to Jane's profile"

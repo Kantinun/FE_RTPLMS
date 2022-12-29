@@ -8,10 +8,10 @@ const StyledMain = styled.View`
   flex: 1;
   padding: 24px 8px;
   backgroundcolor: ${white};
-  align-items: center;
+  // align-items: center;
   overflow: scroll;
 `;
-
+Object
 const MainContainer = (props: any) => {
   return <StyledMain {...props}>{props.children}</StyledMain>;
 };
