@@ -10,6 +10,7 @@ import { getToday, getFormatedDate } from 'react-native-modern-datepicker';
 import moment from 'moment';
 import Carousel from 'react-native-reanimated-carousel';
 import { TabView, SceneMap } from 'react-native-tab-view';
+import { DataForPlanAndOt, getAccountInThisShift, getDataForPlanAndOt } from '../services/detail.service';
 
 
 type Route = {
@@ -36,9 +37,23 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
       number_of_worker: '10/13 คน'
     }
   }
+  
   const page1 = Object.keys(myData2.page1).map(key => myData2.page1[key])
   const page2 = Object.keys(myData2.page2).map(key => myData2.page2[key])
   
+  const [dataForPlanAndOt, setDataForPlanAndOt] = React.useState<DataForPlanAndOt>({plan: [], ot: []});
+  const accountInThisShift: Promise<any> = getAccountInThisShift(route.params.shiftCode); // Call Api
+
+  React.useEffect(() => {
+    accountInThisShift.then((res) => {
+      
+      return getDataForPlanAndOt(res);
+    }).then((data) => {
+      
+      setDataForPlanAndOt(data);
+    })
+  }, []);
+
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState<Route[]>([
     { key: 'first', title: 'Work Plan' },
@@ -46,11 +61,11 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
   ]);
 
   const FirstRoute = () => (
-    <DetailsDataTable mode='work_plan'></DetailsDataTable>
+    <DetailsDataTable dataPlan={dataForPlanAndOt.plan} mode='work_plan'></DetailsDataTable>
   );
   
   const SecondRoute = () => (
-    <DetailsDataTable mode='ot_plan'></DetailsDataTable>
+    <DetailsDataTable dataOt={dataForPlanAndOt.ot} mode='ot_plan'></DetailsDataTable>
   );
 
   const renderScene = SceneMap({
@@ -126,7 +141,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
         <TabView
           navigationState={{ index, routes }}
           renderScene={renderScene}
-          onIndexChange={setIndex}r
+          onIndexChange={setIndex}
           renderTabBar={renderTabBar}
         />
     </MainContainer>

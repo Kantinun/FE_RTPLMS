@@ -48,6 +48,7 @@ const DepartmentCard = (props: any) => {
           onPress={() =>
             navigation.navigate(screenName, {
               id: props.detailID,
+              shiftCode: props.shiftCode,
             })
           }
           testID="DepartmentCard.DetailLink">

@@ -4,7 +4,7 @@ import {Button, FlatList, StyleSheet} from 'react-native';
 import DepartmentCard from '../components/DepartmentCard';
 import MainContainer from '../components/MainContainer';
 import BigText from '../../assets/Texts/BigText';
-import env from '../config/env';
+import { getCurrentShifts } from '../services/dashboard.service'
 
 const DashboardScreen = ({navigation}: any) => {
   const [Data, setData] = React.useState(Array<departmentCardData>);
@@ -42,43 +42,19 @@ const DashboardScreen = ({navigation}: any) => {
   //     detailScreenName: 'Detail',
   //   },
   // ];
-  const getCurrentShifts = async () => {
-    try {
-      const res = await fetch(`${env.API_BASE}:${env.API_PORT}/dashboard/1`);
-      const json = await res.json();
-      setData(dataHandler(json));
-;
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
-const dataHandler = (data) => {
-  let res: any = [];
-  const len = data.department.length;
-  for(let i=0; i < len ; i++){
-    let shift = data.shifts[i].pop();
-    let newData = {
-      detailID: parseInt(data.department[i].department_id),
-      title: String(data.department[i].name),
-      productivity: parseInt(shift.successProduct),
-      entered: parseInt(shift.allMember),
-      member: parseInt(shift.checkInMember),
-      detailScreenName: 'Detail',
-    }
-    console.log(newData);
-    res.push(newData);
-  }
-  return res;
-};
+  const currentShifts = getCurrentShifts();
   React.useEffect(() => {
-    getCurrentShifts();
+    currentShifts.then((res)=> {
+      setData(res)
+    });
   }, []);
 
   const renderDepartmentCard = ({item}: any) => (
     <DepartmentCard
       detailID={item.detailID}
       title={item.title}
+      shiftCode={item.shiftCode}
       producttivity={item.productivity}
       entered={item.entered}
       member={item.member}
