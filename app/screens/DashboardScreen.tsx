@@ -10,40 +10,40 @@ const DashboardScreen = ({navigation}: any) => {
   const [Data, setData] = React.useState(Array<departmentCardData>);
   
   navigation.setOptions({title: 'ภาพรวมแผนก'});
-  // const DATA: Array<departmentCardData> = [
-  //   {
-  //     detailID: 1,
-  //     title: 'ต้มไก่',
-  //     productivity: 100,
-  //     entered: 20,
-  //     member: 20,
-  //     detailScreenName: 'Detail',
-  //   },
-  //   {
-  //     detailID: 2,
-  //     title: 'ต้มไก่',
-  //     productivity: 100,
-  //     entered: 20,
-  //     member: 20,
-  //     detailScreenName: 'Detail',
-  //   },
-  //   {
-  //     detailID: 3,
-  //     title: 'ต้มไก่',
-  //     productivity: 100,
-  //     entered: 20,
-  //     member: 20,
-  //     detailScreenName: 'Detail',
-  //   },
-  //   {
-  //     detailID: 4,
-  //     title: 'ต้มไก่',
-  //     productivity: 100,
-  //     entered: 20,
-  //     member: 20,
-  //     detailScreenName: 'Detail',
-  //   },
-  // ];
+  const DATA: Array<departmentCardData> = [
+    {
+      detailID: 1,
+      title: 'ต้มไก่',
+      productivity: 100,
+      entered: 20,
+      member: 20,
+      detailScreenName: 'Detail',
+    },
+    {
+      detailID: 2,
+      title: 'ต้มไก่',
+      productivity: 100,
+      entered: 20,
+      member: 20,
+      detailScreenName: 'Detail',
+    },
+    {
+      detailID: 3,
+      title: 'ต้มไก่',
+      productivity: 100,
+      entered: 20,
+      member: 20,
+      detailScreenName: 'Detail',
+    },
+    {
+      detailID: 4,
+      title: 'ต้มไก่',
+      productivity: 100,
+      entered: 20,
+      member: 20,
+      detailScreenName: 'Detail',
+    },
+  ];
   const getCurrentShifts = async () => {
     try {
       const res = await fetch(`${env.API_BASE}:${env.API_PORT}/dashboard/1`);
@@ -56,19 +56,22 @@ const DashboardScreen = ({navigation}: any) => {
   };
 
 const dataHandler = (data) => {
+  console.log(data)
   let res: any = [];
   const len = data.department.length;
   for(let i=0; i < len ; i++){
     let shift = (data.shifts).flatMap(arr => arr)[i];
+    console.log("=================")
+    console.log(shift)
     let newData = {
       detailID: parseInt(data.department[i].department_id),
       title: String(data.department[i].name),
-      productivity: parseInt(shift.successProduct),
-      entered: parseInt(shift.allMember),
-      member: parseInt(shift.checkInMember),
-      detailScreenName: 'Detail',
+      // productivity: shift.successProduct,
+      // entered: parseInt(shift.allMember),
+      // member: parseInt(shift.checkInMember),
+      // detailScreenName: 'Detail',
     }
-    console.log(newData);
+    // console.log(newData);
     res.push(newData);
   }
   return res;
@@ -91,7 +94,7 @@ const dataHandler = (data) => {
 
   return (
     <MainContainer>
-      <FlatList style={ {width: '100%'}} data={Data} renderItem={renderDepartmentCard} />
+      <FlatList style={ {width: '100%'}} data={DATA} renderItem={renderDepartmentCard} />
       <Button
         title="Go to Jane's profile"
         onPress={() => navigation.navigate('Profile', {name: 'Jane'})}

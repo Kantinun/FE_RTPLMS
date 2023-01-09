@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Modal, Dimensions, StyleSheet, Text, View, Image, Animated, TouchableOpacity, TextInput, SafeAreaView} from 'react-native';
+import { Dimensions, StyleSheet, View} from 'react-native';
 
 import DetailsDataTable from '../components/DetailsDataTable';
 import MainContainer from '../components/MainContainer';
@@ -9,16 +9,11 @@ import MyDateTimePicker from '../components/DateTimePicker';
 import { getToday, getFormatedDate } from 'react-native-modern-datepicker';
 import moment from 'moment';
 import Carousel from 'react-native-reanimated-carousel';
-import { TabView, SceneMap } from 'react-native-tab-view';
 import Icon from 'react-native-vector-icons/AntDesign';
 import { colors } from '../config/colors';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import MyModal from '../components/MyModal';
-
-type Route = {
-  key: string;
-  title: string;
-};
+import {SearchBar, Tab, TabView} from '@rneui/themed'
 
 type Props = {};
 
@@ -27,12 +22,12 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
   const navigation = useNavigation<NavigationProp<any>>();
   const [modalVisible, setModalVisible] = useState(false);
   const [searchText, setSearchText] = useState('');
+  const updateSearch = (text: string) => {setSearchText(text)}
   const [date, setDate] = useState(new Date());
   const width = Dimensions.get('window').width;
   
   navigation.setOptions({title: route.params.title});
   
-  // const myData = [{uri: 'https://picsum.photos/200'},{uri: 'https://picsum.photos/200/300'},{uri: 'https://picsum.photos/seed/picsum/200/300'}]
   const myData2 = {
     page1:{
       product: '10/100 kg',
@@ -46,50 +41,8 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
       number_of_worker: '10/13 คน'
     }
   }
-  const page1 = Object.keys(myData2.page1).map(key => myData2.page1[key])
-  const page2 = Object.keys(myData2.page2).map(key => myData2.page2[key])
   
   const [index, setIndex] = React.useState(0);
-  const [routes] = React.useState<Route[]>([
-    { key: 'first', title: 'Work Plan' },
-    { key: 'second', title: 'OT Plan' },
-  ]);
-
-  const FirstRoute = () => (
-    <DetailsDataTable mode='work_plan'></DetailsDataTable>
-  );
-  
-  const SecondRoute = () => (
-    <DetailsDataTable mode='ot_plan'></DetailsDataTable>
-  );
-
-  const renderScene = SceneMap({
-    first: FirstRoute,
-    second: SecondRoute,
-  });
-
-  const renderTabBar = (props: any) => {
-    const inputRange = props.navigationState.routes.map((x, i) => i);
-    return (
-      <View style={styles.tabBar}>
-        {props.navigationState.routes.map((route, i) => {
-          const opacity = props.position.interpolate({
-            inputRange,
-            outputRange: inputRange.map((inputIndex) =>
-              inputIndex === i ? 1 : 0.5
-            ),
-          });
-          return (
-            <TouchableOpacity
-              style={styles.tabItem}
-              onPress={() => setIndex(props.navigationState.routes.indexOf(route))}>
-              <Animated.Text style={{opacity}}>{route.title}</Animated.Text>
-            </TouchableOpacity>
-          );
-        })}
-      </View>
-    );
-  };
   
   return (
     <MainContainer>
@@ -134,19 +87,18 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
               )}
             />
         </View>
-        <View style={{flexDirection: 'row',justifyContent: 'center'}}>
-          <View style={[styles.container,{flex:2}]}>
-              <TextInput
-                  value={searchText}
-                  onChangeText={setSearchText}
-                  placeholder="Search here.."
-                  style={{flex:1, borderWidth:1,textAlign:'center', borderColor:'#bbbb', backgroundColor:'white'}}
-              />
-              <Icon.Button
-                  name='search1'
-                  iconStyle={{ marginRight: 0}}
-              ></Icon.Button>
-          </View>
+        <View style={{flexDirection: 'row',justifyContent: 'center', alignItems:'center'}}>
+          {/* <View style={[styles.container,{flex:2}]}> */}
+              <SearchBar
+                placeholder='Search Here...'
+                onChangeText={updateSearch}
+                value={searchText}
+                containerStyle={{flex:2, backgroundColor: 'white'}}
+                round={true}
+                showCancel={true}
+                lightTheme={true}
+              ></SearchBar>
+          {/* </View> */}
           <View style={styles.button_container}>
               <View style={styles.button}>
                   <Icon.Button
@@ -158,22 +110,46 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
                       />
               </View>
               <View style={styles.button}>
-              <Icon.Button
-                      name="minuscircleo"
-                      style={styles.Icon}
-                      iconStyle={{marginRight: 0}}
-                      backgroundColor='#F5222D'
-                      onPress={()=>{setModalVisible(true)}}
-                  />
+                <Icon.Button
+                        name="minuscircleo"
+                        style={styles.Icon}
+                        iconStyle={{marginRight: 0}}
+                        backgroundColor='#F5222D'
+                        onPress={()=>{setModalVisible(true)}}
+                    />
               </View>
-                </View>
-          </View> 
-        <TabView
-          navigationState={{ index, routes }}
-          renderScene={renderScene}
-          onIndexChange={setIndex}
-          renderTabBar={renderTabBar}
-        />
+          </View>
+        </View> 
+        <Tab
+          value={index}
+          onChange={(e) => setIndex(e)}
+          indicatorStyle={{
+            backgroundColor: colors.primary,
+            height: 3,
+          }}
+          containerStyle={{backgroundColor:'white'}}
+          // variant="white"
+        >
+          <Tab.Item
+            title="Work Plan"
+            titleStyle={{ fontSize: 12 }}
+            icon={{ name: 'calendar-outline', type: 'ionicon', color: 'grey' }}
+          />
+          <Tab.Item
+            title="OT Plan"
+            titleStyle={{ fontSize: 12 }}
+            icon={{ name: 'time-outline', type: 'ionicon', color: 'grey' }}
+          />
+        </Tab>
+
+        <TabView value={index} onChange={setIndex} animationType="spring">
+          <TabView.Item style={{ backgroundColor: 'red', width: '100%' }}>
+          <DetailsDataTable mode='work_plan'></DetailsDataTable>
+          </TabView.Item>
+          <TabView.Item style={{ backgroundColor: 'blue', width: '100%' }}>
+          <DetailsDataTable mode='ot_plan'></DetailsDataTable>
+          </TabView.Item>
+        </TabView>
     </MainContainer>
   );
 };

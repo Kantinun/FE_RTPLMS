@@ -52,7 +52,7 @@ const MyDateTimePicker = (props: any) => {
           is24Hour={true}
           display="default"
           onChange={onChange}
-          style={{backgroundColor: 'black'}}
+          // style={{backgroundColor: 'black'}}
         />
       )} 
     </View>
