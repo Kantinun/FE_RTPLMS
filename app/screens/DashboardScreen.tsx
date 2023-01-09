@@ -65,7 +65,7 @@ const DashboardScreen = ({navigation}: any) => {
 
   return (
     <MainContainer>
-      <FlatList style={ {width: '100%'}} data={DATA} renderItem={renderDepartmentCard} />
+      <FlatList style={ {width: '100%'}} data={Data} renderItem={renderDepartmentCard} />
       <Button
         title="Go to Jane's profile"
         onPress={() => navigation.navigate('Profile', {name: 'Jane'})}

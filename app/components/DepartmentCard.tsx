@@ -50,7 +50,7 @@ const DepartmentCard = (props: any) => {
               id: props.detailID,
               shiftCode: props.shiftCode,
             })
-          }
+          }}
           testID="DepartmentCard.DetailLink">
           รายละเอียด
         </RegularText>
