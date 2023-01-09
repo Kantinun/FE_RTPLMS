@@ -48,9 +48,8 @@ const DepartmentCard = (props: any) => {
           onPress={() => {
             navigation.navigate(screenName, {
               id: props.detailID,
-              title: props.title ? props.title : 'ชื่อแผนก',
-            });
-          }
+              shiftCode: props.shiftCode,
+            })
           }
           testID="DepartmentCard.DetailLink">
           รายละเอียด

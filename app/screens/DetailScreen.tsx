@@ -9,6 +9,7 @@ import MyDateTimePicker from '../components/DateTimePicker';
 import { getToday, getFormatedDate } from 'react-native-modern-datepicker';
 import moment from 'moment';
 import Carousel from 'react-native-reanimated-carousel';
+import { DataForPlanAndOt, getAccountInThisShift, getDataForPlanAndOt } from '../services/detail.service';
 import Icon from 'react-native-vector-icons/AntDesign';
 import { colors } from '../config/colors';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
@@ -42,6 +43,19 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
     }
   }
   
+  const [dataForPlanAndOt, setDataForPlanAndOt] = React.useState<DataForPlanAndOt>({plan: [], ot: []});
+  const accountInThisShift: Promise<any> = getAccountInThisShift(route.params.shiftCode); // Call Api
+
+  React.useEffect(() => {
+    accountInThisShift.then((res) => {
+      
+      return getDataForPlanAndOt(res);
+    }).then((data) => {
+      
+      setDataForPlanAndOt(data);
+    })
+  }, []);
+
   const [index, setIndex] = React.useState(0);
   
   return (
@@ -87,6 +101,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
               )}
             />
         </View>
+
         <View style={{flexDirection: 'row',justifyContent: 'center', alignItems:'center'}}>
           {/* <View style={[styles.container,{flex:2}]}> */}
               <SearchBar
@@ -144,10 +159,10 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
 
         <TabView value={index} onChange={setIndex} animationType="spring">
           <TabView.Item style={{ backgroundColor: 'red', width: '100%' }}>
-          <DetailsDataTable mode='work_plan'></DetailsDataTable>
+          <DetailsDataTable dataPlan={dataForPlanAndOt.plan} mode='work_plan'></DetailsDataTable>
           </TabView.Item>
           <TabView.Item style={{ backgroundColor: 'blue', width: '100%' }}>
-          <DetailsDataTable mode='ot_plan'></DetailsDataTable>
+          <DetailsDataTable dataOt={dataForPlanAndOt.ot} mode='ot_plan'></DetailsDataTable>
           </TabView.Item>
         </TabView>
     </MainContainer>
