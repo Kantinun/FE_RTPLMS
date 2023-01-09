@@ -45,7 +45,7 @@ const DepartmentCard = (props: any) => {
         <RegularText>{props.title ? props.title : 'ชื่อแผนก'}</RegularText>
         <RegularText
           style={{color: primary}}
-          onPress={() =>
+          onPress={() => {
             navigation.navigate(screenName, {
               id: props.detailID,
               shiftCode: props.shiftCode,

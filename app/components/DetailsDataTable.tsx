@@ -16,43 +16,13 @@ function DetailsDataTable(props: any) {
             <Text style={{marginEnd: 5}}>{value}</Text>
             <Icon
                 name='edit'
-                iconStyle={styles.Icon}
+                // iconStyle={styles.Icon}
                 color={colors.primary}
             />
         </View>
     )
     return (
         <View>
-            <View style={styles.container}>
-                <View style={[styles.container,{flex:2}]}>
-                    <TextInput
-                        value={searchText}
-                        onChangeText={setSearchText}
-                        placeholder="Search here.."
-                        style={{flex:1, borderWidth:1,textAlign:'center', borderColor:'#bbbb', backgroundColor:'white'}}
-                    />
-                    <Icon.Button
-                        name='search1'
-                        iconStyle={{ marginRight: 0 }}
-                    ></Icon.Button>
-                </View>
-                <View style={styles.button_container}>
-                    <View style={styles.button}>
-                        <Icon.Button
-                            name="plus"
-                            iconStyle={ styles.Icon}
-                            backgroundColor={colors.primary}                           
-                        />
-                    </View>
-                    <View style={styles.button}>
-                    <Icon.Button
-                            name="minus"
-                            iconStyle={{ marginRight: 0 }}
-                            backgroundColor='#F5222D'
-                        />
-                    </View>
-                </View>
-            </View>
             {(props.mode==='work_plan') &&
             (<Table borderStyle={{borderWidth: 2, borderColor: '#eee'}}>
                <Row data={workPlanTableHead} style={styles.head} textStyle={styles.text}/>

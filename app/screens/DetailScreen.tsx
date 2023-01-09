@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {Dimensions, StyleSheet, Text, View, Image, Animated, TouchableOpacity} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import { Dimensions, StyleSheet, View} from 'react-native';
 
 import DetailsDataTable from '../components/DetailsDataTable';
 import MainContainer from '../components/MainContainer';
@@ -9,21 +9,26 @@ import MyDateTimePicker from '../components/DateTimePicker';
 import { getToday, getFormatedDate } from 'react-native-modern-datepicker';
 import moment from 'moment';
 import Carousel from 'react-native-reanimated-carousel';
-import { TabView, SceneMap } from 'react-native-tab-view';
 import { DataForPlanAndOt, getAccountInThisShift, getDataForPlanAndOt } from '../services/detail.service';
-
-
-type Route = {
-  key: string;
-  title: string;
-};
+import Icon from 'react-native-vector-icons/AntDesign';
+import { colors } from '../config/colors';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import MyModal from '../components/MyModal';
+import {SearchBar, Tab, TabView} from '@rneui/themed'
 
 type Props = {};
 
 const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
+  
+  const navigation = useNavigation<NavigationProp<any>>();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [searchText, setSearchText] = useState('');
+  const updateSearch = (text: string) => {setSearchText(text)}
   const [date, setDate] = useState(new Date());
   const width = Dimensions.get('window').width;
-  const myData = [{uri: 'https://picsum.photos/200'},{uri: 'https://picsum.photos/200/300'},{uri: 'https://picsum.photos/seed/picsum/200/300'}]
+  
+  navigation.setOptions({title: route.params.title});
+  
   const myData2 = {
     page1:{
       product: '10/100 kg',
@@ -37,9 +42,6 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
       number_of_worker: '10/13 คน'
     }
   }
-  
-  const page1 = Object.keys(myData2.page1).map(key => myData2.page1[key])
-  const page2 = Object.keys(myData2.page2).map(key => myData2.page2[key])
   
   const [dataForPlanAndOt, setDataForPlanAndOt] = React.useState<DataForPlanAndOt>({plan: [], ot: []});
   const accountInThisShift: Promise<any> = getAccountInThisShift(route.params.shiftCode); // Call Api
@@ -55,49 +57,10 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
   }, []);
 
   const [index, setIndex] = React.useState(0);
-  const [routes] = React.useState<Route[]>([
-    { key: 'first', title: 'Work Plan' },
-    { key: 'second', title: 'OT Plan' },
-  ]);
-
-  const FirstRoute = () => (
-    <DetailsDataTable dataPlan={dataForPlanAndOt.plan} mode='work_plan'></DetailsDataTable>
-  );
-  
-  const SecondRoute = () => (
-    <DetailsDataTable dataOt={dataForPlanAndOt.ot} mode='ot_plan'></DetailsDataTable>
-  );
-
-  const renderScene = SceneMap({
-    first: FirstRoute,
-    second: SecondRoute,
-  });
-
-  const renderTabBar = (props: any) => {
-    const inputRange = props.navigationState.routes.map((x, i) => i);
-    return (
-      <View style={styles.tabBar}>
-        {props.navigationState.routes.map((route, i) => {
-          const opacity = props.position.interpolate({
-            inputRange,
-            outputRange: inputRange.map((inputIndex) =>
-              inputIndex === i ? 1 : 0.5
-            ),
-          });
-          return (
-            <TouchableOpacity
-              style={styles.tabItem}
-              onPress={() => setIndex(props.navigationState.routes.indexOf(route))}>
-              <Animated.Text style={{opacity}}>{route.title}</Animated.Text>
-            </TouchableOpacity>
-          );
-        })}
-      </View>
-    );
-  };
   
   return (
     <MainContainer>
+      <MyModal visible={modalVisible} clickHandler={setModalVisible}></MyModal>
       <RegularText>
         Department ID: {route.params.id}
       </RegularText>
@@ -110,7 +73,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
                 width={width}
                 height={width / 2}
                 autoPlay={true}
-                autoPlayInterval={1500}
+                autoPlayInterval={5000}
                 mode="parallax"
                 data={Object.keys(myData2)}
                 scrollAnimationDuration={1000}
@@ -138,21 +101,79 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
               )}
             />
         </View>
-        <TabView
-          navigationState={{ index, routes }}
-          renderScene={renderScene}
-          onIndexChange={setIndex}
-          renderTabBar={renderTabBar}
-        />
+
+        <View style={{flexDirection: 'row',justifyContent: 'center', alignItems:'center'}}>
+          {/* <View style={[styles.container,{flex:2}]}> */}
+              <SearchBar
+                placeholder='Search Here...'
+                onChangeText={updateSearch}
+                value={searchText}
+                containerStyle={{flex:2, backgroundColor: 'white'}}
+                round={true}
+                showCancel={true}
+                lightTheme={true}
+              ></SearchBar>
+          {/* </View> */}
+          <View style={styles.button_container}>
+              <View style={styles.button}>
+                  <Icon.Button
+                      name="pluscircleo"
+                      style={styles.Icon}
+                      iconStyle={{marginRight: 0}}
+                      backgroundColor={colors.primary} 
+                      onPress={()=>{setModalVisible(true)}}                          
+                      />
+              </View>
+              <View style={styles.button}>
+                <Icon.Button
+                        name="minuscircleo"
+                        style={styles.Icon}
+                        iconStyle={{marginRight: 0}}
+                        backgroundColor='#F5222D'
+                        onPress={()=>{setModalVisible(true)}}
+                    />
+              </View>
+          </View>
+        </View> 
+        <Tab
+          value={index}
+          onChange={(e) => setIndex(e)}
+          indicatorStyle={{
+            backgroundColor: colors.primary,
+            height: 3,
+          }}
+          containerStyle={{backgroundColor:'white'}}
+          // variant="white"
+        >
+          <Tab.Item
+            title="Work Plan"
+            titleStyle={{ fontSize: 12 }}
+            icon={{ name: 'calendar-outline', type: 'ionicon', color: 'grey' }}
+          />
+          <Tab.Item
+            title="OT Plan"
+            titleStyle={{ fontSize: 12 }}
+            icon={{ name: 'time-outline', type: 'ionicon', color: 'grey' }}
+          />
+        </Tab>
+
+        <TabView value={index} onChange={setIndex} animationType="spring">
+          <TabView.Item style={{ backgroundColor: 'red', width: '100%' }}>
+          <DetailsDataTable dataPlan={dataForPlanAndOt.plan} mode='work_plan'></DetailsDataTable>
+          </TabView.Item>
+          <TabView.Item style={{ backgroundColor: 'blue', width: '100%' }}>
+          <DetailsDataTable dataOt={dataForPlanAndOt.ot} mode='ot_plan'></DetailsDataTable>
+          </TabView.Item>
+        </TabView>
     </MainContainer>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    backgroundColor: 'red',
+  container:{
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginVertical: 10,
   },
   scene: {
     flex: 1,
@@ -162,7 +183,11 @@ const styles = StyleSheet.create({
   },
   tabItem: {
     alignItems: 'flex-start',
-    padding: 16,
+    // padding: 16,
+    paddingBottom: 10,
+    paddingHorizontal: 10,
+    // backgroundColor: 'red'
+
   },
   tabIndicator: {
     backgroundColor: 'black'
@@ -184,6 +209,23 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     flex: 1,
     alignSelf: 'stretch'
-  }
+  },
+  button_container: {
+    flex:1, 
+    flexDirection:'row', 
+    marginVertical: 10,
+    marginHorizontal: 10,
+    justifyContent: 'center'
+  },
+  button: {
+      flex: 1,
+      marginHorizontal: 5
+  },
+  Icon: {
+      alignItems: 'center',
+      alignSelf: 'center',
+      justifyContent: 'center',
+      marginRight: 0,
+  },
 })
 export default DetailScreen;
