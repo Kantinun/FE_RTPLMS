@@ -1,47 +1,24 @@
 import React, { useState } from 'react';
 import { Modal, Text, TouchableHighlight, View, TouchableWithoutFeedback, Button, StyleSheet, Pressable} from 'react-native';
 import { Cell, Row, Rows, Table, TableWrapper } from 'react-native-table-component';
-import {CheckBox, Icon} from '@rneui/themed'
+import { SearchBar,CheckBox, Icon} from '@rneui/themed'
 
 const MyModal = (props: any) => {
-  const tableData2 = {
-    header:['','ชื่อ-นามสกุล','กำลังการผลิต'],
-    content:
-    [
-      {
-        name: 'นาย ก',
-        id: 1,
-        performance: '5'
-      },
-      {
-        name: 'นาย ข',
-        id: 2,
-        performance: '7'
-      },
-      {
-        name: 'นาย ค',
-        id: 3,
-        performance: '6'
-      },
-      {
-        name: 'นาย ง',
-        id: 4,
-        performance: '8'
-      },
-    ]
-  }
+  const [data, setData] = useState(props.data)
 
-  const btn_element = () => {
-    let [check, setCheck] = useState(false)
-    return(
-      <CheckBox
-        center
-        checked={check}
-        onPress={() => setCheck(!check)}
-      />
-    )
+  const handleCheckboxClick = (id) => {
+    let tmp = data.content.map((content)=>{
+          if (content.id === id){
+            return {...content, isChecked: !content.isChecked}
+          }
+          return content
+        })
+        let newData = {
+          header: data.header,
+          content: tmp
+        }
+        setData(newData)
   }
-
   return (
     <View style={{marginTop: 22}}>
       <Modal
@@ -56,12 +33,24 @@ const MyModal = (props: any) => {
           <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.5)'}}>
             <TouchableWithoutFeedback>
               <View style={{backgroundColor: 'white', width: '100%'}}>
+                <SearchBar
+                  placeholder='Search Here...'
+                  containerStyle={{backgroundColor: 'white'}}
+                  inputContainerStyle={{backgroundColor: 'white', borderWidth: 1}}
+                  round={true}
+                  showCancel={true}
+                  lightTheme={true}
+                ></SearchBar>
                 <Table borderStyle={{borderWidth: 2, borderColor: '#eee'}}>
-                    <Row data={tableData2.header} style={styles.head} textStyle={styles.text}></Row>
+                    <Row data={data.header} style={styles.head} textStyle={styles.text}></Row>
                       {
-                        tableData2.content.map((item)=>(
+                        data.content.map((item)=>(
                           <TableWrapper style={{ flexDirection: 'row'}}>
-                            <Cell data={btn_element()}> 
+                            <Cell data={<CheckBox
+                              center
+                              checked={item.isChecked}
+                              onPress={() => handleCheckboxClick(item.id)}
+                            />}> 
                             </Cell>
                             <Cell data={<Text style={{textAlign: 'center'}}>{item.name}</Text>}> </Cell>
                             <Cell data={<Text style={{textAlign: 'center'}}>{item.performance}</Text>}> </Cell>
@@ -69,7 +58,9 @@ const MyModal = (props: any) => {
                         ))
                       }
                 </Table>
-                <Button title='Confirm'></Button>
+                <View style={{width:'100%', flexDirection: 'row-reverse', padding: 5}}>
+                  <Button title='Confirm' onPress={()=>{console.log(data.content)}}></Button>
+                </View>
               </View>
             </TouchableWithoutFeedback>
           </View>

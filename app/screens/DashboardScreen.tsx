@@ -44,6 +44,7 @@ const DashboardScreen = ({navigation}: any) => {
   // ];
 
   const currentShifts = getCurrentShifts();
+  
   React.useEffect(() => {
     currentShifts.then((res)=> {
       setData(res)
