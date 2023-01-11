@@ -56,13 +56,10 @@ const DashboardScreen = ({navigation}: any) => {
   };
 
 const dataHandler = (data) => {
-  console.log(data)
   let res: any = [];
   const len = data.department.length;
   for(let i=0; i < len ; i++){
     let shift = (data.shifts).flatMap(arr => arr)[i];
-    console.log("=================")
-    console.log(shift)
     let newData = {
       detailID: parseInt(data.department[i].department_id),
       title: String(data.department[i].name),

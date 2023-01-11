@@ -20,7 +20,8 @@ type Props = {};
 const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
   
   const navigation = useNavigation<NavigationProp<any>>();
-  const [modalVisible, setModalVisible] = useState(false);
+  const [addWorkerVisible, setAddWorkerVisible] = useState(false);
+  const [delWorkerVisible, setDelWorkerVisible] = useState(false);
   const [searchText, setSearchText] = useState('');
   const updateSearch = (text: string) => {setSearchText(text)}
   const [date, setDate] = useState(new Date());
@@ -42,11 +43,73 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
     }
   }
   
+  const [modalAddData, setModalAddData] = useState({
+    header:['','ชื่อ-นามสกุล','กำลังการผลิต'],
+    content:
+    [
+      {
+        name: 'นาย ก',
+        id: 1,
+        performance: '5',
+        isChecked: false
+      },
+      {
+        name: 'นาย ข',
+        id: 2,
+        performance: '7',
+        isChecked: false
+      },
+      {
+        name: 'นาย ค',
+        id: 3,
+        performance: '6',
+        isChecked: false
+      },
+      {
+        name: 'นาย ง',
+        id: 4,
+        performance: '8',
+        isChecked: false
+      },
+    ]
+  })
+  const [modalDelData, setModalDelData] = useState({
+    header:['','ชื่อ-นามสกุล','กำลังการผลิต'],
+    content:
+    [
+      {
+        name: 'นาย A',
+        id: 5,
+        performance: '5',
+        isChecked: false
+      },
+      {
+        name: 'นาย B',
+        id: 6,
+        performance: '7',
+        isChecked: false
+      },
+      {
+        name: 'นาย C',
+        id: 7,
+        performance: '6',
+        isChecked: false
+      },
+      {
+        name: 'นาย D',
+        id: 8,
+        performance: '8',
+        isChecked: false
+      },
+    ]
+  })
+
   const [index, setIndex] = React.useState(0);
   
   return (
     <MainContainer>
-      <MyModal visible={modalVisible} clickHandler={setModalVisible}></MyModal>
+      <MyModal visible={addWorkerVisible} clickHandler={setAddWorkerVisible} data={modalAddData}></MyModal>
+      <MyModal visible={delWorkerVisible} clickHandler={setDelWorkerVisible} data={modalDelData}></MyModal>
       <RegularText>
         Department ID: {route.params.id}
       </RegularText>
@@ -94,6 +157,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
                 onChangeText={updateSearch}
                 value={searchText}
                 containerStyle={{flex:2, backgroundColor: 'white'}}
+                inputContainerStyle={{backgroundColor: 'white', borderWidth: 1}}
                 round={true}
                 showCancel={true}
                 lightTheme={true}
@@ -106,7 +170,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
                       style={styles.Icon}
                       iconStyle={{marginRight: 0}}
                       backgroundColor={colors.primary} 
-                      onPress={()=>{setModalVisible(true)}}                          
+                      onPress={()=>{setAddWorkerVisible(true)}}                          
                       />
               </View>
               <View style={styles.button}>
@@ -115,7 +179,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
                         style={styles.Icon}
                         iconStyle={{marginRight: 0}}
                         backgroundColor='#F5222D'
-                        onPress={()=>{setModalVisible(true)}}
+                        onPress={()=>{setDelWorkerVisible(true)}}
                     />
               </View>
           </View>
@@ -143,10 +207,10 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
         </Tab>
 
         <TabView value={index} onChange={setIndex} animationType="spring">
-          <TabView.Item style={{ backgroundColor: 'red', width: '100%' }}>
+          <TabView.Item style={{  width: '100%' }}>
           <DetailsDataTable mode='work_plan'></DetailsDataTable>
           </TabView.Item>
-          <TabView.Item style={{ backgroundColor: 'blue', width: '100%' }}>
+          <TabView.Item style={{  width: '100%' }}>
           <DetailsDataTable mode='ot_plan'></DetailsDataTable>
           </TabView.Item>
         </TabView>
