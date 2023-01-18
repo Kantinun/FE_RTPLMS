@@ -7,6 +7,7 @@ import { ButtonGroup } from '@rneui/themed'
 import { colors } from '../../config/colors';
 import { Input } from '@rneui/themed';
 import { SelectList } from 'react-native-dropdown-select-list'
+import { Dropdown } from 'react-native-element-dropdown';
 
 function Add_del_ot_modal(props) {
     const [position, setPosition] = useState(0)
@@ -37,8 +38,8 @@ function Add_del_ot_modal(props) {
       const [btn_group_index, setBtn_group_index] = useState(0)
       const [selected_method, setSelected_method] = React.useState("");
       const data = [
-        {key:'1', value:'เลือกพนักงานด้วยตนเอง'},
-        {key:'2', value:'จำหน่ายงานตามลำดับการเข้างาน'},
+        { label: 'เลือกพนักงานด้วยตนเอง', value: 'เลือกพนักงานด้วยตนเอง' },
+        { label: 'จำหน่ายงานตามลำดับการเข้างาน', value: 'จำหน่ายงานตามลำดับการเข้างาน' },
     ]  
       return(
         <View style={{alignItems: 'center'}}>
@@ -55,7 +56,7 @@ function Add_del_ot_modal(props) {
               selectedTextStyle={{color: colors.primary}}
             ></ButtonGroup>
           </View>
-          <View style={{flexDirection: 'row', alignItems: 'center', margin: 10, justifyContent: 'space-between'}}>
+          <View style={{flexDirection: 'row', alignItems: 'center', marginHorizontal: 10, justifyContent: 'space-between'}}>
             <Text style={{fontSize: 15}}>จำนวน : </Text>
             <Input
               containerStyle={{flex: 1}}
@@ -67,14 +68,30 @@ function Add_del_ot_modal(props) {
               placeholder="Enter Value"
             />
           </View>
-          <SelectList 
-            setSelected={(val: string) => setSelected_method(val)} 
-            data={data} 
-            save="value"
-            search={false}
-            dropdownItemStyles={{borderBottomWidth: 1}}
-            dropdownTextStyles={{textAlign: 'center'}}
-        />
+          <View style={{width: '100%'}}>
+            <Dropdown
+              // containerStyle={{width: '100%'}}
+              style={styles.dropdown}
+              placeholderStyle={styles.placeholderStyle}
+              selectedTextStyle={styles.selectedTextStyle}
+              iconStyle={styles.iconStyle}
+              data={data}
+              search={false}
+              maxHeight={300}
+              activeColor={colors.primaryLight}
+              labelField="label"
+              valueField="value"
+              placeholder="Select item"
+              value={selected_method}
+              dropdownPosition='bottom'
+              onChange={item => {
+                setSelected_method(item.value);
+              }}
+              // renderLeftIcon={() => (
+              //   <AntDesign style={styles.icon} color="black" name="Safety" size={20} />
+              // )}
+            />
+          </View>
         </View>
       )
     }
@@ -153,57 +170,28 @@ function Add_del_ot_modal(props) {
     );
 }
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: '#ffffff',
-    },
     stepIndicator: {
       marginVertical: 50,
     },
-    page: {
-      // flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: 'red',
-      width: '100%',
-      height: '100%'
+    dropdown: {
+      margin: 16,
+      height: 50,
+      borderBottomColor: 'gray',
+      borderBottomWidth: 0.5,
     },
-    stepLabel: {
-      fontSize: 12,
-      textAlign: 'center',
-      fontWeight: '500',
-      color: '#999999',
+    icon: {
+      marginRight: 5,
     },
-    stepLabelSelected: {
-      fontSize: 12,
-      textAlign: 'center',
-      fontWeight: '500',
-      color: '#4aae4f',
+    placeholderStyle: {
+      fontSize: 16,
     },
-    slide1: {
-        // flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#9DD6EB',
-        width: '100%',
-        height: '100%'
-      },
-      slide2: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#97CAE5'
-      },
-      slide3: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#92BBD9'
-      },
-      text: {
-        color: '#fff',
-        fontSize: 30,
-        fontWeight: 'bold'
-      }
+    selectedTextStyle: {
+      fontSize: 16,
+    },
+    iconStyle: {
+      width: 20,
+      height: 20,
+    },
+
   });
 export default Add_del_ot_modal;
