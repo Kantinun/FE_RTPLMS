@@ -6,7 +6,6 @@ import Swiper from 'react-native-swiper';
 import { ButtonGroup } from '@rneui/themed'
 import { colors } from '../../config/colors';
 import { Input } from '@rneui/themed';
-import { SelectList } from 'react-native-dropdown-select-list'
 import { Dropdown } from 'react-native-element-dropdown';
 
 function Add_del_ot_modal(props) {
@@ -69,8 +68,8 @@ function Add_del_ot_modal(props) {
             />
           </View>
           <View style={{width: '100%'}}>
+            <Text style={styles.label}>วิธีจำหน่ายงาน</Text>
             <Dropdown
-              // containerStyle={{width: '100%'}}
               style={styles.dropdown}
               placeholderStyle={styles.placeholderStyle}
               selectedTextStyle={styles.selectedTextStyle}
@@ -176,8 +175,10 @@ const styles = StyleSheet.create({
     dropdown: {
       margin: 16,
       height: 50,
-      borderBottomColor: 'gray',
-      borderBottomWidth: 0.5,
+      borderWidth: 1,
+      borderRadius: 8,
+      borderColor: '#aaaa',
+      paddingHorizontal: 8,
     },
     icon: {
       marginRight: 5,
@@ -187,10 +188,20 @@ const styles = StyleSheet.create({
     },
     selectedTextStyle: {
       fontSize: 16,
+      marginHorizontal: 10 
     },
     iconStyle: {
       width: 20,
       height: 20,
+    },
+    label: {
+      position: 'absolute',
+      backgroundColor: 'white',
+      left: 22,
+      top: 8,
+      zIndex: 999,
+      paddingHorizontal: 8,
+      fontSize: 14,
     },
 
   });
