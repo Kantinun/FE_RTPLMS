@@ -7,6 +7,7 @@ import { ButtonGroup } from '@rneui/themed'
 import { colors } from '../../config/colors';
 import { Input } from '@rneui/themed';
 import { Dropdown } from 'react-native-element-dropdown';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 function Add_del_ot_modal(props) {
     const [position, setPosition] = useState(0)
@@ -33,13 +34,14 @@ function Add_del_ot_modal(props) {
     const onStepPress = (position: number) => {
         setPosition(position);
     };
+    const [selected_method, setSelected_method] = React.useState(null);
+
     const _renderForm = () => {
       const [btn_group_index, setBtn_group_index] = useState(0)
-      const [selected_method, setSelected_method] = React.useState("");
       const data = [
         { label: 'เลือกพนักงานด้วยตนเอง', value: 'เลือกพนักงานด้วยตนเอง' },
         { label: 'จำหน่ายงานตามลำดับการเข้างาน', value: 'จำหน่ายงานตามลำดับการเข้างาน' },
-    ]  
+      ]  
       return(
         <View style={{alignItems: 'center'}}>
           <View style={{flexDirection: 'row', alignItems: 'center', margin: 10, justifyContent: 'space-between'}}>
@@ -80,15 +82,15 @@ function Add_del_ot_modal(props) {
               activeColor={colors.primaryLight}
               labelField="label"
               valueField="value"
-              placeholder="Select item"
+              placeholder="เลือกวิธีการจำหน่ายงาน"
               value={selected_method}
               dropdownPosition='bottom'
               onChange={item => {
                 setSelected_method(item.value);
               }}
-              // renderLeftIcon={() => (
-              //   <AntDesign style={styles.icon} color="black" name="Safety" size={20} />
-              // )}
+              renderLeftIcon={() => (
+                <Icon style={styles.icon} color="black" name="user-plus" size={15} />
+              )}
             />
           </View>
         </View>
@@ -142,7 +144,7 @@ function Add_del_ot_modal(props) {
                         </View>
                       </Swiper>
                         {position < 2 ?
-                        <View style={{width:'100%', justifyContent: 'space-between', padding: 5, flexDirection: 'row'}}>
+                        <View style={{width:'100%', justifyContent: 'space-between', padding: 5, flexDirection: 'row', borderTopWidth: 1, borderTopColor: '#eeee'}}>
                           <Button
                             disabled={position==0} 
                             title='Previous' 
@@ -155,10 +157,11 @@ function Add_del_ot_modal(props) {
                           }}></Button> 
                         </View>
                         :
-                        <View style={{width:'100%', padding: 5, flexDirection: 'row-reverse'}}>
+                        <View style={{width:'100%', padding: 5, flexDirection: 'row-reverse', borderTopWidth: 1, borderTopColor: '#aaaa'}}>
                           <Button title='Close' onPress={()=>{
                               props.clickHandler(false)
                               setPosition(0)
+                              setSelected_method(null)
                             }}></Button>
                         </View>
                         }
@@ -185,10 +188,13 @@ const styles = StyleSheet.create({
     },
     placeholderStyle: {
       fontSize: 16,
+      textAlign: 'center',
+      color: '#aaaa'
     },
     selectedTextStyle: {
-      fontSize: 16,
-      marginHorizontal: 10 
+      fontSize: 15,
+      marginHorizontal: 10,
+      textAlign: 'center'
     },
     iconStyle: {
       width: 20,
@@ -198,10 +204,10 @@ const styles = StyleSheet.create({
       position: 'absolute',
       backgroundColor: 'white',
       left: 22,
-      top: 8,
       zIndex: 999,
       paddingHorizontal: 8,
-      fontSize: 14,
+      fontSize: 18,
+      color: colors.primary
     },
 
   });
