@@ -10,28 +10,25 @@ import { SelectList } from 'react-native-dropdown-select-list'
 
 function Add_del_ot_modal(props) {
     const [position, setPosition] = useState(0)
-    const thirdIndicatorStyles = {
-        stepIndicatorSize: 25,
-        currentStepIndicatorSize: 30,
-        separatorStrokeWidth: 2,
-        currentStepStrokeWidth: 3,
-        stepStrokeCurrentColor: '#7eaec4',
-        stepStrokeWidth: 3,
-        stepStrokeFinishedColor: '#7eaec4',
-        stepStrokeUnFinishedColor: '#dedede',
-        separatorFinishedColor: '#7eaec4',
-        separatorUnFinishedColor: '#dedede',
-        stepIndicatorFinishedColor: '#7eaec4',
-        stepIndicatorUnFinishedColor: '#ffffff',
-        stepIndicatorCurrentColor: '#ffffff',
-        stepIndicatorLabelFontSize: 0,
-        currentStepIndicatorLabelFontSize: 0,
-        stepIndicatorLabelCurrentColor: 'transparent',
-        stepIndicatorLabelFinishedColor: 'transparent',
-        stepIndicatorLabelUnFinishedColor: 'transparent',
-        labelColor: '#999999',
-        labelSize: 13,
-        currentStepLabelColor: '#7eaec4',
+    const indicatorStyles = {
+      stepIndicatorSize: 30,
+      currentStepIndicatorSize: 40,
+      separatorStrokeWidth: 3,
+      currentStepStrokeWidth: 5,
+      separatorFinishedColor: colors.primaryLight,
+      separatorUnFinishedColor: '#dddd',
+      stepIndicatorFinishedColor: colors.primaryLight,
+      stepIndicatorUnFinishedColor: '#aaaaaa',
+      stepStrokeCurrentColor: colors.primaryDark,
+      stepIndicatorCurrentColor: colors.primaryDark,
+      stepIndicatorLabelFontSize: 15,
+      currentStepIndicatorLabelFontSize: 15,
+      stepIndicatorLabelCurrentColor: '#000000',
+      stepIndicatorLabelFinishedColor: '#ffffff',
+      stepIndicatorLabelUnFinishedColor: 'rgba(255,255,255,0.5)',
+      labelColor: '#888888',
+      labelSize: 15,
+      currentStepLabelColor: '#111111',
       };
     const onStepPress = (position: number) => {
         setPosition(position);
@@ -101,7 +98,7 @@ function Add_del_ot_modal(props) {
                     <View style={styles.stepIndicator}>
                         <StepIndicator
                         stepCount={3}
-                        customStyles={thirdIndicatorStyles}
+                        customStyles={indicatorStyles}
                         currentPosition={position}
                         onPress={onStepPress}
                         labels={['กรอกข้อมูล', 'ยืนยันข้อมูล', 'สำเร็จ']}
