@@ -3,7 +3,7 @@ import { Modal, Text, TouchableHighlight, View, TouchableWithoutFeedback, Button
 import { Cell, Row, Rows, Table, TableWrapper } from 'react-native-table-component';
 import { SearchBar,CheckBox, Icon} from '@rneui/themed'
 
-const MyModal = (props: any) => {
+const Add_del_worker_modal = (props: any) => {
   const [data, setData] = useState(props.data)
 
   const handleCheckboxClick = (id) => {
@@ -74,4 +74,4 @@ const styles = StyleSheet.create({
   head: { height: 40, backgroundColor: '#ddd' },
   text: { margin: 6, textAlign: 'center'},
 })
-export default MyModal;
+export default Add_del_worker_modal;

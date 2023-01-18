@@ -13,7 +13,8 @@ import { DataForPlanAndOt, getAccountInThisShift, getDataForPlanAndOt } from '..
 import Icon from 'react-native-vector-icons/AntDesign';
 import { colors } from '../config/colors';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
-import MyModal from '../components/MyModal';
+import Add_del_worker_modal from '../components/Modal/add_del_worker_modal';
+import Add_del_ot_modal from '../components/Modal/add_del_ot_modal';
 import {SearchBar, Tab, TabView} from '@rneui/themed'
 
 type Props = {};
@@ -23,6 +24,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
   const navigation = useNavigation<NavigationProp<any>>();
   const [addWorkerVisible, setAddWorkerVisible] = useState(false);
   const [delWorkerVisible, setDelWorkerVisible] = useState(false);
+  const [addOtVisible, setAddOtVisible] = useState(false);
   const [searchText, setSearchText] = useState('');
   const updateSearch = (text: string) => {setSearchText(text)}
   const [date, setDate] = useState(new Date());
@@ -121,8 +123,9 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
   
   return (
     <MainContainer>
-      <MyModal visible={addWorkerVisible} clickHandler={setAddWorkerVisible} data={modalAddData}></MyModal>
-      <MyModal visible={delWorkerVisible} clickHandler={setDelWorkerVisible} data={modalDelData}></MyModal>
+      <Add_del_ot_modal visible={addOtVisible} clickHandler={setAddOtVisible}></Add_del_ot_modal>
+      <Add_del_worker_modal visible={addWorkerVisible} clickHandler={setAddWorkerVisible} data={modalAddData}></Add_del_worker_modal>
+      <Add_del_worker_modal visible={delWorkerVisible} clickHandler={setDelWorkerVisible} data={modalDelData}></Add_del_worker_modal>
       <RegularText>
         Department ID: {route.params.id}
       </RegularText>
@@ -184,7 +187,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
                       style={styles.Icon}
                       iconStyle={{marginRight: 0}}
                       backgroundColor={colors.primary} 
-                      onPress={()=>{setAddWorkerVisible(true)}}                          
+                      onPress={()=>{index==0? setAddWorkerVisible(true) : setAddOtVisible(true)}}                          
                       />
               </View>
               <View style={styles.button}>
