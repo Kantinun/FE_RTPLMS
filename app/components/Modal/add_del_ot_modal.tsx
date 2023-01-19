@@ -8,8 +8,19 @@ import { colors } from '../../config/colors';
 import { Input } from '@rneui/themed';
 import { Dropdown } from 'react-native-element-dropdown';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import { Table, Row, Rows, TableWrapper, Cell } from 'react-native-table-component';
 
 function Add_del_ot_modal(props) {
+
+    const header = ['Name', 'Performance','Number of hour']
+    const mockupData = [
+      {name:'นาย ก', performance:10, isCheck: true},
+      {name:'นาย ข', performance:5, isCheck: false},
+      {name:'นาย ค', performance:7, isCheck: true},
+      {name:'นาย ง', performance:8, isCheck: false},
+      {name:'นาย จ', performance:8, isCheck: true},
+    ]
+
     const [position, setPosition] = useState(0)
     const indicatorStyles = {
       stepIndicatorSize: 30,
@@ -47,8 +58,7 @@ function Add_del_ot_modal(props) {
           <View style={{flexDirection: 'row', alignItems: 'center', margin: 10, justifyContent: 'space-between'}}>
             <Text style={{fontSize: 15}}>หน่วย : </Text>
             <ButtonGroup
-              buttons={['คน', 'ชั่วโมง']}
-              selectedIndex={btn_group_index}
+              buttons={['คน', 'ชั่วโมง']}mockupData
               onPress={(index) => {
                 setBtn_group_index(index)
               }}
@@ -60,13 +70,14 @@ function Add_del_ot_modal(props) {
           <View style={{flexDirection: 'row', alignItems: 'center', marginHorizontal: 10, justifyContent: 'space-between'}}>
             <Text style={{fontSize: 15}}>จำนวน : </Text>
             <Input
-              containerStyle={{flex: 1}}
-              inputContainerStyle={{borderWidth:1, padding: 5, borderRadius: 5}}
+              containerStyle={{flex: 1,}}
+              inputContainerStyle={{borderWidth:1, padding: 5, borderRadius: 5, borderColor: '#aaaa'}}
               // errorMessage="Oops! that's not correct."
+              placeholderTextColor='#aaaa'
               errorStyle={{}}
               errorProps={{}}
-              inputStyle={{textAlign: 'center'}}
-              placeholder="Enter Value"
+              inputStyle={{textAlign: 'center', fontSize: 15}}
+              placeholder="กรอกจำนวน"
             />
           </View>
           <View style={{width: '100%'}}>
@@ -96,7 +107,26 @@ function Add_del_ot_modal(props) {
         </View>
       )
     }
-      
+
+    const _renderConfirmPage = () => {
+      const checkedPerson = mockupData.filter((obj)=> obj.isCheck)
+      return(
+        <View style={{alignItems: 'center', width: '100%'}}>
+          <Table borderStyle={{borderWidth: 2, borderColor: '#eee'}}>
+                <Row data={header} style={styles.head} textStyle={styles.text} />
+                {
+                checkedPerson.map((rowData, index) => (
+                <TableWrapper style={styles.row}>
+                  <Cell data={rowData.name} textStyle={styles.text}/>
+                  <Cell data={rowData.performance} textStyle={styles.text}></Cell>
+                  <Cell data={2} textStyle={styles.text}></Cell>
+                </TableWrapper>
+                ))
+                }
+            </Table>
+        </View>
+      )
+    }
     return (
         <Modal 
             isVisible={props.visible}
@@ -115,20 +145,22 @@ function Add_del_ot_modal(props) {
                 >
                     <View style={styles.stepIndicator}>
                         <StepIndicator
-                        stepCount={3}
+                        stepCount={2}
                         customStyles={indicatorStyles}
                         currentPosition={position}
                         onPress={onStepPress}
-                        labels={['กรอกข้อมูล', 'ยืนยันข้อมูล', 'สำเร็จ']}
+                        labels={['กรอกข้อมูล', 'ยืนยันข้อมูล']}
                         />
                     </View>
                     <View style={{flex: 1}}>
                       <Swiper
+                          contentContainerStyle={{ alignItems: 'center', justifyContent: 'center'}}
                           loop={false}
                           index={position}
                           autoplay={false}
                           showsButtons={false}
                           showsPagination={false}
+                          bounces={true}
                           onIndexChanged={(page) => {
                           setPosition(page);
                           }}
@@ -137,13 +169,9 @@ function Add_del_ot_modal(props) {
                           {_renderForm()}
                         </View>
                         <View>
-
-                        </View>
-                        <View>
-                          
+                          {_renderConfirmPage()}
                         </View>
                       </Swiper>
-                        {position < 2 ?
                         <View style={{width:'100%', justifyContent: 'space-between', padding: 5, flexDirection: 'row', borderTopWidth: 1, borderTopColor: '#eeee'}}>
                           <Button
                             disabled={position==0} 
@@ -151,20 +179,17 @@ function Add_del_ot_modal(props) {
                             onPress={()=>{
                               setPosition(position-1)
                           }}></Button>
-
-                          <Button title='Next' onPress={()=>{
-                            setPosition(position+1)
-                          }}></Button> 
-                        </View>
-                        :
-                        <View style={{width:'100%', padding: 5, flexDirection: 'row-reverse', borderTopWidth: 1, borderTopColor: '#aaaa'}}>
-                          <Button title='Close' onPress={()=>{
-                              props.clickHandler(false)
+                          {position < 1?
+                            <Button title='Next' onPress={()=>{
+                              setPosition(position+1)
+                            }}></Button> 
+                          :
+                            <Button title='Comfirm' onPress={()=>{
                               setPosition(0)
-                              setSelected_method(null)
-                            }}></Button>
+                              props.clickHandler(false)
+                            }}></Button> 
+                          }
                         </View>
-                        }
                     </View>
                 </View>
             </View>
@@ -209,6 +234,9 @@ const styles = StyleSheet.create({
       fontSize: 18,
       color: colors.primary
     },
+    head: { height: 40, backgroundColor: '#ddd', width: '100%'},
+    text: { margin: 6, textAlign: 'center'},
+    row: { flexDirection: 'row', backgroundColor: 'white' },
 
   });
 export default Add_del_ot_modal;
