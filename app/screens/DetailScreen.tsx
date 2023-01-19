@@ -25,6 +25,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
   const [addWorkerVisible, setAddWorkerVisible] = useState(false);
   const [delWorkerVisible, setDelWorkerVisible] = useState(false);
   const [addOtVisible, setAddOtVisible] = useState(false);
+  const [delOtVisible, setDelOtVisible] = useState(false);
   const [searchText, setSearchText] = useState('');
   const updateSearch = (text: string) => {setSearchText(text)}
   const [date, setDate] = useState(new Date());
@@ -123,9 +124,6 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
   
   return (
     <MainContainer>
-      <Add_del_ot_modal visible={addOtVisible} clickHandler={setAddOtVisible}></Add_del_ot_modal>
-      <Add_del_worker_modal visible={addWorkerVisible} clickHandler={setAddWorkerVisible} data={modalAddData}></Add_del_worker_modal>
-      <Add_del_worker_modal visible={delWorkerVisible} clickHandler={setDelWorkerVisible} data={modalDelData}></Add_del_worker_modal>
       <RegularText>
         Department ID: {route.params.id}
       </RegularText>
@@ -196,7 +194,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
                         style={styles.Icon}
                         iconStyle={{marginRight: 0}}
                         backgroundColor='#F5222D'
-                        onPress={()=>{setDelWorkerVisible(true)}}
+                        onPress={()=>{index==0? setDelWorkerVisible(true): setDelOtVisible(true)}}
                     />
               </View>
           </View>
@@ -231,6 +229,11 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
           <DetailsDataTable dataOt={dataForPlanAndOt.ot} mode='ot_plan'></DetailsDataTable>
           </TabView.Item>
         </TabView>
+      
+      <Add_del_ot_modal visible={addOtVisible} clickHandler={setAddOtVisible} mode='add'></Add_del_ot_modal>
+      <Add_del_ot_modal visible={delOtVisible} clickHandler={setDelOtVisible} mode='delete'></Add_del_ot_modal>
+      <Add_del_worker_modal visible={addWorkerVisible} clickHandler={setAddWorkerVisible} data={modalAddData}></Add_del_worker_modal>
+      <Add_del_worker_modal visible={delWorkerVisible} clickHandler={setDelWorkerVisible} data={modalDelData}></Add_del_worker_modal>
     </MainContainer>
   );
 };

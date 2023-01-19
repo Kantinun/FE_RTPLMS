@@ -9,17 +9,26 @@ import { Input } from '@rneui/themed';
 import { Dropdown } from 'react-native-element-dropdown';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { Table, Row, Rows, TableWrapper, Cell } from 'react-native-table-component';
+import {CheckBox} from '@rneui/themed'
 
 function Add_del_ot_modal(props) {
 
-    const header = ['Name', 'Performance','Number of hour']
-    const mockupData = [
+    const headerAdd = ['Name', 'Perf.','hour']
+    const mockupAddData = [
       {name:'นาย ก', performance:10, isCheck: true},
       {name:'นาย ข', performance:5, isCheck: false},
       {name:'นาย ค', performance:7, isCheck: true},
       {name:'นาย ง', performance:8, isCheck: false},
       {name:'นาย จ', performance:8, isCheck: true},
     ]
+    const headerDel = ['','Name', 'Perf.','hour']
+    const [mockupDelData, setMockupDelData] = useState([
+      {id:1, name:'นาย ก', performance:10, hour: 4, isCheck: false},
+      {id:2, name:'นาย ข', performance:5, hour: 3, isCheck: false},
+      {id:3, name:'นาย ค', performance:7, hour: 3, isCheck: false},
+      {id:4, name:'นาย ง', performance:8, hour: 2, isCheck: false},
+      {id:5, name:'นาย จ', performance:8, hour: 4, isCheck: false},
+    ])
 
     const [position, setPosition] = useState(0)
     const indicatorStyles = {
@@ -47,7 +56,7 @@ function Add_del_ot_modal(props) {
     };
     const [selected_method, setSelected_method] = React.useState(null);
 
-    const _renderForm = () => {
+    const _renderAddForm = () => {
       const [btn_group_index, setBtn_group_index] = useState(0)
       const data = [
         { label: 'เลือกพนักงานด้วยตนเอง', value: 'เลือกพนักงานด้วยตนเอง' },
@@ -58,7 +67,7 @@ function Add_del_ot_modal(props) {
           <View style={{flexDirection: 'row', alignItems: 'center', margin: 10, justifyContent: 'space-between'}}>
             <Text style={{fontSize: 15}}>หน่วย : </Text>
             <ButtonGroup
-              buttons={['คน', 'ชั่วโมง']}mockupData
+              buttons={['คน', 'ชั่วโมง']}
               onPress={(index) => {
                 setBtn_group_index(index)
               }}
@@ -108,18 +117,52 @@ function Add_del_ot_modal(props) {
       )
     }
 
-    const _renderConfirmPage = () => {
-      const checkedPerson = mockupData.filter((obj)=> obj.isCheck)
+    const _renderDelForm = ()=> {
+      return(
+        <View style={{width: '100%', justifyContent: 'center', paddingLeft: 5, paddingRight:5}}>
+          <Table borderStyle={{borderWidth: 2, borderColor: '#eee'}}>
+                <Row data={headerDel} style={styles.head} textStyle={styles.text} />
+                {
+                mockupDelData.map((rowData, index) => (
+                <TableWrapper style={{ flexDirection: 'row'}}>
+                  <Cell data={<CheckBox
+                    center
+                    checked={rowData.isCheck}
+                    onPress={() => handleCheckboxClick(rowData.id)}
+                  />}> 
+                  </Cell>
+                  <Cell data={<Text style={{textAlign: 'center'}}>{rowData.name}</Text>}> </Cell>
+                  <Cell data={<Text style={{textAlign: 'center'}}>{rowData.performance}</Text>}> </Cell>
+                  <Cell data={<Text style={{textAlign: 'center'}}>{rowData.hour}</Text>}> </Cell>
+                </TableWrapper>
+                ))
+                }
+            </Table>
+        </View>
+      )
+    }
+    const handleCheckboxClick = (id) => {
+      let tmp = mockupDelData.map((content)=>{
+            if (content.id === id){
+              return {...content, isCheck: !content.isCheck}
+            }
+            return content
+          })
+          setMockupDelData(tmp)
+    }
+
+    const _renderConfirmPage = (data: unknown) => {
+      const checkedPerson = data.filter((obj)=> obj.isCheck)
       return(
         <View style={{alignItems: 'center', width: '100%'}}>
           <Table borderStyle={{borderWidth: 2, borderColor: '#eee'}}>
-                <Row data={header} style={styles.head} textStyle={styles.text} />
+                <Row data={headerAdd} style={styles.head} textStyle={styles.text} />
                 {
                 checkedPerson.map((rowData, index) => (
                 <TableWrapper style={styles.row}>
                   <Cell data={rowData.name} textStyle={styles.text}/>
                   <Cell data={rowData.performance} textStyle={styles.text}></Cell>
-                  <Cell data={2} textStyle={styles.text}></Cell>
+                  <Cell data={rowData.hour? rowData.hour: 2} textStyle={styles.text}></Cell>
                 </TableWrapper>
                 ))
                 }
@@ -149,7 +192,7 @@ function Add_del_ot_modal(props) {
                         customStyles={indicatorStyles}
                         currentPosition={position}
                         onPress={onStepPress}
-                        labels={['กรอกข้อมูล', 'ยืนยันข้อมูล']}
+                        labels={[props.mode==='add'? 'กรอกข้อมูล' : 'เลือกงาน OT', 'ยืนยันข้อมูล']}
                         />
                     </View>
                     <View style={{flex: 1}}>
@@ -166,10 +209,10 @@ function Add_del_ot_modal(props) {
                           }}
                       >
                         <View>
-                          {_renderForm()}
+                          {props.mode == 'add'?_renderAddForm(): _renderDelForm()}
                         </View>
                         <View>
-                          {_renderConfirmPage()}
+                          {props.mode == 'add'? _renderConfirmPage(mockupAddData): _renderConfirmPage(mockupDelData)}
                         </View>
                       </Swiper>
                         <View style={{width:'100%', justifyContent: 'space-between', padding: 5, flexDirection: 'row', borderTopWidth: 1, borderTopColor: '#eeee'}}>
