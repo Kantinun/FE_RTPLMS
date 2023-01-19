@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Text, View, Button, StyleSheet} from 'react-native';
+import { Text, View, StyleSheet} from 'react-native';
 import { Cell, Row, Table, TableWrapper } from 'react-native-table-component';
-import { SearchBar,CheckBox} from '@rneui/themed'
+import { SearchBar,CheckBox, Button} from '@rneui/themed'
 import Modal from "react-native-modal";
 
 const Add_del_worker_modal = (props: any) => {
@@ -56,7 +56,9 @@ const Add_del_worker_modal = (props: any) => {
                 }
           </Table>
           <View style={{width:'100%', flexDirection: 'row-reverse', padding: 15}}>
-            <Button title='Confirm' onPress={()=>{console.log(data.content)}}></Button>
+            <Button title='Confirm' 
+              containerStyle={styles.footer_btn}
+              onPress={()=>{console.log(data.content)}}></Button>
           </View>
         </View>
     </Modal>
@@ -66,5 +68,8 @@ const Add_del_worker_modal = (props: any) => {
 const styles = StyleSheet.create({
   head: { height: 40, backgroundColor: '#ddd' },
   text: { margin: 6, textAlign: 'center'},
+  footer_btn:{
+    borderRadius: 10,
+  }
 })
 export default Add_del_worker_modal;

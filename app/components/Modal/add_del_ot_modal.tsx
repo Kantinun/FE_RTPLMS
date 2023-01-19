@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, Button} from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Modal from "react-native-modal";
 import StepIndicator from 'react-native-step-indicator';
 import Swiper from 'react-native-swiper';
@@ -9,8 +9,7 @@ import { Input } from '@rneui/themed';
 import { Dropdown } from 'react-native-element-dropdown';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { Table, Row, Rows, TableWrapper, Cell } from 'react-native-table-component';
-import {CheckBox} from '@rneui/themed'
-import {SearchBar} from '@rneui/themed'
+import {CheckBox,Button,SearchBar} from '@rneui/themed'
 
 function Add_del_ot_modal(props) {
     
@@ -231,17 +230,22 @@ function Add_del_ot_modal(props) {
                           <Button
                             disabled={position==0} 
                             title='Previous' 
+                            containerStyle={styles.footer_btn}
                             onPress={()=>{
                               setPosition(position-1)
                           }}></Button>
                           {position < 1?
-                            <Button title='Next' onPress={()=>{
-                              setPosition(position+1)
+                            <Button title='Next' 
+                              containerStyle={styles.footer_btn}
+                              onPress={()=>{
+                                setPosition(position+1)
                             }}></Button> 
                           :
-                            <Button title='Comfirm' onPress={()=>{
-                              setPosition(0)
-                              props.clickHandler(false)
+                            <Button title='Comfirm' 
+                              containerStyle={styles.footer_btn}
+                              onPress={()=>{
+                                setPosition(0)
+                                props.clickHandler(false)
                             }}></Button> 
                           }
                         </View>
@@ -293,6 +297,9 @@ const styles = StyleSheet.create({
     head: { height: 40, backgroundColor: '#ddd', width: '100%'},
     text: { margin: 6, textAlign: 'center'},
     row: { flexDirection: 'row', backgroundColor: 'white' },
+    footer_btn:{
+      borderRadius: 10,
+    }
 
   });
 export default Add_del_ot_modal;

@@ -211,7 +211,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
             title="Work Plan"
             containerStyle={(active) => ({
               backgroundColor: active ? colors.primaryDark : 'white',
-              borderWidth:1, borderColor: '#9999', borderRadius: 10, marginBottom: 5,
+              borderWidth:1, borderColor: active? 'white':'#5555', borderRadius: 10, marginBottom: 5,
 
             })}
             titleStyle={(active) => ({ fontSize: 12, color: active ? 'white':colors.primaryDark})}
@@ -221,7 +221,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
             title="OT Plan"
             containerStyle={(active) => ({
               backgroundColor: active ? colors.primaryDark : 'white',
-              borderWidth:1, borderColor: '#9999', borderRadius: 10, marginBottom: 5,
+              borderWidth:1, borderColor: active? 'white':'#5555', borderRadius: 10, marginBottom: 5,
 
             })}
             titleStyle={(active) => ({ fontSize: 12, color: active ? 'white':colors.primaryDark})}
