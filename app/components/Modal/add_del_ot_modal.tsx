@@ -195,6 +195,7 @@ function Add_del_ot_modal(props) {
                         marginRight: 10,
                         marginBottom: 17,
                         flex: 3,
+                        borderRadius:20,
                     }}
                 >
                     <View style={styles.stepIndicator}>
@@ -226,7 +227,7 @@ function Add_del_ot_modal(props) {
                           {props.mode == 'add'? _renderConfirmPage(mockupAddData): _renderConfirmPage(mockupDelData)}
                         </View>
                       </Swiper>
-                        <View style={{width:'100%', justifyContent: 'space-between', padding: 5, flexDirection: 'row', borderTopWidth: 1, borderTopColor: '#eeee'}}>
+                        <View style={{width:'100%', justifyContent: 'space-between', padding: 15, flexDirection: 'row', borderTopWidth: 1, borderTopColor: '#eeee'}}>
                           <Button
                             disabled={position==0} 
                             title='Previous' 
