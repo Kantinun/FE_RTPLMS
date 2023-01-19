@@ -165,16 +165,15 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
             />
         </View>
 
-        <View style={{flexDirection: 'row',justifyContent: 'center', alignItems:'center'}}>
+        <View style={{flexDirection: 'row',justifyContent: 'center', alignItems:'center', backgroundColor: 'white', borderTopLeftRadius:20, borderTopRightRadius:20}}>
           {/* <View style={[styles.container,{flex:2}]}> */}
               <SearchBar
                 placeholder='Search Here...'
                 onChangeText={updateSearch}
                 value={searchText}
-                containerStyle={{flex:2, backgroundColor: 'white'}}
-                inputContainerStyle={{backgroundColor: 'white', borderWidth: 1}}
+                containerStyle={{backgroundColor: 'white', borderTopStartRadius: 20, borderTopWidth: 0, borderBottomWidth: 0, flex:2}}
+                inputContainerStyle={{backgroundColor: '#eeee'}}
                 round={true}
-                showCancel={true}
                 lightTheme={true}
               ></SearchBar>
           {/* </View> */}
@@ -284,7 +283,7 @@ const styles = StyleSheet.create({
     flexDirection:'row', 
     marginVertical: 10,
     marginHorizontal: 10,
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   button: {
       flex: 1,

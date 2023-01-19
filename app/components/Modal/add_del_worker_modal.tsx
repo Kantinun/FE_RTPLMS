@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Text, TouchableHighlight, View, TouchableWithoutFeedback, Button, StyleSheet, Pressable} from 'react-native';
-import { Cell, Row, Rows, Table, TableWrapper } from 'react-native-table-component';
-import { SearchBar,CheckBox, Icon} from '@rneui/themed'
+import { Text, View, Button, StyleSheet} from 'react-native';
+import { Cell, Row, Table, TableWrapper } from 'react-native-table-component';
+import { SearchBar,CheckBox} from '@rneui/themed'
 import Modal from "react-native-modal";
 
 const Add_del_worker_modal = (props: any) => {
   const [data, setData] = useState(props.data)
+  const [searchText,setSearchText] = useState('')
 
   const handleCheckboxClick = (id) => {
     let tmp = data.content.map((content)=>{
@@ -27,16 +28,17 @@ const Add_del_worker_modal = (props: any) => {
         props.clickHandler(false);
       }}
     >
-      <View style={{backgroundColor: 'white', width: '100%'}}>
+      <View style={{backgroundColor: 'white', width: '100%', borderRadius: 20, paddingTop: 10}}>
         <SearchBar
             placeholder='Search Here...'
-            containerStyle={{backgroundColor: 'white'}}
-            inputContainerStyle={{backgroundColor: 'white', borderWidth: 1}}
+            containerStyle={{backgroundColor: 'white', borderTopStartRadius: 20, borderTopEndRadius:20, borderTopWidth: 0, borderBottomWidth: 0}}
+            inputContainerStyle={{backgroundColor: '#eeee'}}
             round={true}
-            showCancel={true}
             lightTheme={true}
+            value={searchText}
+            onChange={(text)=>{setSearchText(text)}}
           ></SearchBar>
-          <Table borderStyle={{borderWidth: 2, borderColor: '#eee'}}>
+          <Table borderStyle={{borderWidth: 2, borderColor: '#eee', borderRadius:5}}>
               <Row data={data.header} style={styles.head} textStyle={styles.text}></Row>
                 {
                   data.content.map((item)=>(
@@ -53,7 +55,7 @@ const Add_del_worker_modal = (props: any) => {
                   ))
                 }
           </Table>
-          <View style={{width:'100%', flexDirection: 'row-reverse', padding: 5}}>
+          <View style={{width:'100%', flexDirection: 'row-reverse', padding: 15}}>
             <Button title='Confirm' onPress={()=>{console.log(data.content)}}></Button>
           </View>
         </View>
