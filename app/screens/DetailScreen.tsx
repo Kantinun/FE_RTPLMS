@@ -16,6 +16,7 @@ import {NavigationProp, useNavigation} from '@react-navigation/native';
 import Add_del_worker_modal from '../components/Modal/add_del_worker_modal';
 import Add_del_ot_modal from '../components/Modal/add_del_ot_modal';
 import {SearchBar, Tab, TabView} from '@rneui/themed'
+import { color } from 'react-native-reanimated';
 
 type Props = {};
 
@@ -166,7 +167,6 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
         </View>
 
         <View style={{flexDirection: 'row',justifyContent: 'center', alignItems:'center', backgroundColor: 'white', borderTopLeftRadius:20, borderTopRightRadius:20}}>
-          {/* <View style={[styles.container,{flex:2}]}> */}
               <SearchBar
                 placeholder='Search Here...'
                 onChangeText={updateSearch}
@@ -176,7 +176,6 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
                 round={true}
                 lightTheme={true}
               ></SearchBar>
-          {/* </View> */}
           <View style={styles.button_container}>
               <View style={styles.button}>
                   <Icon.Button
@@ -202,21 +201,31 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
           value={index}
           onChange={(e) => setIndex(e)}
           indicatorStyle={{
-            backgroundColor: colors.primary,
+            backgroundColor: colors.primaryDark,
             height: 3,
           }}
-          containerStyle={{backgroundColor:'white'}}
-          // variant="white"
+          // containerStyle={{backgroundColor:'#dddd', borderWidth:1, borderColor: '#aaaa', borderRadius: 10, marginBottom: 5,}}
+          style={{backgroundColor: 'white'}}
         >
           <Tab.Item
             title="Work Plan"
-            titleStyle={{ fontSize: 12 }}
-            icon={{ name: 'calendar-outline', type: 'ionicon', color: 'grey' }}
+            containerStyle={(active) => ({
+              backgroundColor: active ? colors.primaryDark : 'white',
+              borderWidth:1, borderColor: '#9999', borderRadius: 10, marginBottom: 5,
+
+            })}
+            titleStyle={(active) => ({ fontSize: 12, color: active ? 'white':colors.primaryDark})}
+            icon={(active: any) => ({name: 'calendar-outline', type: 'ionicon', color: active? 'white': colors.primaryDark})}
           />
           <Tab.Item
             title="OT Plan"
-            titleStyle={{ fontSize: 12 }}
-            icon={{ name: 'time-outline', type: 'ionicon', color: 'grey' }}
+            containerStyle={(active) => ({
+              backgroundColor: active ? colors.primaryDark : 'white',
+              borderWidth:1, borderColor: '#9999', borderRadius: 10, marginBottom: 5,
+
+            })}
+            titleStyle={(active) => ({ fontSize: 12, color: active ? 'white':colors.primaryDark})}
+            icon={(active: any) => ({name: 'time-outline', type: 'ionicon', color: active? 'white': colors.primaryDark})}
           />
         </Tab>
 

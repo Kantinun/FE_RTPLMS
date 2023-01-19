@@ -10,8 +10,11 @@ import { Dropdown } from 'react-native-element-dropdown';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { Table, Row, Rows, TableWrapper, Cell } from 'react-native-table-component';
 import {CheckBox} from '@rneui/themed'
+import {SearchBar} from '@rneui/themed'
 
 function Add_del_ot_modal(props) {
+    
+    const [searchText,setSearchText] = useState('')
 
     const headerAdd = ['Name', 'Perf.','hour']
     const mockupAddData = [
@@ -21,7 +24,7 @@ function Add_del_ot_modal(props) {
       {name:'นาย ง', performance:8, isCheck: false},
       {name:'นาย จ', performance:8, isCheck: true},
     ]
-    const headerDel = ['','Name', 'Perf.','hour']
+    const headerDel = ['','Name','Hours']
     const [mockupDelData, setMockupDelData] = useState([
       {id:1, name:'นาย ก', performance:10, hour: 4, isCheck: false},
       {id:2, name:'นาย ข', performance:5, hour: 3, isCheck: false},
@@ -120,6 +123,15 @@ function Add_del_ot_modal(props) {
     const _renderDelForm = ()=> {
       return(
         <View style={{width: '100%', justifyContent: 'center', paddingLeft: 5, paddingRight:5}}>
+          <SearchBar
+            placeholder='Search Here...'
+            containerStyle={{backgroundColor: 'white', borderTopStartRadius: 20, borderTopEndRadius:20, borderTopWidth: 0, borderBottomWidth: 0}}
+            inputContainerStyle={{backgroundColor: '#eeee'}}
+            round={true}
+            lightTheme={true}
+            value={searchText}
+            onChange={(text)=>{setSearchText(text)}}
+          ></SearchBar>
           <Table borderStyle={{borderWidth: 2, borderColor: '#eee'}}>
                 <Row data={headerDel} style={styles.head} textStyle={styles.text} />
                 {
@@ -132,7 +144,6 @@ function Add_del_ot_modal(props) {
                   />}> 
                   </Cell>
                   <Cell data={<Text style={{textAlign: 'center'}}>{rowData.name}</Text>}> </Cell>
-                  <Cell data={<Text style={{textAlign: 'center'}}>{rowData.performance}</Text>}> </Cell>
                   <Cell data={<Text style={{textAlign: 'center'}}>{rowData.hour}</Text>}> </Cell>
                 </TableWrapper>
                 ))
@@ -241,7 +252,8 @@ function Add_del_ot_modal(props) {
 }
 const styles = StyleSheet.create({
     stepIndicator: {
-      marginVertical: 50,
+      marginTop: 40,
+      marginBottom: 20,
     },
     dropdown: {
       margin: 16,
