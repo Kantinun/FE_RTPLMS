@@ -15,7 +15,7 @@ function Add_del_ot_modal(props) {
     
     const [searchText,setSearchText] = useState('')
 
-    const headerAdd = ['Name', 'Perf.','hour']
+    const headerAdd = ['Name', 'Perf.','Hours']
     const mockupAddData = [
       {name:'นาย ก', performance:10, isCheck: true},
       {name:'นาย ข', performance:5, isCheck: false},
@@ -57,40 +57,24 @@ function Add_del_ot_modal(props) {
         setPosition(position);
     };
     const [selected_method, setSelected_method] = React.useState(null);
+    const [btn_group_index, setBtn_group_index] = useState(null)
+    const [value, setValue] = useState('')
+
+    const resetParameter=()=>{
+      setPosition(0)
+      setSelected_method(null)
+      setBtn_group_index(null)
+      setValue('')
+    }
 
     const _renderAddForm = () => {
-      const [btn_group_index, setBtn_group_index] = useState(0)
       const data = [
         { label: 'เลือกพนักงานด้วยตนเอง', value: 'เลือกพนักงานด้วยตนเอง' },
         { label: 'จำหน่ายงานตามลำดับการเข้างาน', value: 'จำหน่ายงานตามลำดับการเข้างาน' },
+        { label: 'ทุกคนในกะ', value: 'ทุกคนในกะ' },
       ]  
       return(
         <View style={{alignItems: 'center'}}>
-          <View style={{flexDirection: 'row', alignItems: 'center', margin: 10, justifyContent: 'space-between'}}>
-            <Text style={{fontSize: 15}}>หน่วย : </Text>
-            <ButtonGroup
-              buttons={['คน', 'ชั่วโมง']}
-              onPress={(index) => {
-                setBtn_group_index(index)
-              }}
-              containerStyle={{ marginBottom: 20, flex:1}}
-              selectedButtonStyle={{borderColor: colors.primary, backgroundColor: 'white', borderWidth: 2}}
-              selectedTextStyle={{color: colors.primary}}
-            ></ButtonGroup>
-          </View>
-          <View style={{flexDirection: 'row', alignItems: 'center', marginHorizontal: 10, justifyContent: 'space-between'}}>
-            <Text style={{fontSize: 15}}>จำนวน : </Text>
-            <Input
-              containerStyle={{flex: 1,}}
-              inputContainerStyle={{borderWidth:1, padding: 5, borderRadius: 5, borderColor: '#aaaa'}}
-              // errorMessage="Oops! that's not correct."
-              placeholderTextColor='#aaaa'
-              errorStyle={{}}
-              errorProps={{}}
-              inputStyle={{textAlign: 'center', fontSize: 15}}
-              placeholder="กรอกจำนวน"
-            />
-          </View>
           <View style={{width: '100%'}}>
             <Text style={styles.label}>วิธีจำหน่ายงาน</Text>
             <Dropdown
@@ -115,6 +99,39 @@ function Add_del_ot_modal(props) {
               )}
             />
           </View>
+          <View style={{flexDirection: 'row', alignItems: 'center', marginHorizontal: 10, justifyContent: 'space-between', borderRadius: 10}}>
+            <Text style={{fontSize: 15}}>จำนวน : </Text>
+            <Input
+              containerStyle={{flex: 1,}}
+              inputContainerStyle={{borderWidth:1, padding: 5, borderRadius: 10, borderColor: (selected_method==='เลือกพนักงานด้วยตนเอง'||selected_method==='ทุกคนในกะ')? '#aaa':colors.primary, alignSelf: 'center', marginTop: 20}}
+              placeholderTextColor='#aaaa'
+              errorStyle={{}}
+              errorProps={{}}
+              inputStyle={{textAlign: 'center', fontSize: 15}}
+              placeholder="กรอกจำนวน"
+              onChangeText={(text)=>{setValue(text)}}
+              value={value? value: ''}
+              disabled={selected_method==='เลือกพนักงานด้วยตนเอง'||selected_method==='ทุกคนในกะ'}
+            />
+          </View>
+          <View style={{flexDirection: 'row', alignItems: 'center', marginHorizontal: 10, justifyContent: 'space-between'}}>
+            <Text style={{fontSize: 15}}>หน่วย : </Text>
+            <ButtonGroup
+              buttons={['คน', 'ชั่วโมง']}
+              onPress={(index) => {
+                setBtn_group_index(index)
+              }}
+              selectedIndex={btn_group_index}
+              containerStyle={{ marginBottom: 20, flex:1}}
+              textStyle={{fontSize: 15}}
+              buttonStyle={{borderColor: colors.primary, backgroundColor: 'white', borderWidth: 1}}
+              selectedButtonStyle={{backgroundColor: colors.primaryDark}}
+              selectedTextStyle={{color: 'white'}}
+              disabled={selected_method==='เลือกพนักงานด้วยตนเอง'||selected_method==='ทุกคนในกะ'}
+              disabledStyle={{borderColor: '#aaaa'}}
+            ></ButtonGroup>
+          </View>
+          
         </View>
       )
     }
@@ -244,7 +261,7 @@ function Add_del_ot_modal(props) {
                             <Button title='Comfirm' 
                               containerStyle={styles.footer_btn}
                               onPress={()=>{
-                                setPosition(0)
+                                resetParameter()
                                 props.clickHandler(false)
                             }}></Button> 
                           }
