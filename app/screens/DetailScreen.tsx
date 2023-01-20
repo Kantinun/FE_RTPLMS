@@ -185,8 +185,9 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
                   size: 25,
                   color: 'white',
                 }}
-                containerStyle={{borderRadius: 15}}
-                buttonStyle={{backgroundColor:colors.green , borderColor: '#aaaa'}}
+                raised={true}
+                containerStyle={{borderRadius: 20}}
+                buttonStyle={{backgroundColor:colors.green , borderColor: '#aaaa',borderRadius: 20}}
                 onPress={()=>{index==0? setAddWorkerVisible(true): setAddOtVisible(true)}}
                 
               ></Button>
@@ -197,8 +198,9 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
                   size: 25,
                   color: 'white',
                 }}
-                containerStyle={{borderRadius: 15}}
-                buttonStyle={{backgroundColor:colors.red}}
+                raised={true}
+                containerStyle={{borderRadius: 20}}
+                buttonStyle={{backgroundColor:colors.red, borderRadius: 20, borderColor: '#aaaa'}}
                 onPress={()=>{index==0? setDelWorkerVisible(true): setDelOtVisible(true)}}
               ></Button>
           </View>
