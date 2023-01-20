@@ -7,11 +7,10 @@ import { colors } from '../config/colors';
 
 const MyDateTimePicker = (props: any) => {
   const [visible, setVisible] = useState(false)
-  const [selectedDate, setSelectedDate] = useState()
   return (
     <View>
       <Button
-      title={selectedDate? moment(selectedDate).format("DD/MM/YYYY"): 'Please select date'}
+      title={props.date? moment(props.date).format("DD/MM/YYYY"): 'Please select date'}
       onPress={()=>{
         setVisible(true)
       }}
@@ -31,7 +30,7 @@ const MyDateTimePicker = (props: any) => {
       isVisible={visible}
       mode="date"
       onConfirm={(date)=>{
-        setSelectedDate(date)
+        props.setDate(date)
         setVisible(false)
       }}
       onCancel={()=>{setVisible(false)}}

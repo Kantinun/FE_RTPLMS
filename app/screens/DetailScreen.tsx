@@ -1,23 +1,20 @@
 import React, {useEffect, useState} from 'react';
-import { Dimensions, StyleSheet, View} from 'react-native';
+import { Dimensions, Platform, StyleSheet, View} from 'react-native';
 
 import DetailsDataTable from '../components/DetailsDataTable';
 import MainContainer from '../components/MainContainer';
 import RegularText from '../../assets/Texts/RegularText';
 import BigText from '../../assets/Texts/BigText'
 import MyDateTimePicker from '../components/DateTimePicker';
-import { getToday, getFormatedDate } from 'react-native-modern-datepicker';
-import moment from 'moment';
 import Carousel from 'react-native-reanimated-carousel';
 import { DataForPlanAndOt, getAccountInThisShift, getDataForPlanAndOt } from '../services/detail.service';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { colors } from '../config/colors';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import Add_del_worker_modal from '../components/Modal/add_del_worker_modal';
 import Add_del_ot_modal from '../components/Modal/add_del_ot_modal';
 import {Button, SearchBar, Tab, TabView} from '@rneui/themed'
-import { color } from 'react-native-reanimated';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Dropdown } from 'react-native-element-dropdown';
+
 
 type Props = {};
 
@@ -121,6 +118,11 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
       },
     ]
   })
+  const shifts = [
+    { label: '09.00-17.00', value: 'S1' },
+    { label: '17.00-01.00', value: 'S2' },
+    { label: '01.00-09.00', value: 'S3' },]
+  const [shiftSelected, setShiftSelected] = useState('')
 
   const [index, setIndex] = React.useState(0);
   
@@ -129,8 +131,29 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
       <RegularText>
         Department ID: {route.params.id}
       </RegularText>
-      <View style={{marginVertical: 5, alignItems: 'center'}}>
-        <MyDateTimePicker date={date} setDate={(date) => {setDate(date)}} />
+      <View style={{marginVertical: 5, alignItems: 'center', flexDirection: 'row',justifyContent: 'center'}}>
+        <MyDateTimePicker date={date} setDate={setDate} />
+        <Dropdown
+          style={[styles.dropdown,styles.raise]}
+          placeholderStyle={styles.placeholderStyle}
+          selectedTextStyle={styles.selectedTextStyle}
+          iconStyle={styles.iconStyle}
+          data={shifts}
+          search={false}
+          maxHeight={300}
+          activeColor={colors.primaryLight}
+          labelField="label"
+          valueField="value"
+          placeholder="เลือกกะ"
+          value={shiftSelected}
+          dropdownPosition='bottom'
+          onChange={item => {
+            setShiftSelected(item.value);
+          }}
+          // renderLeftIcon={() => (
+          //   <Icon style={styles.icon} color="black" name="user-plus" size={15} />
+          // )}
+        />
       </View>
       <View style={{alignItems: 'center' }}>
             <Carousel
@@ -299,6 +322,41 @@ const styles = StyleSheet.create({
     flexDirection:'row', 
     marginHorizontal: 10,
     justifyContent: 'space-evenly',
+  },
+  dropdown: {
+    marginHorizontal: 10,
+    height: '100%',
+    borderWidth: 1,
+    borderRadius: 15,
+    backgroundColor: 'white',
+    borderColor: '#aaaa',
+    paddingHorizontal: 8,
+    width: '40%',
+  },
+  raise:{
+    shadowColor: 'rgba(0,0,0, .4)',
+    shadowOffset: { height: 1, width: 1 },
+    shadowOpacity: 1,
+    shadowRadius: 1,
+    elevation: 4,
+  },
+  icon: {
+    marginRight: 5,
+  },
+  placeholderStyle: {
+    fontSize: 16,
+    textAlign: 'center',
+    color: '#aaaa'
+  },
+  selectedTextStyle: {
+    fontSize: 15,
+    marginHorizontal: 10,
+    textAlign: 'center',
+    color: colors.primaryDark
+  },
+  iconStyle: {
+    width: 20,
+    height: 20,
   },
 })
 export default DetailScreen;
