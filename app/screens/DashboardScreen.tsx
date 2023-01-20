@@ -19,7 +19,7 @@ const DashboardScreen = ({navigation}: any) => {
     },
     {
       detailID: 2,
-      title: 'ต้มไก่',
+      title: 'ทอดไก่',
       productivity: 100,
       entered: 20,
       member: 20,
@@ -27,7 +27,7 @@ const DashboardScreen = ({navigation}: any) => {
     },
     {
       detailID: 3,
-      title: 'ต้มไก่',
+      title: 'ตุ๋นไก่',
       productivity: 100,
       entered: 20,
       member: 20,
@@ -35,7 +35,7 @@ const DashboardScreen = ({navigation}: any) => {
     },
     {
       detailID: 4,
-      title: 'ต้มไก่',
+      title: 'นึ่งไก่',
       productivity: 100,
       entered: 20,
       member: 20,

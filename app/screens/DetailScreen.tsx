@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { Dimensions, Platform, StyleSheet, View} from 'react-native';
+import { Dimensions, StyleSheet, View} from 'react-native';
 
 import DetailsDataTable from '../components/DetailsDataTable';
 import MainContainer from '../components/MainContainer';
@@ -12,7 +12,7 @@ import { colors } from '../config/colors';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import Add_del_worker_modal from '../components/Modal/add_del_worker_modal';
 import Add_del_ot_modal from '../components/Modal/add_del_ot_modal';
-import {Button, SearchBar, Tab, TabView} from '@rneui/themed'
+import {Button, SearchBar, Tab, TabView, Icon} from '@rneui/themed'
 import { Dropdown } from 'react-native-element-dropdown';
 
 
@@ -150,9 +150,14 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
           onChange={item => {
             setShiftSelected(item.value);
           }}
-          // renderLeftIcon={() => (
-          //   <Icon style={styles.icon} color="black" name="user-plus" size={15} />
-          // )}
+          renderLeftIcon={() => (
+            <Icon
+              name='time'
+              type='ionicon'
+              style={styles.iconStyle}
+              color={colors.primaryDark}
+            />
+          )}
         />
       </View>
       <View style={{alignItems: 'center' }}>
@@ -330,7 +335,6 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     backgroundColor: 'white',
     borderColor: '#aaaa',
-    paddingHorizontal: 8,
     width: '40%',
   },
   raise:{
@@ -340,9 +344,6 @@ const styles = StyleSheet.create({
     shadowRadius: 1,
     elevation: 4,
   },
-  icon: {
-    marginRight: 5,
-  },
   placeholderStyle: {
     fontSize: 16,
     textAlign: 'center',
@@ -350,13 +351,11 @@ const styles = StyleSheet.create({
   },
   selectedTextStyle: {
     fontSize: 15,
-    marginHorizontal: 10,
     textAlign: 'center',
     color: colors.primaryDark
   },
   iconStyle: {
-    width: 20,
-    height: 20,
+    marginLeft: 10,
   },
 })
 export default DetailScreen;

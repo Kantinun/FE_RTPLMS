@@ -17,7 +17,11 @@ const App = () => {
           options={{title: 'Dashboard'}}
         />
         <Stack.Screen name="Profile" component={ProfileScreen} />
-        <Stack.Screen name="Detail" component={DetailScreen}/>
+        <Stack.Screen 
+          name="Detail"
+          component={DetailScreen}
+          options={{title: 'Dashboard'}}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
