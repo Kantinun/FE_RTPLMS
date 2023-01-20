@@ -10,13 +10,14 @@ import { getToday, getFormatedDate } from 'react-native-modern-datepicker';
 import moment from 'moment';
 import Carousel from 'react-native-reanimated-carousel';
 import { DataForPlanAndOt, getAccountInThisShift, getDataForPlanAndOt } from '../services/detail.service';
-import Icon from 'react-native-vector-icons/AntDesign';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { colors } from '../config/colors';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import Add_del_worker_modal from '../components/Modal/add_del_worker_modal';
 import Add_del_ot_modal from '../components/Modal/add_del_ot_modal';
-import {SearchBar, Tab, TabView} from '@rneui/themed'
+import {Button, SearchBar, Tab, TabView} from '@rneui/themed'
 import { color } from 'react-native-reanimated';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 type Props = {};
 
@@ -177,24 +178,29 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
                 lightTheme={true}
               ></SearchBar>
           <View style={styles.button_container}>
-              <View style={styles.button}>
-                  <Icon.Button
-                      name="pluscircleo"
-                      style={styles.Icon}
-                      iconStyle={{marginRight: 0}}
-                      backgroundColor={colors.primary} 
-                      onPress={()=>{index==0? setAddWorkerVisible(true) : setAddOtVisible(true)}}                          
-                      />
-              </View>
-              <View style={styles.button}>
-                <Icon.Button
-                        name="minuscircleo"
-                        style={styles.Icon}
-                        iconStyle={{marginRight: 0}}
-                        backgroundColor='#F5222D'
-                        onPress={()=>{index==0? setDelWorkerVisible(true): setDelOtVisible(true)}}
-                    />
-              </View>
+              <Button
+                icon={{
+                  name: index==0? 'account-multiple-plus':'clock-plus',
+                  type: 'material-community',
+                  size: 25,
+                  color: 'white',
+                }}
+                containerStyle={{borderRadius: 15}}
+                buttonStyle={{backgroundColor:colors.green , borderColor: '#aaaa'}}
+                onPress={()=>{index==0? setAddWorkerVisible(true): setAddOtVisible(true)}}
+                
+              ></Button>
+              <Button
+                icon={{
+                  name: index==0? 'account-multiple-minus':'clock-minus',
+                  type: 'material-community',
+                  size: 25,
+                  color: 'white',
+                }}
+                containerStyle={{borderRadius: 15}}
+                buttonStyle={{backgroundColor:colors.red}}
+                onPress={()=>{index==0? setDelWorkerVisible(true): setDelOtVisible(true)}}
+              ></Button>
           </View>
         </View> 
         <Tab
@@ -204,7 +210,6 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
             backgroundColor: colors.primaryDark,
             height: 3,
           }}
-          // containerStyle={{backgroundColor:'#dddd', borderWidth:1, borderColor: '#aaaa', borderRadius: 10, marginBottom: 5,}}
           style={{backgroundColor: 'white'}}
         >
           <Tab.Item
@@ -290,19 +295,8 @@ const styles = StyleSheet.create({
   button_container: {
     flex:1, 
     flexDirection:'row', 
-    marginVertical: 10,
     marginHorizontal: 10,
-    justifyContent: 'center',
-  },
-  button: {
-      flex: 1,
-      marginHorizontal: 5
-  },
-  Icon: {
-      alignItems: 'center',
-      alignSelf: 'center',
-      justifyContent: 'center',
-      marginRight: 0,
+    justifyContent: 'space-evenly',
   },
 })
 export default DetailScreen;
