@@ -10,19 +10,21 @@ import { Dropdown } from 'react-native-element-dropdown';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { Table, Row, Rows, TableWrapper, Cell } from 'react-native-table-component';
 import {CheckBox,Button,SearchBar} from '@rneui/themed'
+import { ScrollView } from 'react-native-gesture-handler';
 
 function Add_del_ot_modal(props: unknown) {
     
     const [searchText,setSearchText] = useState('')
 
     const headerAdd = ['Name', 'Perf.','Hours']
-    const mockupAddData = [
-      {name:'นาย ก', performance:10, isCheck: true},
-      {name:'นาย ข', performance:5, isCheck: false},
-      {name:'นาย ค', performance:7, isCheck: true},
-      {name:'นาย ง', performance:8, isCheck: false},
-      {name:'นาย จ', performance:8, isCheck: true},
-    ]
+    const headerAddManual = ['','Name','Perf.']
+    const [mockupAddData, setMockupAddData] = useState([
+      {id:1, name:'นาย ก', performance:10, isCheck: false},
+      {id:2, name:'นาย ข', performance:5, isCheck: false},
+      {id:3, name:'นาย ค', performance:7, isCheck: false},
+      {id:4, name:'นาย ง', performance:8, isCheck: false},
+      {id:5, name:'นาย จ', performance:8, isCheck: false},
+    ])
     const headerDel = ['','Name','Hours']
     const [mockupDelData, setMockupDelData] = useState([
       {id:1, name:'นาย ก', performance:10, hour: 4, isCheck: false},
@@ -70,8 +72,9 @@ function Add_del_ot_modal(props: unknown) {
     const _renderAddForm = () => {
       const data = [
         { label: 'เลือกพนักงานด้วยตนเอง', value: 'เลือกพนักงานด้วยตนเอง' },
-        { label: 'จำหน่ายงานตามลำดับการเข้างาน', value: 'จำหน่ายงานตามลำดับการเข้างาน' },
         { label: 'ทุกคนในกะ', value: 'ทุกคนในกะ' },
+        { label: 'จำหน่ายงานตามลำดับการเข้างาน', value: 'จำหน่ายงานตามลำดับการเข้างาน' },
+        { label: 'กำหนดเอง', value: 'กำหนดเอง' },
       ]  
       return(
         <View style={{alignItems: 'center'}}>
@@ -99,41 +102,75 @@ function Add_del_ot_modal(props: unknown) {
               )}
             />
           </View>
-          <View style={{flexDirection: 'row', alignItems: 'center', marginHorizontal: 10, justifyContent: 'space-between', borderRadius: 10}}>
+          { (selected_method == 'จำหน่ายงานตามลำดับการเข้างาน'||selected_method==='กำหนดเอง') &&
+          (<View style={{flexDirection: 'row', alignItems: 'center', marginHorizontal: 10, justifyContent: 'space-between', borderRadius: 10}}>
             <Text style={{fontSize: 15}}>จำนวน : </Text>
             <Input
               containerStyle={{flex: 1,}}
-              // inputContainerStyle={{borderWidth:1, padding: 5, borderRadius: 10, borderColor: (selected_method==='เลือกพนักงานด้วยตนเอง'||selected_method==='ทุกคนในกะ')? '#aaa':colors.primary, alignSelf: 'center', marginTop: 20}}
-              inputContainerStyle={{borderWidth:1, padding: 5, borderRadius: 10, borderColor: colors.primary, alignSelf: 'center', marginTop: 20}}
+              inputContainerStyle={{borderWidth:1, padding: 5, borderRadius: 10, borderColor: (selected_method==='เลือกพนักงานด้วยตนเอง'||selected_method==='ทุกคนในกะ')? '#aaa':colors.primary, alignSelf: 'center', marginTop: 20}}
               placeholderTextColor='#aaaa'
-              errorStyle={{}}
-              errorProps={{}}
               inputStyle={{textAlign: 'center', fontSize: 15}}
               placeholder="กรอกจำนวน"
               onChangeText={(text)=>{setValue(text)}}
               value={value? value: ''}
-              // disabled={selected_method==='เลือกพนักงานด้วยตนเอง'||selected_method==='ทุกคนในกะ'}
+              disabled={selected_method==='เลือกพนักงานด้วยตนเอง'||selected_method==='ทุกคนในกะ'}
+              keyboardType='numeric'
+              
             />
-          </View>
-          <View style={{flexDirection: 'row', alignItems: 'center', marginHorizontal: 10, justifyContent: 'space-between'}}>
+          </View>)}
+          { (selected_method == 'จำหน่ายงานตามลำดับการเข้างาน'||selected_method==='กำหนดเอง') &&
+          (<View style={{flexDirection: 'row', alignItems: 'center', marginHorizontal: 10, justifyContent: 'space-between'}}>
             <Text style={{fontSize: 15}}>หน่วย : </Text>
             <ButtonGroup
               buttons={['คน', 'ชั่วโมง']}
               onPress={(index) => {
                 setBtn_group_index(index)
               }}
-              selectedIndex={selected_method==='เลือกพนักงานด้วยตนเอง'? 1:btn_group_index}
+              selectedIndex={selected_method==='กำหนดเอง'? 1:btn_group_index}
               buttonContainerStyle={{borderColor: 'white', borderRadius:15}}
               containerStyle={{ marginBottom: 20, flex:1, borderColor: 'white', borderRadius:15}}
               textStyle={{fontSize: 15}}
               buttonStyle={{borderColor: colors.primary, backgroundColor: 'white', borderWidth: 1, borderRadius: 15}}
               selectedButtonStyle={{backgroundColor: colors.primaryDark}}
               selectedTextStyle={{color: 'white'}}
-              // disabled={selected_method==='เลือกพนักงานด้วยตนเอง'||selected_method==='ทุกคนในกะ'}
-              // disabledStyle={{borderColor: '#aaaa'}}
+              disabled={selected_method==='กำหนดเอง'}
+              disabledStyle={{borderColor: '#aaaa'}}
+              disabledSelectedStyle={{backgroundColor: colors.primaryDark}}
+              disabledSelectedTextStyle={{color:'white'}}
             ></ButtonGroup>
           </View>
-          
+          )}
+          {(selected_method == 'เลือกพนักงานด้วยตนเอง'||selected_method==='กำหนดเอง') &&(
+            <View style={{width: '100%'}}>
+              <SearchBar
+                placeholder='Search Here...'
+                containerStyle={{backgroundColor: 'white', borderTopStartRadius: 20, borderTopEndRadius:20, borderTopWidth: 0, borderBottomWidth: 0}}
+                inputContainerStyle={{backgroundColor: '#eeee'}}
+                round={true}
+                lightTheme={true}
+                value={searchText}
+                // onChange={(text)=>{setSearchText(text)}}
+              ></SearchBar>
+
+              <Table borderStyle={{borderWidth: 2, borderColor: '#eee'}}>
+                  <Row data={headerAddManual} style={styles.head} textStyle={styles.text} />
+                  {
+                  mockupAddData.map((rowData, index) => (
+                  <TableWrapper style={{ flexDirection: 'row'}}>
+                    <Cell data={<CheckBox
+                      center
+                      checked={rowData.isCheck}
+                      onPress={() => handleCheckboxClick(rowData.id, mockupAddData, setMockupAddData)}
+                    />}> 
+                    </Cell>
+                    <Cell data={<Text style={{textAlign: 'center'}}>{rowData.name}</Text>}> </Cell>
+                    <Cell data={<Text style={{textAlign: 'center'}}>{rowData.performance}</Text>}> </Cell>
+                  </TableWrapper>
+                  ))
+                  }
+              </Table>
+            </View>
+          )}
         </View>
       )
     }
@@ -158,7 +195,7 @@ function Add_del_ot_modal(props: unknown) {
                   <Cell data={<CheckBox
                     center
                     checked={rowData.isCheck}
-                    onPress={() => handleCheckboxClick(rowData.id)}
+                    onPress={() => handleCheckboxClick(rowData.id,mockupDelData, setMockupDelData)}
                   />}> 
                   </Cell>
                   <Cell data={<Text style={{textAlign: 'center'}}>{rowData.name}</Text>}> </Cell>
@@ -170,14 +207,14 @@ function Add_del_ot_modal(props: unknown) {
         </View>
       )
     }
-    const handleCheckboxClick = (id) => {
-      let tmp = mockupDelData.map((content)=>{
+    const handleCheckboxClick = (id, data, handle) => {
+      let tmp = data.map((content)=>{
             if (content.id === id){
               return {...content, isCheck: !content.isCheck}
             }
             return content
           })
-          setMockupDelData(tmp)
+          handle(tmp)
     }
 
     const _renderConfirmPage = (data: unknown) => {
@@ -226,6 +263,7 @@ function Add_del_ot_modal(props: unknown) {
                         />
                     </View>
                     <View style={{flex: 1}}>
+                    <ScrollView>
                       <Swiper
                           contentContainerStyle={{ alignItems: 'center', justifyContent: 'center'}}
                           loop={false}
@@ -234,6 +272,7 @@ function Add_del_ot_modal(props: unknown) {
                           showsButtons={false}
                           showsPagination={false}
                           bounces={true}
+                          
                           onIndexChanged={(page) => {
                           setPosition(page);
                           }}
@@ -245,6 +284,7 @@ function Add_del_ot_modal(props: unknown) {
                           {props.mode == 'add'? _renderConfirmPage(mockupAddData): _renderConfirmPage(mockupDelData)}
                         </View>
                       </Swiper>
+                      </ScrollView>
                         <View style={{width:'100%', justifyContent: 'space-between', padding: 15, flexDirection: 'row', borderTopWidth: 1, borderTopColor: '#eeee'}}>
                           <Button
                             disabled={position==0} 
