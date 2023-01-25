@@ -1,12 +1,15 @@
 import * as React from 'react';
 import {departmentCardData} from '../../assets/typings';
-import {Button, FlatList, StyleSheet} from 'react-native';
+import {FlatList, StyleSheet} from 'react-native';
 import DepartmentCard from '../components/DepartmentCard';
 import MainContainer from '../components/MainContainer';
 import BigText from '../../assets/Texts/BigText';
 import { getCurrentShifts } from '../services/dashboard.service'
+import { SearchBar, Button} from '@rneui/themed'
+import { useState } from 'react';
 
 const DashboardScreen = ({navigation}: any) => {
+  const [searchText, setSearchText] = useState('');
   const [Data, setData] = React.useState(Array<departmentCardData>);
   const DATA: Array<departmentCardData> = [
     {
@@ -66,6 +69,15 @@ const DashboardScreen = ({navigation}: any) => {
 
   return (
     <MainContainer>
+      <SearchBar
+            placeholder='Search Here...'
+            containerStyle={{backgroundColor: 'white', borderRadius: 15}}
+            inputContainerStyle={{backgroundColor: '#eeee'}}
+            round={true}
+            lightTheme={true}
+            value={searchText}
+            onChange={(text)=>{setSearchText(text)}}
+          ></SearchBar>
       <FlatList style={ {width: '100%'}} data={DATA} renderItem={renderDepartmentCard} />
       <Button
         title="Go to Jane's profile"

@@ -17,7 +17,8 @@ const CardView = styled.View`
   margin-top: 8px;
   background-color: ${white};
   border-width: 0.5px;
-  border-radius: 4px;
+  border-radius: 15px;
+  border-color: #aaaa
   shadow-color: ${black};
   shadow-offset: 0px 2px;
   shadow-opacity: 0.2;
@@ -28,6 +29,7 @@ const CardHeadeer = styled.View`
   flex-direction: row;
   justify-content: space-between;
   padding-horizontal: 24px;
+  border-color: #7777
 `;
 
 const CardBody = styled.View`
@@ -49,6 +51,7 @@ const DepartmentCard = (props: any) => {
             navigation.navigate(screenName, {
               id: props.detailID,
               shiftCode: props.shiftCode,
+              title: props.title
             })
           }}
           testID="DepartmentCard.DetailLink">

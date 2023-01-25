@@ -129,9 +129,6 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
   
   return (
     <MainContainer>
-      <RegularText>
-        Department ID: {route.params.id}
-      </RegularText>
       <View style={{marginVertical: 5, alignItems: 'center', flexDirection: 'row',justifyContent: 'center'}}>
         <MyDateTimePicker date={date} setDate={setDate} />
         <Dropdown
@@ -208,12 +205,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
               ></SearchBar>
           <View style={styles.button_container}>
               <Button
-                icon={{
-                  name: index==0? 'account-multiple-plus':'clock-plus',
-                  type: 'material-community',
-                  size: 25,
-                  color: 'white',
-                }}
+                icon={<Icon name={index==0? 'account-multiple-plus':'clock-plus'} type='material-community' size={25} color='white'></Icon>}
                 raised={true}
                 containerStyle={{borderRadius: 20}}
                 buttonStyle={{backgroundColor:colors.green , borderColor: '#aaaa',borderRadius: 20}}
@@ -221,12 +213,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
                 
               ></Button>
               <Button
-                icon={{
-                  name: index==0? 'account-multiple-minus':'clock-minus',
-                  type: 'material-community',
-                  size: 25,
-                  color: 'white',
-                }}
+                icon={<Icon name={index==0? 'account-multiple-minus':'clock-minus'} type='material-community' size={25} color='white'></Icon>}
                 raised={true}
                 containerStyle={{borderRadius: 20}}
                 buttonStyle={{backgroundColor:colors.red, borderRadius: 20, borderColor: '#aaaa'}}
@@ -316,6 +303,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'red',
   },
   statusCard: {
+    borderColor: '#aaaa',
     alignItems: 'center',
     backgroundColor: 'white',
     justifyContent: 'center',

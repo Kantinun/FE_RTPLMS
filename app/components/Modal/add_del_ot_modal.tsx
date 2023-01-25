@@ -11,7 +11,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import { Table, Row, Rows, TableWrapper, Cell } from 'react-native-table-component';
 import {CheckBox,Button,SearchBar} from '@rneui/themed'
 
-function Add_del_ot_modal(props) {
+function Add_del_ot_modal(props: unknown) {
     
     const [searchText,setSearchText] = useState('')
 
@@ -46,7 +46,7 @@ function Add_del_ot_modal(props) {
       stepIndicatorCurrentColor: colors.primaryDark,
       stepIndicatorLabelFontSize: 15,
       currentStepIndicatorLabelFontSize: 15,
-      stepIndicatorLabelCurrentColor: '#000000',
+      stepIndicatorLabelCurrentColor: 'white',
       stepIndicatorLabelFinishedColor: '#ffffff',
       stepIndicatorLabelUnFinishedColor: 'rgba(255,255,255,0.5)',
       labelColor: '#888888',
@@ -103,7 +103,8 @@ function Add_del_ot_modal(props) {
             <Text style={{fontSize: 15}}>จำนวน : </Text>
             <Input
               containerStyle={{flex: 1,}}
-              inputContainerStyle={{borderWidth:1, padding: 5, borderRadius: 10, borderColor: (selected_method==='เลือกพนักงานด้วยตนเอง'||selected_method==='ทุกคนในกะ')? '#aaa':colors.primary, alignSelf: 'center', marginTop: 20}}
+              // inputContainerStyle={{borderWidth:1, padding: 5, borderRadius: 10, borderColor: (selected_method==='เลือกพนักงานด้วยตนเอง'||selected_method==='ทุกคนในกะ')? '#aaa':colors.primary, alignSelf: 'center', marginTop: 20}}
+              inputContainerStyle={{borderWidth:1, padding: 5, borderRadius: 10, borderColor: colors.primary, alignSelf: 'center', marginTop: 20}}
               placeholderTextColor='#aaaa'
               errorStyle={{}}
               errorProps={{}}
@@ -111,7 +112,7 @@ function Add_del_ot_modal(props) {
               placeholder="กรอกจำนวน"
               onChangeText={(text)=>{setValue(text)}}
               value={value? value: ''}
-              disabled={selected_method==='เลือกพนักงานด้วยตนเอง'||selected_method==='ทุกคนในกะ'}
+              // disabled={selected_method==='เลือกพนักงานด้วยตนเอง'||selected_method==='ทุกคนในกะ'}
             />
           </View>
           <View style={{flexDirection: 'row', alignItems: 'center', marginHorizontal: 10, justifyContent: 'space-between'}}>
@@ -121,15 +122,15 @@ function Add_del_ot_modal(props) {
               onPress={(index) => {
                 setBtn_group_index(index)
               }}
-              selectedIndex={btn_group_index}
-              buttonContainerStyle={{borderColor: 'white'}}
-              containerStyle={{ marginBottom: 20, flex:1, borderColor: 'white'}}
+              selectedIndex={selected_method==='เลือกพนักงานด้วยตนเอง'? 1:btn_group_index}
+              buttonContainerStyle={{borderColor: 'white', borderRadius:15}}
+              containerStyle={{ marginBottom: 20, flex:1, borderColor: 'white', borderRadius:15}}
               textStyle={{fontSize: 15}}
               buttonStyle={{borderColor: colors.primary, backgroundColor: 'white', borderWidth: 1, borderRadius: 15}}
               selectedButtonStyle={{backgroundColor: colors.primaryDark}}
               selectedTextStyle={{color: 'white'}}
-              disabled={selected_method==='เลือกพนักงานด้วยตนเอง'||selected_method==='ทุกคนในกะ'}
-              disabledStyle={{borderColor: '#aaaa'}}
+              // disabled={selected_method==='เลือกพนักงานด้วยตนเอง'||selected_method==='ทุกคนในกะ'}
+              // disabledStyle={{borderColor: '#aaaa'}}
             ></ButtonGroup>
           </View>
           
