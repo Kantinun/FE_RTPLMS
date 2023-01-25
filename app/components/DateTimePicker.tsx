@@ -10,7 +10,7 @@ const MyDateTimePicker = (props: any) => {
   return (
     <View>
       <Button
-      title={props.date? moment(props.date).format("DD/MM/YYYY"): 'Please select date'}
+      title={props.date? moment(props.date).locale('th').format("DD MMMM YYYY"): 'Please select date'}
       onPress={()=>{
         setVisible(true)
       }}
@@ -29,6 +29,7 @@ const MyDateTimePicker = (props: any) => {
     <DateTimePickerModal
       isVisible={visible}
       mode="date"
+      textColor='black'
       onConfirm={(date)=>{
         props.setDate(date)
         setVisible(false)

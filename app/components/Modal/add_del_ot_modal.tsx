@@ -122,9 +122,10 @@ function Add_del_ot_modal(props) {
                 setBtn_group_index(index)
               }}
               selectedIndex={btn_group_index}
-              containerStyle={{ marginBottom: 20, flex:1}}
+              buttonContainerStyle={{borderColor: 'white'}}
+              containerStyle={{ marginBottom: 20, flex:1, borderColor: 'white'}}
               textStyle={{fontSize: 15}}
-              buttonStyle={{borderColor: colors.primary, backgroundColor: 'white', borderWidth: 1}}
+              buttonStyle={{borderColor: colors.primary, backgroundColor: 'white', borderWidth: 1, borderRadius: 15}}
               selectedButtonStyle={{backgroundColor: colors.primaryDark}}
               selectedTextStyle={{color: 'white'}}
               disabled={selected_method==='เลือกพนักงานด้วยตนเอง'||selected_method==='ทุกคนในกะ'}

@@ -14,6 +14,7 @@ import Add_del_worker_modal from '../components/Modal/add_del_worker_modal';
 import Add_del_ot_modal from '../components/Modal/add_del_ot_modal';
 import {Button, SearchBar, Tab, TabView, Icon} from '@rneui/themed'
 import { Dropdown } from 'react-native-element-dropdown';
+import { color } from 'react-native-reanimated';
 
 
 type Props = {};
@@ -250,7 +251,8 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
 
             })}
             titleStyle={(active) => ({ fontSize: 12, color: active ? 'white':colors.primaryDark})}
-            icon={(active: any) => ({name: 'calendar-outline', type: 'ionicon', color: active? 'white': colors.primaryDark})}
+            icon={<Icon name='calendar-outline' type='ionicon' color={index==0? 'white': colors.primaryDark}></Icon>}
+            iconPosition='left'
           />
           <Tab.Item
             title="OT Plan"
@@ -260,7 +262,8 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
 
             })}
             titleStyle={(active) => ({ fontSize: 12, color: active ? 'white':colors.primaryDark})}
-            icon={(active: any) => ({name: 'time-outline', type: 'ionicon', color: active? 'white': colors.primaryDark})}
+            icon={<Icon name='time-outline' type='ionicon' color={index==1? 'white': colors.primaryDark}></Icon>}
+            iconPosition='left'
           />
         </Tab>
 
