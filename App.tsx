@@ -4,13 +4,13 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import DashboardScreen from './app/screens/Manager/DashboardScreen';
 import ProfileScreen from './app/screens/ProfileScreen';
 import DetailScreen from './app/screens/Manager/DetailScreen';
-import WokerDashboard from './app/screens/Worker/WokerDashboard';
+import TaskPlanScreen from './app/screens/Worker/TaskPlanScreen';
 const Stack = createNativeStackNavigator();
 
 const App = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Dashboard">
+      <Stack.Navigator initialRouteName="TaskPlan">
         <Stack.Screen
           name="Dashboard"
           component={DashboardScreen}
@@ -23,8 +23,8 @@ const App = () => {
           options={{title: 'Details'}}
         />
         <Stack.Screen
-          name="WorkerDashboard"
-          component={WokerDashboard}
+          name="TaskPlan"
+          component={TaskPlanScreen}
           options={{title: 'Dashboard'}}
         />
       </Stack.Navigator>
