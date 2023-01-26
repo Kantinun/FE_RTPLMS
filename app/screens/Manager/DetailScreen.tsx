@@ -1,20 +1,18 @@
 import React, {useEffect, useState} from 'react';
 import { Dimensions, StyleSheet, View} from 'react-native';
 
-import DetailsDataTable from '../components/DetailsDataTable';
-import MainContainer from '../components/MainContainer';
-import RegularText from '../../assets/Texts/RegularText';
-import BigText from '../../assets/Texts/BigText'
-import MyDateTimePicker from '../components/DateTimePicker';
+import DetailsDataTable from '../../components/DetailsDataTable';
+import MainContainer from '../../components/MainContainer';
+import BigText from '../../../assets/Texts/BigText'
+import MyDateTimePicker from '../../components/DateTimePicker';
 import Carousel from 'react-native-reanimated-carousel';
-import { DataForPlanAndOt, getAccountInThisShift, getDataForPlanAndOt } from '../services/detail.service';
-import { colors } from '../config/colors';
+import { DataForPlanAndOt, getAccountInThisShift, getDataForPlanAndOt } from '../../services/detail.service';
+import { colors } from '../../config/colors';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
-import Add_del_worker_modal from '../components/Modal/add_del_worker_modal';
-import Add_del_ot_modal from '../components/Modal/add_del_ot_modal';
+import Add_del_worker_modal from '../../components/Modal/add_del_worker_modal';
+import Add_del_ot_modal from '../../components/Modal/add_del_ot_modal';
 import {Button, SearchBar, Tab, TabView, Icon} from '@rneui/themed'
 import { Dropdown } from 'react-native-element-dropdown';
-import { color } from 'react-native-reanimated';
 
 
 type Props = {};

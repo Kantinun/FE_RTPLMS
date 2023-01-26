@@ -1,10 +1,10 @@
 import * as React from 'react';
-import {departmentCardData} from '../../assets/typings';
+import {departmentCardData} from '../../../assets/typings';
 import {FlatList, StyleSheet} from 'react-native';
-import DepartmentCard from '../components/DepartmentCard';
-import MainContainer from '../components/MainContainer';
-import BigText from '../../assets/Texts/BigText';
-import { getCurrentShifts } from '../services/dashboard.service'
+import DepartmentCard from '../../components/DepartmentCard';
+import MainContainer from '../../components/MainContainer';
+import BigText from '../../../assets/Texts/BigText';
+import { getCurrentShifts } from '../../services/dashboard.service'
 import { SearchBar, Button} from '@rneui/themed'
 import { useState } from 'react';
 
