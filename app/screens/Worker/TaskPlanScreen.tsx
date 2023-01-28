@@ -1,53 +1,53 @@
 import React, { useState } from 'react';
 import { Alert, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import { Agenda, DateData, AgendaEntry, AgendaSchedule } from 'react-native-calendars';
+import { Agenda, AgendaEntry, AgendaSchedule } from 'react-native-calendars';
 import moment from 'moment';
 import { colors } from '../../config/colors';
 
 interface Props {}
 
 function TaskPlanScreen(props: unknown) {
-    const [items, setItems] = useState<AgendaSchedule | undefined>();
-    const loadItems = (day: DateData) => {
-        const items = items || {};
+    //Get data from work_on table (checkin,checkout,account_id,shift_code,OT,date) use 'shift_code' find shift data from shift table
+    // example data format
+        // No OT
+        // '2023-01-25': [{checkin:'08.00',department: 'ต้มไก่', shiftTime: '08.00-16.00', height: 80}],
+        // Have OT
+        // '2023-01-25': [{checkin:'08.00',department: 'ต้มไก่', shiftTime: '08.00-16.00', height: 80},{OT_hour:'2',shiftTime: '08.00-16.00',department: 'ต้มไก่', height: 60}],
 
-        setTimeout(() => {
-        for (let i = -15; i < 85; i++) {
-            const time = day.timestamp + i * 24 * 60 * 60 * 1000;
-            const strTime = timeToString(time);
-
-            if (!items[strTime]) {
-            items[strTime] = [];
-
-            const numItems = Math.floor(Math.random() * 3 + 1);
-            for (let j = 0; j < numItems; j++) {
-                items[strTime].push({
-                name: 'Item for ' + strTime + ' #' + j,
-                height: Math.max(50, Math.floor(Math.random() * 150)),
-                day: strTime,
-                });
+    // ===========================================================================
+    // use for gen mockup data
+    const data = {}
+    const date = moment().subtract(5, 'day')
+    for(let i = 1; i<11; i++){
+        data[date.format('YYYY-MM-DD')] = [
+            {checkin:date.isAfter(moment())?'':'08.00',
+            department: 'ต้มไก่', 
+            shiftTime: '08.00-16.00',
+            status: date.isAfter(moment())?'':'ปกติ', 
+            },
+            i%3==1 && 
+            {
+            OTHour: '2',
+            shiftTime: '08.00-16.00',
+            department: 'ต้มไก่', 
             }
-            }
-        }
-
-        const newItems: AgendaSchedule = {};
-        Object.keys(items).forEach((key) => {
-            newItems[key] = items[key];
-        });
-        setItems(newItems);
-        }, 1000);
-    };
-
-    const renderItem = (reservation: AgendaEntry, isFirst: boolean) => {
+        ]
+        date.add(1, 'day')
+    }
+    // ======================================================================================
+    
+    const renderItem = (reservation: any, isFirst: boolean) => {
         const fontSize = isFirst ? 16 : 14;
         const color = isFirst ? 'black' : '#43515c';
 
         return (
         <TouchableOpacity
-            style={[styles.item, { height: reservation.height }]}
-            onPress={() => Alert.alert(reservation.name)}
+            style={[styles.item, { height: 80}]}
+            // onPress={() => Alert.alert(reservation.name)}
         >
-            <Text style={{ fontSize, color }}>{reservation.name}</Text>
+            <Text style={{ fontSize, color }}>{!reservation.OTHour? `เวลาเข้างาน  ${reservation.checkin? reservation.checkin:''}  น.( ${reservation.status? reservation.status:'ยังไม่เข้างาน'} )`:`จำนวนชั่วโมง OT  ${reservation.OTHour? reservation.OTHour:''}  ชม.`}</Text>
+            <Text style={{ fontSize, color }}>{`เวลางาน  ${reservation.OTHour? `${reservation.shiftTime.split('-')[1]}-${moment(reservation.shiftTime.split('-')[1],'HH.mm').add(reservation.OTHour, 'hours').format('HH.mm')}`: reservation.shiftTime}  น.`}</Text>
+            <Text style={{ fontSize, color }}>{`แผนก  ${reservation.department? reservation.department: '-'}`}</Text>
         </TouchableOpacity>
         );
     };
@@ -55,7 +55,7 @@ function TaskPlanScreen(props: unknown) {
     const renderEmptyDate = () => {
         return (
         <View style={styles.emptyDate}>
-            <Text>This is empty date!</Text>
+            <Text>No asks on this day</Text>
         </View>
         );
     };
@@ -72,12 +72,13 @@ function TaskPlanScreen(props: unknown) {
         <Agenda
         pastScrollRange={5}
         futureScrollRange={5}
-        items={items}
-        loadItemsForMonth={loadItems}
+        items={data}
+        // loadItemsForMonth={loadItems}
         renderItem={renderItem}
         renderEmptyDate={renderEmptyDate}
         rowHasChanged={rowHasChanged}
         showClosingKnob={true}
+        refreshing={true}
         />
         );
 }
@@ -85,7 +86,7 @@ const styles = StyleSheet.create({
     item: {
         backgroundColor: 'white',
         flex: 1,
-        borderRadius: 5,
+        borderRadius: 15,
         padding: 10,
         marginRight: 10,
         marginTop: 17
