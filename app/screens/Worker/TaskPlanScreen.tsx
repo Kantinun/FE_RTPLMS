@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Alert, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import { Agenda, AgendaEntry, AgendaSchedule } from 'react-native-calendars';
+import { Agenda, AgendaEntry } from 'react-native-calendars';
 import moment from 'moment';
+import MainContainer from '../../components/MainContainer';
 import { colors } from '../../config/colors';
 
 interface Props {}
@@ -35,7 +36,7 @@ function TaskPlanScreen(props: unknown) {
         date.add(1, 'day')
     }
     // ======================================================================================
-    
+
     const renderItem = (reservation: any, isFirst: boolean) => {
         const fontSize = isFirst ? 16 : 14;
         const color = isFirst ? 'black' : '#43515c';
@@ -64,22 +65,22 @@ function TaskPlanScreen(props: unknown) {
         return r1.name !== r2.name;
     };
 
-    const timeToString = (time: number) => {
-        const date = new Date(time);
-        return date.toISOString().split('T')[0];
-    }
     return (
-        <Agenda
-        pastScrollRange={5}
-        futureScrollRange={5}
-        items={data}
-        // loadItemsForMonth={loadItems}
-        renderItem={renderItem}
-        renderEmptyDate={renderEmptyDate}
-        rowHasChanged={rowHasChanged}
-        showClosingKnob={true}
-        refreshing={true}
-        />
+        <MainContainer>
+            <Agenda
+            pastScrollRange={2}
+            futureScrollRange={3}
+            items={data}
+            renderItem={renderItem}
+            renderEmptyDate={renderEmptyDate}
+            rowHasChanged={rowHasChanged}
+            showClosingKnob={true}
+            refreshing={true}
+            style={{
+                borderRadius: 20
+            }}
+            />
+        </MainContainer>
         );
 }
 const styles = StyleSheet.create({
