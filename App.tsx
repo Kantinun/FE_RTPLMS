@@ -6,6 +6,7 @@ import ProfileScreen from './app/screens/ProfileScreen';
 import DetailScreen from './app/screens/Manager/DetailScreen';
 import TaskPlanScreen from './app/screens/Worker/TaskPlanScreen';
 import OTrequestScreen from './app/screens/Worker/OTrequestScreen';
+import MyLoginScreen from './app/screens/LoginScreen';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 const Stack = createNativeStackNavigator();
@@ -14,9 +15,10 @@ const Tab = createBottomTabNavigator();
 import { View,Text } from 'react-native';
 
 const App = () => {
-  const HomeScreen=()=> {
+  const [userRole, setUserRole] = React.useState('') 
+  const ManagerScreen =()=> {
     return (
-        <Stack.Navigator initialRouteName="TaskPlan">
+        <Stack.Navigator initialRouteName="Dashboard">
           <Stack.Screen
             name="Dashboard"
             component={DashboardScreen}
@@ -28,34 +30,36 @@ const App = () => {
             component={DetailScreen}
             options={{title: 'Details'}}
           />
-          <Stack.Screen
-            name="TaskPlan"
-            component={TaskPlanScreen}
-            options={{title: 'Tasks Plan'}}
-          />
         </Stack.Navigator>
     );
   }
   
-  const SettingsScreen=()=> {
-    return (
-      <OTrequestScreen></OTrequestScreen>
-    );
-  }
   return (
+    userRole==''?
+    <MyLoginScreen loginHandler={setUserRole}></MyLoginScreen>
+    :
     <NavigationContainer>
+      {userRole==='worker'?
       <Tab.Navigator>
           <Tab.Screen 
             options={{
               headerShown: false,
             }}
-            name="Home" component={HomeScreen} />
+            name="Tasks Plan" component={TaskPlanScreen} />
           <Tab.Screen
-            // options={{
-            //   headerShown: false,
-            // }} 
-            name="OT Requests" component={SettingsScreen} />
+            name="OT Requests" component={OTrequestScreen} />
       </Tab.Navigator>
+      :
+      <Tab.Navigator>
+          <Tab.Screen 
+            options={{
+              headerShown: false,
+            }}
+            name="Home" component={ManagerScreen} />
+          {/* <Tab.Screen
+            name="Profile" component={TaskPlanScreen} /> */}
+      </Tab.Navigator>
+      }
     </NavigationContainer>
   );
 };
