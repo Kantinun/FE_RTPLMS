@@ -12,54 +12,58 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-import { View,Text } from 'react-native';
-
 const App = () => {
   const [userRole, setUserRole] = React.useState('') 
-  const ManagerScreen =()=> {
-    return (
-        <Stack.Navigator initialRouteName="Dashboard">
-          <Stack.Screen
-            name="Dashboard"
-            component={DashboardScreen}
-            options={{title: 'Dashboard'}}
-          />
-          <Stack.Screen name="Profile" component={ProfileScreen} />
-          <Stack.Screen 
-            name="Detail"
-            component={DetailScreen}
-            options={{title: 'Details'}}
-          />
-        </Stack.Navigator>
-    );
-  }
   
-  return (
-    userRole==''?
-    <MyLoginScreen loginHandler={setUserRole}></MyLoginScreen>
-    :
-    <NavigationContainer>
-      {userRole==='worker'?
+  const WorkerScreen = ()=>{
+    return(
       <Tab.Navigator>
           <Tab.Screen 
-            options={{
-              headerShown: false,
-            }}
             name="Tasks Plan" component={TaskPlanScreen} />
           <Tab.Screen
             name="OT Requests" component={OTrequestScreen} />
+          <Tab.Screen
+          name="Profile" component={ProfileScreen} />
       </Tab.Navigator>
-      :
-      <Tab.Navigator>
-          <Tab.Screen 
-            options={{
-              headerShown: false,
-            }}
-            name="Home" component={ManagerScreen} />
-          {/* <Tab.Screen
-            name="Profile" component={TaskPlanScreen} /> */}
-      </Tab.Navigator>
-      }
+    )
+  }
+  const LoginScreen = () => (
+    <MyLoginScreen loginHandler={setUserRole}/>
+  )
+  
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        {
+          userRole != ''?
+            userRole == 'manager'?
+            <>
+            <Stack.Screen
+            name="Dashboard"
+            component={DashboardScreen}
+            options={{title: 'Dashboard'}}
+            />
+            <Stack.Screen 
+              name="Detail"
+              component={DetailScreen}
+              options={{title: 'Details'}}
+            />
+            </>
+            :
+            <Stack.Screen
+              name="Worker"
+              component={WorkerScreen}
+              options={{
+                headerShown: false
+              }}
+            />
+          :
+          <Stack.Screen 
+            name="Login"
+            component={LoginScreen}
+          />
+        }
+      </Stack.Navigator>
     </NavigationContainer>
   );
 };
