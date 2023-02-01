@@ -12,6 +12,9 @@ const mockupData = [
     {shift_code:3,Date: moment().add(1,'days'), number_of_hour:1, work_time: '15:00-16:00', req_status: 'รอดำเนินการ', create_at:  moment()},
     {shift_code:3,Date: moment().add(2,'days'), number_of_hour:2, work_time: '17:00-20:00', req_status: 'ปฏิเสธ', create_at:  moment()},
     {shift_code:3,Date: moment().add(3,'days'), number_of_hour:1, work_time: '05:00-06:00', req_status: 'รอดำเนินการ', create_at:  moment()},
+    {shift_code:3,Date: moment().add(3,'days'), number_of_hour:1, work_time: '05:00-06:00', req_status: 'รอดำเนินการ', create_at:  moment()},
+    {shift_code:3,Date: moment().add(3,'days'), number_of_hour:1, work_time: '05:00-06:00', req_status: 'รอดำเนินการ', create_at:  moment()},
+    {shift_code:3,Date: moment().add(3,'days'), number_of_hour:1, work_time: '05:00-06:00', req_status: 'รอดำเนินการ', create_at:  moment()},
 ]
 function OTrequestScreen(props) {
     return (
@@ -24,6 +27,8 @@ function OTrequestScreen(props) {
                             containerStyle={{borderRadius: 15}}
                         >
                             <View style={{flexDirection: 'row', justifyContent: data.req_status==='รอดำเนินการ'? 'center':'flex-start'}}>
+                                {data.req_status==="รอดำเนินการ"?
+                                <View style={{justifyContent:'center', alignItems:'center'}}>
                                 <Icon 
                                     type='material-community' 
                                     name={data.req_status==='รอดำเนินการ'? 'clock-outline':(data.req_status==='ยอมรับ'? 'check-circle':'close-circle')} 
@@ -31,9 +36,23 @@ function OTrequestScreen(props) {
                                     size={30}
                                     style={{marginLeft:10}}>
                                 </Icon>
+                                </View>
+                                :
+                                <View style={{justifyContent:'center', alignItems:'center', marginHorizontal: 10}}>
+                                    <Icon 
+                                        type='material-community' 
+                                        name={data.req_status==='ยอมรับ'? 'check-circle':'close-circle'} 
+                                        color={data.req_status==='ยอมรับ'? colors.green:colors.red}
+                                        size={30}
+                                    />
+                                    <Text
+                                        style={{color: data.req_status==='ยอมรับ'? colors.green:colors.red}}
+                                    >{data.req_status}</Text>
+                                </View>
+                                }
                                 <View style={{marginHorizontal: 10,}}>
                                     <RegularText>วันที่ {moment(data.Date).format('D MMMM YYYY')}</RegularText>
-                                    <RegularText>{data.work_time}</RegularText>
+                                    <RegularText>เวลา {data.work_time}</RegularText>
                                     <RegularText>({data.number_of_hour} ชม.)</RegularText>
                                     <Text style={{color: '#aaaa'}}
                                     >create at: {moment(data.create_at).format('D MMMM YYYY')}</Text>
