@@ -5,6 +5,7 @@ import DashboardScreen from './app/screens/Manager/DashboardScreen';
 import ProfileScreen from './app/screens/ProfileScreen';
 import DetailScreen from './app/screens/Manager/DetailScreen';
 import TaskPlanScreen from './app/screens/Worker/TaskPlanScreen';
+import OTrequestScreen from './app/screens/Worker/OTrequestScreen';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 const Stack = createNativeStackNavigator();
@@ -30,7 +31,7 @@ const App = () => {
           <Stack.Screen
             name="TaskPlan"
             component={TaskPlanScreen}
-            options={{title: 'Dashboard'}}
+            options={{title: 'Tasks Plan'}}
           />
         </Stack.Navigator>
     );
@@ -38,9 +39,7 @@ const App = () => {
   
   const SettingsScreen=()=> {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>Settings!</Text>
-      </View>
+      <OTrequestScreen></OTrequestScreen>
     );
   }
   return (
@@ -52,10 +51,10 @@ const App = () => {
             }}
             name="Home" component={HomeScreen} />
           <Tab.Screen
-            options={{
-              headerShown: false,
-            }} 
-            name="Settings" component={SettingsScreen} />
+            // options={{
+            //   headerShown: false,
+            // }} 
+            name="OT Requests" component={SettingsScreen} />
       </Tab.Navigator>
     </NavigationContainer>
   );

@@ -19,7 +19,7 @@ function TaskPlanScreen(props: unknown) {
     // use for gen mockup data
     const data = {}
     const date = moment().subtract(5, 'day')
-    for(let i = 1; i<11; i++){
+    for(let i = 1; i<20; i++){
         data[date.format('YYYY-MM-DD')] = [
             {checkin:date.isAfter(moment())?'':'08.00',
             department: 'ต้มไก่', 

@@ -79,10 +79,6 @@ const DashboardScreen = ({navigation}: any) => {
             onChange={(text)=>{setSearchText(text)}}
           ></SearchBar>
       <FlatList style={ {width: '100%'}} data={DATA} renderItem={renderDepartmentCard} />
-      {/* <Button
-        title="Go to Jane's profile"
-        onPress={() => navigation.navigate('Profile', {name: 'Jane'})}
-      /> */}
     </MainContainer>
   );
 };
