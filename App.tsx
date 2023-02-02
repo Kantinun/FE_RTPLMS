@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState, useReducer, useContext, createContext } from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import DashboardScreen from './app/screens/Manager/DashboardScreen';
@@ -6,15 +6,54 @@ import ProfileScreen from './app/screens/ProfileScreen';
 import DetailScreen from './app/screens/Manager/DetailScreen';
 import TaskPlanScreen from './app/screens/Worker/TaskPlanScreen';
 import OTrequestScreen from './app/screens/Worker/OTrequestScreen';
+
 import MyLoginScreen from './app/screens/LoginScreen';
+
+import { Appcontext } from './AppContext';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
+import * as SecureStore from 'expo-secure-store';
+
+interface Action {
+  type: 'LOGIN' | 'LOGOUT'
+}
+interface State {
+  isAuthenticated: boolean;
+  role: string;
+}
+const initialState = {
+  isAuthenticated: false,
+  role: ''
+}
+const reducer = (state: State, action: Action) => {
+  switch (action.type) {
+    case 'LOGIN':
+      return { isAuthenticated: true, role: action.role};
+    case 'LOGOUT':
+      return { isAuthenticated: false };
+    default:
+      return state;
+  }
+};
+
 const App = () => {
-  const [userRole, setUserRole] = React.useState('') 
+  const [state, dispatch] = useReducer(reducer,initialState)
+  const authContext = React.useMemo(
+    () => ({
+      signIn: async (data) => {
+        dispatch({ type: 'LOGIN', role: data.role})
+      },
+      signOut: () => dispatch({ type: 'LOGOUT'}),
+      // signUp: async (data) => {
   
+      //   dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' });
+      // },
+    }),
+    []
+  );
   const WorkerScreen = ()=>{
     return(
       <Tab.Navigator>
@@ -28,43 +67,50 @@ const App = () => {
     )
   }
   const LoginScreen = () => (
-    <MyLoginScreen loginHandler={setUserRole}/>
+      <MyLoginScreen tmp={authContext}/>
   )
   
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        {
-          userRole != ''?
-            userRole == 'manager'?
-            <>
-            <Stack.Screen
-            name="Dashboard"
-            component={DashboardScreen}
-            options={{title: 'Dashboard'}}
-            />
-            <Stack.Screen 
-              name="Detail"
-              component={DetailScreen}
-              options={{title: 'Details'}}
-            />
-            </>
+    <Appcontext.Provider value={state}>
+      <NavigationContainer>
+        <Stack.Navigator>
+          {
+            state.isAuthenticated?
+              state.role == 'manager'?
+              <>
+              <Stack.Screen
+              name="Dashboard"
+              component={DashboardScreen}
+              options={{title: 'Dashboard'}}
+              />
+              <Stack.Screen 
+                name="Detail"
+                component={DetailScreen}
+                options={{title: 'Details'}}
+              />
+              </>
+              :
+              <Stack.Screen
+                name="Worker"
+                component={WorkerScreen}
+                options={{
+                  headerShown: false
+                }}
+              />
             :
-            <Stack.Screen
-              name="Worker"
-              component={WorkerScreen}
+            <Stack.Screen 
+              name="Login"
+              component={LoginScreen}
               options={{
-                headerShown: false
+                title: 'Sign in',
+                // When logging out, a pop animation feels intuitive
+                // animationTypeForReplace: state.isSignout ? 'pop' : 'push',
               }}
             />
-          :
-          <Stack.Screen 
-            name="Login"
-            component={LoginScreen}
-          />
-        }
-      </Stack.Navigator>
-    </NavigationContainer>
+          }
+        </Stack.Navigator>
+      </NavigationContainer>
+    </Appcontext.Provider>
   );
 };
 export default App;

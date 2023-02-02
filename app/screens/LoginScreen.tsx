@@ -1,14 +1,20 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 import { View } from 'react-native';
 import LoginScreen from "react-native-login-screen";
+import { Appcontext } from '../../AppContext';
 
 function MyLoginScreen(props) {
-    // const [email,setEmail] = useState('')
+    let {isAuthenticated} = useContext(Appcontext)
     let email = ''
+
     return (
         <LoginScreen
         logoImageSource={require("../../assets/favicon.png")}
-        onLoginPress={() => {props.loginHandler(email)}}
+        onLoginPress={() => {
+            if (email==='worker'||email=='manager')
+                props.tmp.signIn({role: email})
+
+        }}
         onSignupPress={() => {}}
         onEmailChange={(txt: string) => {
             email = txt
