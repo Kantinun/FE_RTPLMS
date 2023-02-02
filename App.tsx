@@ -16,6 +16,8 @@ const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 import * as SecureStore from 'expo-secure-store';
+import { TouchableOpacity } from 'react-native';
+import { Icon } from '@rneui/themed';
 
 interface Action {
   type: 'LOGIN' | 'LOGOUT'
@@ -33,7 +35,7 @@ const reducer = (state: State, action: Action) => {
     case 'LOGIN':
       return { isAuthenticated: true, role: action.role};
     case 'LOGOUT':
-      return { isAuthenticated: false };
+      return { isAuthenticated: false, role: ''};
     default:
       return state;
   }
@@ -56,7 +58,15 @@ const App = () => {
   );
   const WorkerScreen = ()=>{
     return(
-      <Tab.Navigator>
+      <Tab.Navigator
+        screenOptions={{
+          headerRight: () =>(
+            <TouchableOpacity style={{marginRight:15}} onPress={authContext.signOut}>
+              <Icon name='log-out-outline' type='ionicon'></Icon>
+            </TouchableOpacity>
+          ),
+        }}
+      >
           <Tab.Screen 
             name="Tasks Plan" component={TaskPlanScreen} />
           <Tab.Screen
@@ -73,7 +83,15 @@ const App = () => {
   return (
     <Appcontext.Provider value={state}>
       <NavigationContainer>
-        <Stack.Navigator>
+        <Stack.Navigator
+          screenOptions={{
+            headerRight: () =>( state.isAuthenticated &&
+              <TouchableOpacity onPress={authContext.signOut}>
+                <Icon name='log-out-outline' type='ionicon'></Icon>
+              </TouchableOpacity>
+            ),
+          }}
+        >
           {
             state.isAuthenticated?
               state.role == 'manager'?
