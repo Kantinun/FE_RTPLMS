@@ -10,6 +10,12 @@ function MyLoginScreen(props) {
     return (
         <LoginScreen
         logoImageSource={require("../../assets/favicon.png")}
+        logoImageStyle={{
+            width: 100,
+            height: 100,
+            marginTop: 30,
+            marginBottom: 17,                  
+        }}
         onLoginPress={() => {
             if (email==='worker'||email=='manager')
                 props.tmp.signIn({role: email})

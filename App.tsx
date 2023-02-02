@@ -12,10 +12,13 @@ import MyLoginScreen from './app/screens/LoginScreen';
 import { Appcontext } from './AppContext';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
+//in normal them use secureStore to store token from server that will recieve after authentication
 import * as SecureStore from 'expo-secure-store';
+
 import { TouchableOpacity } from 'react-native';
 import { Icon } from '@rneui/themed';
 
@@ -49,13 +52,45 @@ const App = () => {
         dispatch({ type: 'LOGIN', role: data.role})
       },
       signOut: () => dispatch({ type: 'LOGOUT'}),
-      // signUp: async (data) => {
-  
-      //   dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' });
-      // },
     }),
     []
   );
+  const MainpageManager = () => {
+    return(
+      <Stack.Navigator>
+        <Stack.Screen
+          name="Dashboard"
+          component={DashboardScreen}
+          options={{title: 'Dashboard',headerShown: false}}
+        />
+        <Stack.Screen 
+          name="Detail"
+          component={DetailScreen}
+          options={{title: 'Details'}}
+        />
+      </Stack.Navigator>
+    )
+  }
+  const ManagerScreen = ()=>{
+    return(
+      <Tab.Navigator
+        screenOptions={{
+          headerRight: () =>(
+            <TouchableOpacity style={{marginRight:15}} onPress={authContext.signOut}>
+              <Icon name='log-out-outline' type='ionicon'></Icon>
+            </TouchableOpacity>
+          ),
+        }}
+      >
+          <Tab.Screen 
+            name="Mainpage" component={MainpageManager} />
+          {/* <Tab.Screen
+            name="OT Requests" component={OTrequestScreen} /> */}
+          <Tab.Screen
+          name="Profile" component={ProfileScreen} />
+      </Tab.Navigator>
+    )
+  }
   const WorkerScreen = ()=>{
     return(
       <Tab.Navigator
@@ -84,29 +119,15 @@ const App = () => {
     <Appcontext.Provider value={state}>
       <NavigationContainer>
         <Stack.Navigator
-          screenOptions={{
-            headerRight: () =>( state.isAuthenticated &&
-              <TouchableOpacity onPress={authContext.signOut}>
-                <Icon name='log-out-outline' type='ionicon'></Icon>
-              </TouchableOpacity>
-            ),
-          }}
         >
           {
             state.isAuthenticated?
               state.role == 'manager'?
-              <>
               <Stack.Screen
-              name="Dashboard"
-              component={DashboardScreen}
-              options={{title: 'Dashboard'}}
+              name="Manager"
+              component={ManagerScreen}
+              options={{title: 'Dashboard',headerShown: false}}
               />
-              <Stack.Screen 
-                name="Detail"
-                component={DetailScreen}
-                options={{title: 'Details'}}
-              />
-              </>
               :
               <Stack.Screen
                 name="Worker"
@@ -122,7 +143,7 @@ const App = () => {
               options={{
                 title: 'Sign in',
                 // When logging out, a pop animation feels intuitive
-                // animationTypeForReplace: state.isSignout ? 'pop' : 'push',
+                animationTypeForReplace: !state.isAuthenticated ? 'pop' : 'push',
               }}
             />
           }
