@@ -1,8 +1,15 @@
 export type departmentCardData = {
-  detailID: number;
-  title: string;
-  productivity: number;
-  entered: number;
-  member: number;
-  detailScreenName: string;
+  department: {
+    id: number,
+    title: string,
+  },
+  shift: {
+    shiftCode: string,
+    shiftDate: string,
+    shiftTime: string,
+    productivity: number,
+    entered: number,
+    member: number,
+  },
+  detailScreenName: string,
 };

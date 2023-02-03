@@ -54,19 +54,31 @@ const DashboardScreen = ({navigation}: any) => {
     });
   }, []);
 
+  // const renderDepartmentCard = ({data}: any) => {
+  //   console.log('===============\n');
+  //   console.log(data);
+  //   console.log('=============');
+  //   return <DepartmentCard
+  //   // Data send into Card
+  //   // struct in dashboard.service
+  //     detailID={data.department.id}
+  //     title={data.department.title}
+  //     shift={data.shift}
+  //     detailScreenName={data.detailScreenName}
+  //     testID="DepartmentCard"
+  //   />
+  // };
+
   const renderDepartmentCard = ({item}: any) => (
     <DepartmentCard
-      detailID={item.detailID}
-      title={item.title}
-      shiftCode={item.shiftCode}
-      producttivity={item.productivity}
-      entered={item.entered}
-      member={item.member}
       detailScreenName={item.detailScreenName}
+      department={item.department}
+      shift={item.shift}
       testID="DepartmentCard"
     />
   );
 
+  // console.log(Data[0].department);
   return (
     <MainContainer>
       <SearchBar
@@ -78,7 +90,11 @@ const DashboardScreen = ({navigation}: any) => {
             value={searchText}
             onChange={(text)=>{setSearchText(text)}}
           ></SearchBar>
-      <FlatList style={ {width: '100%'}} data={DATA} renderItem={renderDepartmentCard} />
+      <FlatList style={ {width: '100%'}} data={Data} renderItem={renderDepartmentCard} />
+      <Button
+        title="Go to Jane's profile"
+        onPress={() => navigation.navigate('Profile', {name: 'Jane'})}
+      />
     </MainContainer>
   );
 };

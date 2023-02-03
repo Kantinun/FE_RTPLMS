@@ -44,14 +44,13 @@ const DepartmentCard = (props: any) => {
   return (
     <CardView {...props}>
       <CardHeadeer style={{height: '20%', borderBottomWidth: 0.2}}>
-        <RegularText>{props.title ? props.title : 'ชื่อแผนก'}</RegularText>
+        <RegularText>{props.department.title ? props.department.title : 'ชื่อแผนก'}</RegularText>
         <RegularText
           style={{color: primary}}
           onPress={() => {
             navigation.navigate(screenName, {
-              id: props.detailID,
-              shiftCode: props.shiftCode,
-              title: props.title
+              department: props.department,
+              shift: props.shift
             })
           }}
           testID="DepartmentCard.DetailLink">
@@ -60,14 +59,15 @@ const DepartmentCard = (props: any) => {
       </CardHeadeer>
       <CardBody style={{height: '80%'}}>
         <RegularText>
-          กำลังการผลิต: <BigText>{props.producttivity} </BigText>
+          กำลังการผลิต: <BigText>{props.shift.productivity} </BigText>
+          {/* กำลังการผลิต: <BigText>{props.shift.producttivity} </BigText> */}
           กก./ชม.
         </RegularText>
         <RegularText>
           เข้างานแล้ว:
           <BigText>
             {' '}
-            {props.entered}/{props.member}{' '}
+            {props.shift.entered}/{props.shift.member}{' '}
           </BigText>
           คน
         </RegularText>

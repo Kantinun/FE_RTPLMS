@@ -28,7 +28,14 @@ function DetailsDataTable(props: any) {
             {(props.mode==='work_plan') &&
             (<Table borderStyle={{borderWidth: 2, borderColor: '#eee'}}>
                <Row data={workPlanTableHead} style={styles.head} textStyle={styles.text}/>
-               <Rows data={props.dataPlan} style={{backgroundColor: 'white'}} textStyle={styles.text}/>
+               {props.dataPlan.map((rowData, index) => (
+                <TableWrapper key={index} style={styles.row}>
+                    <Cell data={rowData.name} textStyle={styles.text}/>
+                    <Cell data={rowData.checkInOut} textStyle={styles.text}/>
+                    <Cell data={rowData.checkInStatus} textStyle={styles.text}/>
+                </TableWrapper>
+                ))
+                }
             </Table>
             )}
             {(props.mode ==='ot_plan') &&
@@ -37,11 +44,14 @@ function DetailsDataTable(props: any) {
                 {
                 props.dataOt.map((rowData, index) => (
                 <TableWrapper key={index} style={styles.row}>
-                    {
+                    {/* {
                     rowData.map((cellData, cellIndex) => (
                         <Cell key={cellIndex} data={cellIndex === 1 ? ot_hour_element(cellData) : cellData} textStyle={styles.text}/>
                     ))
-                    }
+                    } */}
+                    <Cell data={rowData.name} textStyle={styles.text}/>
+                    <Cell data={rowData.otDuration} textStyle={styles.text}/>
+                    <Cell data={rowData.otStatus} textStyle={styles.text}/>
                 </TableWrapper>
                 ))
                 }

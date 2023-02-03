@@ -6,7 +6,7 @@ import MainContainer from '../../components/MainContainer';
 import BigText from '../../../assets/Texts/BigText'
 import MyDateTimePicker from '../../components/DateTimePicker';
 import Carousel from 'react-native-reanimated-carousel';
-import { DataForPlanAndOt, getAccountInThisShift, getDataForPlanAndOt } from '../../services/detail.service';
+import { addWorker, DataForPlanAndOt, delWorker, DetailResponse, getAccountInThisShift, getDataForPlanAndOt, getFreeWorkers, ModalAddData } from '../../services/detail.service';
 import { colors } from '../../config/colors';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import Add_del_worker_modal from '../../components/Modal/add_del_worker_modal';
@@ -26,10 +26,10 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
   const [delOtVisible, setDelOtVisible] = useState(false);
   const [searchText, setSearchText] = useState('');
   const updateSearch = (text: string) => {setSearchText(text)}
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState<Date>();
   const width = Dimensions.get('window').width;
   
-  navigation.setOptions({title: route.params.title});
+  navigation.setOptions({title: route.params.department.title});
   
   const myData2 = {
     page1:{
@@ -46,7 +46,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
   }
   
   const [dataForPlanAndOt, setDataForPlanAndOt] = React.useState<DataForPlanAndOt>({plan: [], ot: []});
-  const accountInThisShift: Promise<any> = getAccountInThisShift(route.params.shiftCode); // Call Api
+  const accountInThisShift: Promise<any> = getAccountInThisShift(route.params.shift.shiftCode); // Call Api
 
   React.useEffect(() => {
     accountInThisShift.then((res) => {
@@ -55,67 +55,69 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
     }).then((data) => {
       
       setDataForPlanAndOt(data);
+      setDate(new Date(route.params.shift.shiftDate))
     })
   }, []);
-  const [modalAddData, setModalAddData] = useState({
+  const [modalAddData, setModalAddData] = useState<{header:string[], content:ModalAddData[]}>({
     header:['','ชื่อ-นามสกุล','กำลังการผลิต'],
-    content:
-    [
-      {
-        name: 'นาย ก',
-        id: 1,
-        performance: '5',
-        isChecked: false
-      },
-      {
-        name: 'นาย ข',
-        id: 2,
-        performance: '7',
-        isChecked: false
-      },
-      {
-        name: 'นาย ค',
-        id: 3,
-        performance: '6',
-        isChecked: false
-      },
-      {
-        name: 'นาย ง',
-        id: 4,
-        performance: '8',
-        isChecked: false
-      },
-    ]
+    content: []
+    // content:
+    // [
+    //   {
+    //     name: 'นาย ก',
+    //     id: 1,
+    //     performance: '5',
+    //     isChecked: false
+    //   },
+    //   {
+    //     name: 'นาย ข',
+    //     id: 2,
+    //     performance: '7',
+    //     isChecked: false
+    //   },
+    //   {
+    //     name: 'นาย ค',
+    //     id: 3,
+    //     performance: '6',
+    //     isChecked: false
+    //   },
+    //   {
+    //     name: 'นาย ง',
+    //     id: 4,
+    //     performance: '8',
+    //     isChecked: false
+    //   },
+    // ]
   })
-  const [modalDelData, setModalDelData] = useState({
+  const [modalDelData, setModalDelData] = useState<{header:string[], content:ModalAddData[]}>({
     header:['','ชื่อ-นามสกุล','กำลังการผลิต'],
-    content:
-    [
-      {
-        name: 'นาย A',
-        id: 5,
-        performance: '5',
-        isChecked: false
-      },
-      {
-        name: 'นาย B',
-        id: 6,
-        performance: '7',
-        isChecked: false
-      },
-      {
-        name: 'นาย C',
-        id: 7,
-        performance: '6',
-        isChecked: false
-      },
-      {
-        name: 'นาย D',
-        id: 8,
-        performance: '8',
-        isChecked: false
-      },
-    ]
+    content: []
+    // [
+    //   {
+    //     name: 'นาย A',
+    //     id: 5,
+    //     performance: '5',
+    //     isChecked: false
+    //   },
+    //   {
+    //     name: 'นาย B',
+    //     id: 6,
+    //     performance: '7',
+    //     isChecked: false
+    //   },
+    //   {
+    //     name: 'นาย C',
+    //     id: 7,
+    //     performance: '6',
+    //     isChecked: false
+    //   },
+    //   {
+    //     name: 'นาย D',
+    //     id: 8,
+    //     performance: '8',
+    //     isChecked: false
+    //   },
+    // ]
   })
   const shifts = [
     { label: '09.00-17.00', value: 'S1' },
@@ -124,7 +126,76 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
   const [shiftSelected, setShiftSelected] = useState('')
 
   const [index, setIndex] = React.useState(0);
+
+  const openAddModal = async () => {
+    // Use manager id instead 1
+    const tmp = {...modalAddData};
+    tmp.content = await getFreeWorkers('1',route.params.shift.shiftDate);
+
+    setModalAddData(tmp);
+    setAddWorkerVisible(true);
+  }
   
+  const openDelModal = async () => {
+    // Use manager id instead 1
+    const tmp = {...modalDelData};
+    tmp.content = dataForPlanAndOt.plan.map((account)=>{
+      return {...account, isChecked: false}
+    });
+
+    setModalDelData(tmp);
+    setDelWorkerVisible(true);
+  }
+  
+  const handleConfirm = (mode: string) => {
+    const selected = mode === 'add' ? 
+      modalAddData.content.filter((obj)=> obj.isChecked):
+      modalDelData.content.filter((obj)=> obj.isChecked)
+
+    const data = {
+      shiftCode: route.params.shift.shiftCode,
+      date: route.params.shift.shiftDate,
+      accountIds:  selected.map((obj)=>obj.id)
+    }
+
+    if(mode === 'add'){
+      
+      addWorker(data)
+      .then((res)=>{
+        const tmp = {...dataForPlanAndOt};
+        selected.forEach((account)=> {
+        tmp.plan.push({
+          id: account.id,
+          name: account.name,
+          checkInOut: "-",
+          checkInStatus: 'ยังไม่เข้างาน',
+          performance: account.performance,
+        })
+      });  
+      setDataForPlanAndOt(tmp);
+      })
+      .catch((e)=>{
+        console.log(e);
+      });
+
+    }else{
+      
+      delWorker(data)
+      .then((res)=>{
+        const tmp = {...dataForPlanAndOt};
+        data.accountIds.forEach((id)=>{
+        const index = tmp.plan.findIndex((obj)=>(obj.id === id));
+        tmp.plan.splice(index,1)
+      })
+      setDataForPlanAndOt(tmp);
+      })
+      .catch((e)=>{
+        console.log(e);
+      });
+    }
+
+  }
+  console.log('\n\n\n\nOutside method',dataForPlanAndOt.plan);
   return (
     <MainContainer>
       <View style={{marginVertical: 5, alignItems: 'center', flexDirection: 'row',justifyContent: 'center'}}>
@@ -140,7 +211,8 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
           activeColor={colors.primaryLight}
           labelField="label"
           valueField="value"
-          placeholder="เลือกกะ"
+          // placeholder="เลือกกะ"
+          placeholder={route.params.shift.shiftTime}
           value={shiftSelected}
           dropdownPosition='bottom'
           onChange={item => {
@@ -181,7 +253,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
                       </View>
                     ) : (
                       <View style={styles.statusCard}>
-                        <BigText>รหัสกะ : {myData2.page2.shift_code}</BigText>
+                        <BigText>รหัสกะ : {route.params.shift.shiftCode}</BigText>
                         <BigText>เวลากะ : {myData2.page2.shift_time}</BigText>
                         <BigText>จำนวนคน : {myData2.page2.number_of_worker}</BigText>
                       </View>
@@ -207,7 +279,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
                 raised={true}
                 containerStyle={{borderRadius: 20}}
                 buttonStyle={{backgroundColor:colors.green , borderColor: '#aaaa',borderRadius: 20}}
-                onPress={()=>{index==0? setAddWorkerVisible(true): setAddOtVisible(true)}}
+                onPress={()=>{index==0? openAddModal(): setAddOtVisible(true)}}
                 
               ></Button>
               <Button
@@ -215,7 +287,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
                 raised={true}
                 containerStyle={{borderRadius: 20}}
                 buttonStyle={{backgroundColor:colors.red, borderRadius: 20, borderColor: '#aaaa'}}
-                onPress={()=>{index==0? setDelWorkerVisible(true): setDelOtVisible(true)}}
+                onPress={()=>{index==0? openDelModal(): setDelOtVisible(true)}}
               ></Button>
           </View>
         </View> 
@@ -263,8 +335,23 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
       
       <Add_del_ot_modal visible={addOtVisible} clickHandler={setAddOtVisible} mode='add'></Add_del_ot_modal>
       <Add_del_ot_modal visible={delOtVisible} clickHandler={setDelOtVisible} mode='delete'></Add_del_ot_modal>
-      <Add_del_worker_modal visible={addWorkerVisible} clickHandler={setAddWorkerVisible} data={modalAddData}></Add_del_worker_modal>
-      <Add_del_worker_modal visible={delWorkerVisible} clickHandler={setDelWorkerVisible} data={modalDelData}></Add_del_worker_modal>
+      <Add_del_worker_modal 
+        visible={addWorkerVisible} 
+        clickHandler={setAddWorkerVisible} 
+        data={modalAddData} 
+        confirmHandler={setModalAddData}
+        handleConfirm={handleConfirm}
+        mode='add'
+      />
+      <Add_del_worker_modal 
+        visible={delWorkerVisible} 
+        clickHandler={setDelWorkerVisible} 
+        data={modalDelData} 
+        confirmHandler={setModalDelData}
+        handleConfirm={handleConfirm}
+        mode='delete'
+      />
+
     </MainContainer>
   );
 };

@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
-import { Text, View, StyleSheet} from 'react-native';
+import { Text, View, StyleSheet, ScrollView} from 'react-native';
 import { Cell, Row, Table, TableWrapper } from 'react-native-table-component';
 import { SearchBar,CheckBox, Button} from '@rneui/themed'
 import Modal from "react-native-modal";
 
 const Add_del_worker_modal = (props: any) => {
-  const [data, setData] = useState(props.data)
+  const data = props.data;
   const [searchText,setSearchText] = useState('')
-
   const handleCheckboxClick = (id) => {
     let tmp = data.content.map((content)=>{
           if (content.id === id){
@@ -19,8 +18,9 @@ const Add_del_worker_modal = (props: any) => {
           header: data.header,
           content: tmp
         }
-        setData(newData)
+        props.confirmHandler(newData)
   }
+
   return (
     <Modal
       isVisible={props.visible}
@@ -29,6 +29,7 @@ const Add_del_worker_modal = (props: any) => {
       }}
     >
       <View style={{backgroundColor: 'white', width: '100%', borderRadius: 20, paddingTop: 10}}>
+        <ScrollView>
         <SearchBar
             placeholder='Search Here...'
             containerStyle={{backgroundColor: 'white', borderTopStartRadius: 20, borderTopEndRadius:20, borderTopWidth: 0, borderBottomWidth: 0}}
@@ -55,10 +56,11 @@ const Add_del_worker_modal = (props: any) => {
                   ))
                 }
           </Table>
+          </ScrollView>
           <View style={{width:'100%', flexDirection: 'row-reverse', padding: 15}}>
             <Button title='Confirm' 
               containerStyle={styles.footer_btn}
-              onPress={()=>{console.log(data.content)}}></Button>
+              onPress={()=> props.handleConfirm(props.mode)}></Button>
           </View>
         </View>
     </Modal>

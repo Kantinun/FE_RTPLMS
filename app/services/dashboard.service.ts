@@ -12,15 +12,31 @@ export const dataHandler = (data: any) => {
   for(let i=0; i < len ; i++){
     let shift = data.shifts[i];
     let newData = {
-      detailID: parseInt(data.department[i].department_id),
-      title: String(data.department[i].name),
-      shiftCode: String(shift.shiftCode),
-      productivity: parseInt(shift.successProduct),
-      entered: parseInt(shift.allMember),
-      member: parseInt(shift.checkInMember),
+      department: {
+        id: parseInt(data.department[i].department_id),
+        title: String(data.department[i].name),
+      },
+      shift: {
+        shiftCode: String(shift.shiftCode),
+        shiftDate: String(shift.shiftDate),
+        shiftTime: String(shift.shiftTime),
+        productivity: parseInt(shift.successProduct),
+        entered: parseInt(shift.allMember),
+        member: parseInt(shift.checkInMember),
+      },
       detailScreenName: 'Detail',
+
     }
-    console.log(newData);
+    // const newData = {
+    //   detailID: parseInt(data.department[i].department_id),
+    //   title: String(data.department[i].name),
+    //   shiftCode: String(shift.shiftCode),
+    //   productivity: parseInt(shift.successProduct),
+    //   entered: parseInt(shift.allMember),
+    //   member: parseInt(shift.checkInMember),
+    //   detailScreenName: 'Detail',
+    // }
+    // console.log(newData);
     res.push(newData);
   }
   return res;
