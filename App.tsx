@@ -6,6 +6,7 @@ import ProfileScreen from './app/screens/ProfileScreen';
 import DetailScreen from './app/screens/Manager/DetailScreen';
 import TaskPlanScreen from './app/screens/Worker/TaskPlanScreen';
 import OTrequestScreen from './app/screens/Worker/OTrequestScreen';
+import LogScreen from './app/screens/Manager/LogScreen';
 
 import MyLoginScreen from './app/screens/LoginScreen';
 
@@ -57,11 +58,19 @@ const App = () => {
   );
   const MainpageManager = () => {
     return(
-      <Stack.Navigator>
+      <Stack.Navigator
+        screenOptions={{
+          headerRight: () =>(
+            <TouchableOpacity style={{marginRight:15}} onPress={authContext.signOut}>
+              <Icon name='log-out-outline' type='ionicon'></Icon>
+            </TouchableOpacity>
+          ),
+        }}
+      >
         <Stack.Screen
-          name="Dashboard"
+          name="MainPage"
           component={DashboardScreen}
-          options={{title: 'Dashboard',headerShown: false}}
+          options={{title: 'Dashboard'}}
         />
         <Stack.Screen 
           name="Detail"
@@ -75,19 +84,33 @@ const App = () => {
     return(
       <Tab.Navigator
         screenOptions={{
-          headerRight: () =>(
-            <TouchableOpacity style={{marginRight:15}} onPress={authContext.signOut}>
-              <Icon name='log-out-outline' type='ionicon'></Icon>
-            </TouchableOpacity>
-          ),
+          headerShown:false
         }}
       >
           <Tab.Screen 
-            name="Mainpage" component={MainpageManager} />
-          {/* <Tab.Screen
-            name="OT Requests" component={OTrequestScreen} /> */}
+            name="Dashboard" component={MainpageManager} 
+            options={{
+              tabBarIcon: () => (
+                <Icon name='dashboard' type='material-icon'></Icon>
+              )
+            }}
+            />
           <Tab.Screen
-          name="Profile" component={ProfileScreen} />
+            name="Logs" component={LogScreen}
+            options={{
+              tabBarIcon: () => (
+                <Icon name='history' type='material-icon'></Icon>
+              )
+            }}  
+          />
+          <Tab.Screen
+            name="Profile" component={ProfileScreen} 
+            options={{
+              tabBarIcon: () => (
+                <Icon name='account-circle' type='material-community'></Icon>
+              )
+            }}
+          />
       </Tab.Navigator>
     )
   }
@@ -103,20 +126,38 @@ const App = () => {
         }}
       >
           <Tab.Screen 
-            name="Tasks Plan" component={TaskPlanScreen} />
+            name="Tasks Plan" component={TaskPlanScreen} 
+            options={{
+              tabBarIcon: () => (
+                <Icon name='clipboard-text-multiple' type='material-community'></Icon>
+              )
+            }}
+          />
           <Tab.Screen
-            name="OT Requests" component={OTrequestScreen} />
+            name="OT Requests" component={OTrequestScreen} 
+            options={{
+              tabBarIcon: () => (
+                <Icon name='clipboard-clock' type='material-community'></Icon>
+              )
+            }}  
+          />
           <Tab.Screen
-          name="Profile" component={ProfileScreen} />
+            name="Profile" component={ProfileScreen} 
+            options={{
+              tabBarIcon: () => (
+                <Icon name='account-circle' type='material-community'></Icon>
+              )
+            }}
+          />
       </Tab.Navigator>
     )
   }
   const LoginScreen = () => (
-      <MyLoginScreen tmp={authContext}/>
+      <MyLoginScreen />
   )
   
   return (
-    <Appcontext.Provider value={state}>
+    <Appcontext.Provider value={{state,authContext}}>
       <NavigationContainer>
         <Stack.Navigator
         >

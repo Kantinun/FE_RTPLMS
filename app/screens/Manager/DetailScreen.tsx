@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { Dimensions, StyleSheet, View} from 'react-native';
+import { Dimensions, ScrollView, StyleSheet, View} from 'react-native';
 
 import DetailsDataTable from '../../components/DetailsDataTable';
 import MainContainer from '../../components/MainContainer';

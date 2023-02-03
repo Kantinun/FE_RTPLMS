@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import { StyleSheet, Text, View, Button, TextInput, TouchableOpacity } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 import { Table, Row, Rows, TableWrapper, Cell } from 'react-native-table-component';
 import Icon from 'react-native-vector-icons/AntDesign';
 import { colors } from '../config/colors';
@@ -22,6 +23,7 @@ function DetailsDataTable(props: any) {
         </View>
     )
     return (
+        <ScrollView>
         <View>
             {(props.mode==='work_plan') &&
             (<Table borderStyle={{borderWidth: 2, borderColor: '#eee'}}>
@@ -45,6 +47,7 @@ function DetailsDataTable(props: any) {
                 }
             </Table>)}
         </View>
+        </ScrollView>
     );
 }
 

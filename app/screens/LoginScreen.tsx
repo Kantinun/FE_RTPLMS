@@ -4,9 +4,8 @@ import LoginScreen from "react-native-login-screen";
 import { Appcontext } from '../../AppContext';
 
 function MyLoginScreen(props) {
-    let {isAuthenticated} = useContext(Appcontext)
+    let {state,authContext} = useContext(Appcontext)
     let email = ''
-
     return (
         <LoginScreen
         logoImageSource={require("../../assets/favicon.png")}
@@ -18,7 +17,7 @@ function MyLoginScreen(props) {
         }}
         onLoginPress={() => {
             if (email==='worker'||email=='manager')
-                props.tmp.signIn({role: email})
+                authContext.signIn({role: email})
 
         }}
         onSignupPress={() => {}}
