@@ -78,7 +78,7 @@ const LogContext = () => {
           <ScrollView style={{height: '100%'}}>
             {data.map((rowData,index)=>(
               <TouchableOpacity>
-              <TableWrapper key={index} style={{flexDirection:'row',borderWidth:1, borderColor:'#aaaa', backgroundColor:'#aaa5',}}>
+              <TableWrapper key={index} style={{flexDirection:'row',borderWidth:1, borderColor:'#aaaa', backgroundColor:'#fffb',}}>
                 <Cell data={rowData.create_at.format("D - MMM - YYYY")} 
                 textStyle={{color:'#111a', textAlign: 'center', fontSize:15, marginVertical:10}}></Cell>
 
