@@ -58,7 +58,25 @@ const LogContext = () => {
           selectMultiple={true}
           selectedIndexes={selectedIndexes}
           onPress={(value) => {
-            setSelectedIndexes(value);
+            let option: Array<string> = []
+            value.map((index:number)=>{
+              switch (index){
+                case 0:
+                  return option.push('ADD')
+                case 1:
+                  return option.push('DELETE')
+                case 2:
+                  return option.push('ADD_OT')
+                case 3:
+                  return option.push('DELETE_OT')
+                case 4:
+                  return option.push('EDIT_OT')
+                default:
+                  return option
+              }
+            })
+            setData(option.length !=0 ?fetch_data.filter(data => option.includes(data.action)): fetch_data);
+            setSelectedIndexes(value)
           }}
           selectedButtonStyle={{
             borderRadius:20,
