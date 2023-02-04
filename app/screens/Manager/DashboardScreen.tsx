@@ -46,28 +46,15 @@ const DashboardScreen = ({navigation}: any) => {
     },
   ];
 
+
   const currentShifts = getCurrentShifts();
-  
+
+
   React.useEffect(() => {
     currentShifts.then((res)=> {
       setData(res)
     });
   }, []);
-
-  // const renderDepartmentCard = ({data}: any) => {
-  //   console.log('===============\n');
-  //   console.log(data);
-  //   console.log('=============');
-  //   return <DepartmentCard
-  //   // Data send into Card
-  //   // struct in dashboard.service
-  //     detailID={data.department.id}
-  //     title={data.department.title}
-  //     shift={data.shift}
-  //     detailScreenName={data.detailScreenName}
-  //     testID="DepartmentCard"
-  //   />
-  // };
 
   const renderDepartmentCard = ({item}: any) => (
     <DepartmentCard
@@ -91,10 +78,6 @@ const DashboardScreen = ({navigation}: any) => {
             onChange={(text)=>{setSearchText(text)}}
           ></SearchBar>
       <FlatList style={ {width: '100%'}} data={Data} renderItem={renderDepartmentCard} />
-      <Button
-        title="Go to Jane's profile"
-        onPress={() => navigation.navigate('Profile', {name: 'Jane'})}
-      />
     </MainContainer>
   );
 };

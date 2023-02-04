@@ -1,4 +1,5 @@
 import env from "../config/env";
+import moment from "moment";
 
 export interface DetailResponse {
     id: string;
@@ -54,18 +55,18 @@ export const getDataForPlanAndOt = (accounts: DetailResponse[]) => {
     return dataForPlanAndOt
 }
 
-export const getFreeWorkers = async (managerId: string, date: string) => {
-    const res = await fetch(`${env.API_BASE}:${env.API_PORT}/work-on/manager/${managerId}/${date}`);
+export const getFreeWorkers = async (managerId: string, shiftCode:string, date: string) => {
+    const res = await fetch(`${env.API_BASE}:${env.API_PORT}/work-on/managers/${managerId}/shifts/${shiftCode}/${moment(date).format("YYYY-MM-DD")}`);
     const json = await res.json()
         .then((arrObj: GetFreeWorkerResponse[])=>{
-            const newArrObj = arrObj.map((account: GetFreeWorkerResponse)=>{
+            const newArrObj = !arrObj.statusCode? arrObj.map((account: GetFreeWorkerResponse)=>{
                 return {
                     name: account.fullname,
                     id: account.account_id,
                     performance: account.performance,
                     isChecked: false,
                 }
-            });
+            }): []
             return newArrObj;
         });
 

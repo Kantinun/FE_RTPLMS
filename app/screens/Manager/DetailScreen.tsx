@@ -130,7 +130,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
   const openAddModal = async () => {
     // Use manager id instead 1
     const tmp = {...modalAddData};
-    tmp.content = await getFreeWorkers('1',route.params.shift.shiftDate);
+    tmp.content = await getFreeWorkers('1',route.params.shift.shiftCode,route.params.shift.shiftDate);
 
     setModalAddData(tmp);
     setAddWorkerVisible(true);
@@ -179,7 +179,6 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
       });
 
     }else{
-      
       delWorker(data)
       .then((res)=>{
         const tmp = {...dataForPlanAndOt};
@@ -195,7 +194,6 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
     }
 
   }
-  console.log('\n\n\n\nOutside method',dataForPlanAndOt.plan);
   return (
     <MainContainer>
       <View style={{marginVertical: 5, alignItems: 'center', flexDirection: 'row',justifyContent: 'center'}}>
