@@ -7,17 +7,10 @@ import MyDateTimePicker from '../../components/DateTimePicker';
 import { Table, Row, Rows, TableWrapper, Cell } from 'react-native-table-component';
 import { colors } from '../../config/colors';
 import moment from 'moment';
+import { Dialog } from '@rneui/themed';
 
 const Stack = createNativeStackNavigator();
 
-const Acction_btn = (props) => {
-  return(
-    <View style={{justifyContent: 'center', alignItems:'center', backgroundColor:'transparent'}}>
-    <Icon name={props.iconName} type={props.iconType} color={props.selected ?  'white': colors.primaryDark}></Icon>
-    <Text style={{color: props.selected ? colors.primaryLight : props.textColor}}>{props.labelText}</Text>
-  </View>
-  )
-}
 
 // Fetch data once we open this page 
 const fetch_data = [
@@ -27,9 +20,42 @@ const fetch_data = [
   {log_id: 4, create_at:moment(), action: 'EDIT_OT', details:{department:'ทำความสะอาดไก่',department_id: 4,account_id:[4]}},
   {log_id: 5, create_at:moment(), action: 'DELETE_OT', details:{department:'ต้มไก่',department_id: 1,account_id:[5]}}
 ]
+const Acction_btn = (props: any) => {
+  return(
+    <View style={{justifyContent: 'center', alignItems:'center', backgroundColor:'transparent'}}>
+    <Icon name={props.iconName} type={props.iconType} color={props.selected ?  'white': colors.primaryDark}></Icon>
+    <Text style={{color: props.selected ? colors.primaryLight : props.textColor}}>{props.labelText}</Text>
+  </View>
+  )
+}
+const _render_details = (props:any) => {
+  let data = props.data[0]
+  return(
+    <Dialog
+      isVisible={props.visible}
+      onBackdropPress={()=>{props.setVisible(false)}}
+      overlayStyle={{borderRadius:20}}
+    >
+      <View style={{flexDirection:'row',}}>  
+        <Dialog.Title title="Log Details" titleStyle={{textAlign:'left', flex:1}}/>
+        <TouchableOpacity onPress={()=>{props.setVisible(false)}}>
+          <Icon name='close' type='material-community' color='#aaa' size={25} />
+        </TouchableOpacity>
+      </View>
+      <Text>{`Action: ${data? data.action:''}`}</Text>
+      <Text>{`Department id: ${data? data.details.department_id:''}`}</Text>
+      <Text>{`Department: ${data? data.details.department:''}`}</Text>
+      <Text>{`Account id: ${data? data.details.account_id:''}`}</Text>
+      <Text>{`Create at: ${data? moment(data.create_at).format('D MMMM YYYY'):''}`}</Text>
+    </Dialog>
+  )
+}
+
 const LogContext = () => {
+  const [dialog_visible,setDialog_visible] = useState(false)
+  const [rowSelected,setRowSelected] = useState(0)
   const [data, setData] = useState(fetch_data.filter((ele => ele.create_at.format('D/M/YYYY')==moment().format('D/M/YYYY'))))
-  const [selectedIndexes, setSelectedIndexes] = useState([])
+  const [filtersIndexes, setFiltersIndexes] = useState([])
   const [date,setDate]=useState(new Date())
   const btn = [<Acction_btn textColor={colors.primaryDark} iconName='account-multiple-plus' iconType='material-community' labelText='เพิ่ม'/>,
   <Acction_btn textColor={colors.primaryDark} iconName='account-multiple-minus' iconType='material-community' labelText='ลบ'/>,
@@ -56,7 +82,7 @@ const LogContext = () => {
             borderTopWidth: 2,
           }}
           selectMultiple={true}
-          selectedIndexes={selectedIndexes}
+          selectedIndexes={filtersIndexes}
           onPress={(value) => {
             let option: Array<string> = []
             value.map((index:number)=>{
@@ -76,7 +102,7 @@ const LogContext = () => {
               }
             })
             setData(option.length !=0 ?fetch_data.filter(data => option.includes(data.action)): fetch_data);
-            setSelectedIndexes(value)
+            setFiltersIndexes(value)
           }}
           selectedButtonStyle={{
             borderRadius:20,
@@ -95,9 +121,13 @@ const LogContext = () => {
           ></Row>
           <ScrollView style={{height: '100%'}}>
             {data.map((rowData,index)=>(
-              <TouchableOpacity>
+              <TouchableOpacity 
+                onPress={()=>{
+                  setDialog_visible(true)
+                  setRowSelected(rowData.log_id)
+                }}>
               <TableWrapper key={index} style={{flexDirection:'row',borderWidth:1, borderColor:'#aaaa', backgroundColor:'#fffb',}}>
-                <Cell data={rowData.create_at.format("D - MMM - YYYY")} 
+                <Cell data={rowData.create_at.format("D-MMM-YYYY")} 
                 textStyle={{color:'#111a', textAlign: 'center', fontSize:15, marginVertical:10}}></Cell>
 
                 <Cell data={rowData.action} 
@@ -111,10 +141,11 @@ const LogContext = () => {
           </ScrollView>
         </Table>
       </View>
+      <_render_details visible={dialog_visible} setVisible={setDialog_visible} data={data.filter(data => data.log_id==rowSelected)} />
     </View>
   )
 }
-function LogScreen(props) {5
+function LogScreen(props:any) {5
     let {state,authContext} = useContext(Appcontext)
 
     return (
