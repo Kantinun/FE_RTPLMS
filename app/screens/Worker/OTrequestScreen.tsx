@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, ScrollView, Text } from 'react-native';
 import MainContainer from '../../components/MainContainer';
 import { Card, Icon, Button} from '@rneui/themed';
@@ -6,17 +6,28 @@ import RegularText from '../../../assets/Texts/RegularText';
 import { colors } from '../../config/colors';
 import moment from 'moment';
 
-//  Data format: {shift_code:3,Date: '2023-02-01', number_of_hour:2, work_time: '17:00-20:00', req_status: null, create_at: '2023-01-31'}
-const mockupData = [
-    {shift_code:3,Date: moment(), number_of_hour:2, work_time: '17:00-20:00', req_status: 'ยอมรับ', create_at: moment()},
-    {shift_code:3,Date: moment().add(1,'days'), number_of_hour:1, work_time: '15:00-16:00', req_status: 'รอดำเนินการ', create_at:  moment()},
-    {shift_code:3,Date: moment().add(2,'days'), number_of_hour:2, work_time: '17:00-20:00', req_status: 'ปฏิเสธ', create_at:  moment()},
-    {shift_code:3,Date: moment().add(3,'days'), number_of_hour:1, work_time: '05:00-06:00', req_status: 'รอดำเนินการ', create_at:  moment()},
-    {shift_code:3,Date: moment().add(3,'days'), number_of_hour:1, work_time: '05:00-06:00', req_status: 'รอดำเนินการ', create_at:  moment()},
-    {shift_code:3,Date: moment().add(3,'days'), number_of_hour:1, work_time: '05:00-06:00', req_status: 'รอดำเนินการ', create_at:  moment()},
-    {shift_code:3,Date: moment().add(3,'days'), number_of_hour:1, work_time: '05:00-06:00', req_status: 'รอดำเนินการ', create_at:  moment()},
-]
 function OTrequestScreen(props) {
+    //  Data format: {shift_code:3,Date: '2023-02-01', number_of_hour:2, work_time: '17:00-20:00', req_status: null, create_at: '2023-01-31'}
+    const [mockupData, setMockupData] = useState([
+        {shift_code:'3',Date: moment(), number_of_hour:2, work_time: '17:00-20:00', req_status: 'ยอมรับ', create_at: moment()},
+        {shift_code:'4',Date: moment().add(1,'days'), number_of_hour:1, work_time: '15:00-16:00', req_status: 'รอดำเนินการ', create_at:  moment()},
+        {shift_code:'5',Date: moment().add(2,'days'), number_of_hour:2, work_time: '17:00-20:00', req_status: 'ปฏิเสธ', create_at:  moment()},
+        {shift_code:'6',Date: moment().add(3,'days'), number_of_hour:1, work_time: '05:00-06:00', req_status: 'รอดำเนินการ', create_at:  moment()},
+        {shift_code:'7',Date: moment().add(3,'days'), number_of_hour:1, work_time: '05:00-06:00', req_status: 'รอดำเนินการ', create_at:  moment()},
+        {shift_code:'8',Date: moment().add(3,'days'), number_of_hour:1, work_time: '05:00-06:00', req_status: 'รอดำเนินการ', create_at:  moment()},
+        {shift_code:'9',Date: moment().add(3,'days'), number_of_hour:1, work_time: '05:00-06:00', req_status: 'รอดำเนินการ', create_at:  moment()},
+    ])
+
+    const ot_respond_handler = (shift_code:string, action: string) => {
+        let new_data = mockupData.map((data)=>{
+            if (data.shift_code===shift_code){
+                return {...data, req_status:action}
+            }
+            return data
+        })
+        setMockupData(new_data) 
+    }
+
     return (
         <MainContainer>
             <ScrollView>
@@ -72,6 +83,9 @@ function OTrequestScreen(props) {
                                         }}
                                         raised
                                         containerStyle={{borderRadius:10, marginHorizontal:5}}
+                                        onPress={()=>{
+                                            ot_respond_handler(data.shift_code,'ยอมรับ')
+                                        }}
                                     ></Button>
                                     <Button
                                         icon={<Icon name='close-circle' type='material-community' size={25} color={colors.red}></Icon>}
@@ -81,6 +95,9 @@ function OTrequestScreen(props) {
                                         }}
                                         containerStyle={{borderRadius:10,marginHorizontal:5}}
                                         raised
+                                        onPress={()=>{
+                                            ot_respond_handler(data.shift_code,'ปฏิเสธ')
+                                        }}
                                     ></Button>
                                 </View>}
                             </View>
