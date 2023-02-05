@@ -83,10 +83,19 @@ const App = () => {
   const ManagerScreen = ()=>{
     return(
       <Tab.Navigator
+        initialRouteName='Dashboard'
         screenOptions={{
           headerShown:false
         }}
       >
+          <Tab.Screen
+            name="Logs" component={LogScreen}
+            options={{
+              tabBarIcon: () => (
+                <Icon name='history' type='material-icon'></Icon>
+                )
+              }}  
+          />
           <Tab.Screen 
             name="Dashboard" component={MainpageManager} 
             options={{
@@ -94,14 +103,6 @@ const App = () => {
                 <Icon name='dashboard' type='material-icon'></Icon>
               )
             }}
-            />
-          <Tab.Screen
-            name="Logs" component={LogScreen}
-            options={{
-              tabBarIcon: () => (
-                <Icon name='history' type='material-icon'></Icon>
-              )
-            }}  
           />
           <Tab.Screen
             name="Profile" component={ProfileScreen} 
@@ -117,6 +118,7 @@ const App = () => {
   const WorkerScreen = ()=>{
     return(
       <Tab.Navigator
+        initialRouteName='Tasks Plan'
         screenOptions={{
           headerRight: () =>(
             <TouchableOpacity style={{marginRight:15}} onPress={authContext.signOut}>
@@ -125,6 +127,14 @@ const App = () => {
           ),
         }}
       >
+          <Tab.Screen
+            name="OT Requests" component={OTrequestScreen} 
+            options={{
+              tabBarIcon: () => (
+                <Icon name='clipboard-clock' type='material-community'></Icon>
+                )
+              }}  
+          />
           <Tab.Screen 
             name="Tasks Plan" component={TaskPlanScreen} 
             options={{
@@ -132,14 +142,6 @@ const App = () => {
                 <Icon name='clipboard-text-multiple' type='material-community'></Icon>
               )
             }}
-          />
-          <Tab.Screen
-            name="OT Requests" component={OTrequestScreen} 
-            options={{
-              tabBarIcon: () => (
-                <Icon name='clipboard-clock' type='material-community'></Icon>
-              )
-            }}  
           />
           <Tab.Screen
             name="Profile" component={ProfileScreen} 

@@ -1,22 +1,33 @@
 import React, { useState } from 'react';
 import { View, ScrollView, Text } from 'react-native';
 import MainContainer from '../../components/MainContainer';
-import { Card, Icon, Button} from '@rneui/themed';
+import { Card, Icon, Button, ButtonGroup} from '@rneui/themed';
 import RegularText from '../../../assets/Texts/RegularText';
 import { colors } from '../../config/colors';
 import moment from 'moment';
 
+const Acction_btn = (props: any) => {
+    return(
+      <View style={{justifyContent: 'center', alignItems:'center', backgroundColor:'transparent'}}>
+      <Icon name={props.iconName} type={props.iconType} color={props.selected ?  'white': colors.primaryDark}></Icon>
+      <Text style={{color: props.selected ? colors.primaryLight : props.textColor}}>{props.labelText}</Text>
+    </View>
+    )
+}
+
+const fetch_data = [
+    {shift_code:'3',Date: moment(), number_of_hour:2, work_time: '17:00-20:00', req_status: 'ยอมรับ', create_at: moment()},
+    {shift_code:'4',Date: moment().add(1,'days'), number_of_hour:1, work_time: '15:00-16:00', req_status: 'รอดำเนินการ', create_at:  moment()},
+    {shift_code:'5',Date: moment().add(2,'days'), number_of_hour:2, work_time: '17:00-20:00', req_status: 'ปฏิเสธ', create_at:  moment()},
+    {shift_code:'6',Date: moment().add(3,'days'), number_of_hour:1, work_time: '05:00-06:00', req_status: 'รอดำเนินการ', create_at:  moment()},
+    {shift_code:'7',Date: moment().add(3,'days'), number_of_hour:1, work_time: '05:00-06:00', req_status: 'รอดำเนินการ', create_at:  moment()},
+    {shift_code:'8',Date: moment().add(3,'days'), number_of_hour:1, work_time: '05:00-06:00', req_status: 'รอดำเนินการ', create_at:  moment()},
+    {shift_code:'9',Date: moment().add(3,'days'), number_of_hour:1, work_time: '05:00-06:00', req_status: 'รอดำเนินการ', create_at:  moment()},
+]
+
 function OTrequestScreen(props) {
     //  Data format: {shift_code:3,Date: '2023-02-01', number_of_hour:2, work_time: '17:00-20:00', req_status: null, create_at: '2023-01-31'}
-    const [mockupData, setMockupData] = useState([
-        {shift_code:'3',Date: moment(), number_of_hour:2, work_time: '17:00-20:00', req_status: 'ยอมรับ', create_at: moment()},
-        {shift_code:'4',Date: moment().add(1,'days'), number_of_hour:1, work_time: '15:00-16:00', req_status: 'รอดำเนินการ', create_at:  moment()},
-        {shift_code:'5',Date: moment().add(2,'days'), number_of_hour:2, work_time: '17:00-20:00', req_status: 'ปฏิเสธ', create_at:  moment()},
-        {shift_code:'6',Date: moment().add(3,'days'), number_of_hour:1, work_time: '05:00-06:00', req_status: 'รอดำเนินการ', create_at:  moment()},
-        {shift_code:'7',Date: moment().add(3,'days'), number_of_hour:1, work_time: '05:00-06:00', req_status: 'รอดำเนินการ', create_at:  moment()},
-        {shift_code:'8',Date: moment().add(3,'days'), number_of_hour:1, work_time: '05:00-06:00', req_status: 'รอดำเนินการ', create_at:  moment()},
-        {shift_code:'9',Date: moment().add(3,'days'), number_of_hour:1, work_time: '05:00-06:00', req_status: 'รอดำเนินการ', create_at:  moment()},
-    ])
+    const [data, setData] = useState(fetch_data)
 
     const ot_respond_handler = (shift_code:string, action: string) => {
         let new_data = mockupData.map((data)=>{
@@ -28,10 +39,56 @@ function OTrequestScreen(props) {
         setMockupData(new_data) 
     }
 
+    const btn = [<Acction_btn textColor={colors.primaryDark} iconName='clock-outline' iconType='material-community' labelText='รอดำเนินการ'/>,
+    <Acction_btn textColor={colors.primaryDark} iconName='check-circle' iconType='material-community' labelText='ยอมรับ'/>,
+    <Acction_btn textColor={colors.primaryDark} iconName='close-circle' iconType='material-community' labelText='ปฏิเสธ'/>]
+    const [filtersIndexes, setFiltersIndexes] = useState([])
+
     return (
         <MainContainer>
+            <View style={{height: '10%',}}>
+                <ButtonGroup
+                buttons={btn}
+                containerStyle={{height:'100%', backgroundColor: 'transparent', borderColor:'transparent', borderRadius: 20}}
+                buttonContainerStyle={{borderRadius: 20,marginHorizontal: 2}}
+                buttonStyle={{
+                    elevation:2, 
+                    borderRadius:20, 
+                    backgroundColor: '#bbbe',
+                    borderColor: '#1115',
+                    borderRightWidth: 3,
+                    borderTopWidth: 2,
+                }}
+                selectMultiple={true}
+                selectedIndexes={filtersIndexes}
+                onPress={(value) => {
+                    let option: Array<string> = []
+                    value.map((index:number)=>{
+                    switch (index){
+                        case 0:
+                        return option.push('รอดำเนินการ')
+                        case 1:
+                        return option.push('ยอมรับ')
+                        case 2:
+                        return option.push('ปฏิเสธ')
+                        default:
+                        return option
+                    }
+                    })
+                    setData(option.length !=0 ?fetch_data.filter(data => option.includes(data.req_status)): fetch_data);
+                    setFiltersIndexes(value)
+                }}
+                selectedButtonStyle={{
+                    borderRadius:20,
+                    borderWidth:2,
+                    borderColor:"#1115",
+                    backgroundColor: 'white',
+                    elevation:0,
+                }}
+                />
+            </View>
             <ScrollView>
-                {mockupData.map((data,index)=>{
+                {data.map((data,index)=>{
                     return(
                         <Card
                             key={index}
