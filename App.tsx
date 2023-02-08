@@ -105,7 +105,7 @@ const App = () => {
             }}
           />
           <Tab.Screen
-            name="Profile" component={ProfileScreen} 
+            name="ProfileScreen" component={ProfileScreen} 
             options={{
               tabBarIcon: () => (
                 <Icon name='account-circle' type='material-community'></Icon>
@@ -144,8 +144,9 @@ const App = () => {
             }}
           />
           <Tab.Screen
-            name="Profile" component={ProfileScreen} 
+            name="ProfileScreen" component={ProfileScreen} 
             options={{
+              headerShown:false,
               tabBarIcon: () => (
                 <Icon name='account-circle' type='material-community'></Icon>
               )
