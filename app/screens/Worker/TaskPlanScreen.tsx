@@ -42,13 +42,13 @@ function TaskPlanScreen(props: unknown) {
     
     const taskPlanData = getTaskPlanByAccountId(state.data.id);
     
-    const fetchTaskPlanData = () => {
+    const setTaskPlanData = () => {
         taskPlanData.then((res: TaskPlanDateData)=>{
             setData(res);
         });
     };
     
-    useEffect(fetchTaskPlanData,[]);
+    useEffect(setTaskPlanData,[]);
     // ===========================================================================
         
     // use for gen mockup data
