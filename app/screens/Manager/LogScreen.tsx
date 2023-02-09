@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {Appcontext} from '../../../AppContext'
@@ -8,18 +8,20 @@ import { Table, Row, Rows, TableWrapper, Cell } from 'react-native-table-compone
 import { colors } from '../../config/colors';
 import moment from 'moment';
 import { Dialog } from '@rneui/themed';
+import { getDataForLogScreen, Log } from '../../services/log.service';
+import { Action, State } from '../../../App';
 
 const Stack = createNativeStackNavigator();
 
 
 // Fetch data once we open this page 
-const fetch_data = [
-  {log_id: 1, create_at:moment(), action: 'ADD', details:{department:'ต้มไก่',department_id: 1,account_id:[1]}},
-  {log_id: 2, create_at:moment(), action: 'DELETE', details:{department:'ทอดไก่',department_id: 2,account_id:[2]}},
-  {log_id: 3, create_at:moment(), action: 'ADD_OT', details:{department:'แพคไก่',department_id: 3,account_id:[3]}},
-  {log_id: 4, create_at:moment(), action: 'EDIT_OT', details:{department:'ทำความสะอาดไก่',department_id: 4,account_id:[4]}},
-  {log_id: 5, create_at:moment(), action: 'DELETE_OT', details:{department:'ต้มไก่',department_id: 1,account_id:[5]}}
-]
+// const fetch_data = [
+//   {log_id: 1, create_at:moment(), action: 'ADD', details:{department:'ต้มไก่',department_id: 1,account_id:[1]}},
+//   {log_id: 2, create_at:moment(), action: 'DELETE', details:{department:'ทอดไก่',department_id: 2,account_id:[2]}},
+//   {log_id: 3, create_at:moment(), action: 'ADD_OT', details:{department:'แพคไก่',department_id: 3,account_id:[3]}},
+//   {log_id: 4, create_at:moment(), action: 'EDIT_OT', details:{department:'ทำความสะอาดไก่',department_id: 4,account_id:[4]}},
+//   {log_id: 5, create_at:moment(), action: 'DEsLETE_OT', details:{department:'ต้มไก่',department_id: 1,account_id:[5]}}
+// ]
 const Acction_btn = (props: any) => {
   return(
     <View style={{justifyContent: 'center', alignItems:'center', backgroundColor:'transparent'}}>
@@ -51,10 +53,11 @@ const _render_details = (props:any) => {
   )
 }
 
-const LogContext = () => {
+const LogContext = (props) => {
   const [dialog_visible,setDialog_visible] = useState(false)
   const [rowSelected,setRowSelected] = useState(0)
-  const [data, setData] = useState(fetch_data.filter((ele => ele.create_at.format('D/M/YYYY')==moment().format('D/M/YYYY'))))
+  const [initData, setInitData] = useState<Log[]>([])
+  const [data, setData] = useState<Log[]>([])
   const [filtersIndexes, setFiltersIndexes] = useState([])
   const [date,setDate]=useState(new Date())
   const btn = [<Acction_btn textColor={colors.primaryDark} iconName='account-multiple-plus' iconType='material-community' labelText='เพิ่ม'/>,
@@ -62,7 +65,16 @@ const LogContext = () => {
   <Acction_btn textColor={colors.primaryDark} iconName='clock-plus' iconType='material-community' labelText='เพิ่ม OT'/>,
   <Acction_btn textColor={colors.primaryDark} iconName='clock-minus' iconType='material-community' labelText='ลบ OT'/>,
   <Acction_btn textColor={colors.primaryDark} iconName='clock-edit' iconType='material-community' labelText='แก้ไข OT'/>,
-  ]
+]
+  const fetch_data: Promise<any> = getDataForLogScreen(props.state.data.id, moment(date).format('YYYY-MM-DD') );
+  useEffect(()=>{moment
+    fetch_data.then((logs: Log[]) => {
+      setInitData(logs? logs:[]);
+      setData(logs? logs:[])
+    });
+  },[]);
+
+
   return(
     <View style={{flex: 1}}>
       <View style={{marginTop:10, marginHorizontal: 5}}>
@@ -101,7 +113,7 @@ const LogContext = () => {
                   return option
               }
             })
-            setData(option.length !=0 ?fetch_data.filter(data => option.includes(data.action)): fetch_data);
+            setData(option.length !=0 ?initData.filter(data => option.includes(data.action)): initData);
             setFiltersIndexes(value)
           }}
           selectedButtonStyle={{
@@ -120,14 +132,17 @@ const LogContext = () => {
           textStyle={{textAlign: 'center', color:'white'}}
           ></Row>
           <ScrollView style={{height: '100%'}}>
-            {data.map((rowData,index)=>(
-              <TouchableOpacity 
+            <>
+            {/* {console.log(data)} */}
+            {
+              data.map((rowData,index)=>{
+              return <TouchableOpacity 
                 onPress={()=>{
                   setDialog_visible(true)
-                  setRowSelected(rowData.log_id)
+                  setRowSelected(parseInt(rowData.log_id))
                 }}>
               <TableWrapper key={index} style={{flexDirection:'row',borderWidth:1, borderColor:'#aaaa', backgroundColor:'#fffb',}}>
-                <Cell data={rowData.create_at.format("D-MMM-YYYY")} 
+                <Cell data={moment(rowData.create_at).format("D-MMM-YYYY")} 
                 textStyle={{color:'#111a', textAlign: 'center', fontSize:15, marginVertical:10}}></Cell>
 
                 <Cell data={rowData.action} 
@@ -137,16 +152,22 @@ const LogContext = () => {
                 textStyle={{color:'#111a', textAlign: 'center', fontSize:15, marginVertical:10}}></Cell>
               </TableWrapper>
               </TouchableOpacity>
-              ))}
+              })
+            }</>
           </ScrollView>
         </Table>
       </View>
-      <_render_details visible={dialog_visible} setVisible={setDialog_visible} data={data.filter(data => data.log_id==rowSelected)} />
+      <_render_details visible={dialog_visible} setVisible={setDialog_visible} data={data.filter(data => parseInt(data.log_id)==rowSelected)} />
     </View>
   )
 }
-function LogScreen(props:any) {5
+function LogScreen(props:any) {
     let {state,authContext} = useContext(Appcontext)
+    // Call Api 
+    
+    const RenderContext = () => {
+      return <LogContext state={state}/>
+    }
 
     return (
         //use Stack.Navigator to make log-out icon on header
@@ -161,7 +182,7 @@ function LogScreen(props:any) {5
         >
             <Stack.Screen
                 name='Log'
-                component={LogContext}
+                component={RenderContext}
             />
         </Stack.Navigator>
     );
