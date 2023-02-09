@@ -2,10 +2,11 @@ import React, { useContext } from 'react';
 import { View } from 'react-native';
 import LoginScreen from "react-native-login-screen";
 import { Appcontext } from '../../AppContext';
+import { Account, doLogin } from '../services/account.service';
 
 function MyLoginScreen(props) {
     let {state,authContext} = useContext(Appcontext)
-    let email = ''
+    let email = '';
     return (
         <LoginScreen
         logoImageSource={require("../../assets/favicon.png")}
@@ -15,9 +16,11 @@ function MyLoginScreen(props) {
             marginTop: 30,
             marginBottom: 17,                  
         }}
-        onLoginPress={() => {
-            if (email==='worker'||email=='manager')
-                authContext.signIn({role: email})
+        onLoginPress={ async () => {
+            
+            const res: Account = await doLogin(email.toLocaleLowerCase(), '1234');
+            if (res.id)
+                authContext.signIn(res);
 
         }}
         onSignupPress={() => {}}

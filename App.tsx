@@ -22,24 +22,26 @@ import * as SecureStore from 'expo-secure-store';
 
 import { TouchableOpacity } from 'react-native';
 import { Icon } from '@rneui/themed';
+import { Account } from './app/services/account.service';
 
-interface Action {
-  type: 'LOGIN' | 'LOGOUT'
+export interface Action {
+  type: 'LOGIN' | 'LOGOUT';
+  data?: Account;
 }
-interface State {
+export interface State {
   isAuthenticated: boolean;
-  role: string;
+  data?: Account;
 }
-const initialState = {
+const initialState: State = {
   isAuthenticated: false,
-  role: ''
+  data: {id:'',role:''}
 }
 const reducer = (state: State, action: Action) => {
   switch (action.type) {
     case 'LOGIN':
-      return { isAuthenticated: true, role: action.role};
+      return { isAuthenticated: true, data: action.data};
     case 'LOGOUT':
-      return { isAuthenticated: false, role: ''};
+      return initialState;
     default:
       return state;
   }
@@ -49,8 +51,8 @@ const App = () => {
   const [state, dispatch] = useReducer(reducer,initialState)
   const authContext = React.useMemo(
     () => ({
-      signIn: async (data) => {
-        dispatch({ type: 'LOGIN', role: data.role})
+      signIn: async (data: Account) => {
+        dispatch({ type: 'LOGIN', data: data})
       },
       signOut: () => dispatch({ type: 'LOGOUT'}),
     }),
@@ -165,7 +167,7 @@ const App = () => {
         >
           {
             state.isAuthenticated?
-              state.role == 'manager'?
+              state.data?.role == 'manager'?
               <Stack.Screen
               name="Manager"
               component={ManagerScreen}
