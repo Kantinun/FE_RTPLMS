@@ -1,14 +1,31 @@
-import * as React from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {Text, TouchableOpacity, View} from 'react-native';
 import { Avatar, Icon } from '@rneui/themed';
 import { Appcontext } from '../../AppContext';
 import { colors } from '../config/colors';
+import { AccountProfile, fetchAccountData, initAccountProfile } from '../services/account.service';
 
 const Stack = createNativeStackNavigator();
 
 const _renderProfileContext = ()=>{
-  const mockupData = {account_id:1,name:'krissana Jongtumdee',phoneNumber:'091-234-5678', role:'Manager', performance: '10', username: 'krissana123'}
+  // Mockup data
+  // const data = {account_id:1,name:'krissana Jongtumdee',telephone:'091-234-5678', role:'Manager', performance: '10', username: 'krissana123'}
+
+  // =============================================================
+  // Fetch account data
+  const [data, setData] = useState<AccountProfile>(initAccountProfile);
+  const {state} = useContext(Appcontext);
+  const accountData = fetchAccountData(state.data.id);
+
+  const setAccountData = () => {
+    accountData.then(res=>{
+      setData(res);
+    })
+  }
+
+  useEffect(setAccountData,[]);
+// =============================================================
   return(
     <>
     <View style={{height: '20%', backgroundColor: colors.primary, justifyContent: 'flex-start',alignItems: 'center'}}>
@@ -33,20 +50,20 @@ const _renderProfileContext = ()=>{
         shadowOpacity: .3
       }}>
         <View style={{alignItems:'center', backgroundColor: 'white', borderTopLeftRadius: 20, borderTopRightRadius: 20, paddingBottom: 10}}>
-          <Text style={{fontSize: 25, marginTop: 5}}>{mockupData.name}</Text>
-          <Text style={{fontSize: 15, color: '#aaa'}}>{mockupData.username}</Text>
+          <Text style={{fontSize: 25, marginTop: 5}}>{data.fullname}</Text>
+          <Text style={{fontSize: 15, color: '#aaa'}}>{data.username}</Text>
         </View>
         <View style={{marginTop:20, flexDirection: 'row', alignItems: 'center'}}>
-          {/* <Text style={{fontSize: 20}}>{`Role: ${mockupData.role}`}</Text> */}
+          {/* <Text style={{fontSize: 20}}>{`Role: ${data.role}`}</Text> */}
           <View style={{marginLeft: 10}}>
             <Text style={{fontSize: 20, color:'#555a'}}>Role:</Text>
             <Text style={{fontSize: 20, color:'#555a'}}>Phone number:</Text>
             <Text style={{fontSize: 20, color:'#555a'}}>Performance:</Text>
           </View>
           <View style={{marginLeft: 10}}>
-            <Text style={{fontSize:17}}>{mockupData.role}</Text>
-            <Text style={{fontSize:17}}>{mockupData.phoneNumber}</Text>
-            <Text style={{fontSize:17}}>{mockupData.performance}</Text>
+            <Text style={{fontSize:17}}>{data.role}</Text>
+            <Text style={{fontSize:17}}>{data.telephone}</Text>
+            <Text style={{fontSize:17}}>{data.performance}</Text>
           </View>
         </View>
       </View>

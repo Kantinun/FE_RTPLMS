@@ -5,6 +5,33 @@ export interface Account {
     role: string;
 }
 
+export interface AccountProfile {
+    account_id: string,
+    username: string,
+    password: string,
+    fullname: string,
+    role: string,
+    telephone: string,
+    performance: string,
+    details: {
+      data: string
+    },
+    mng_id: string;
+}
+export const initAccountProfile = {
+    account_id: '',
+    username: '',
+    password: '',
+    fullname: '',
+    role: '',
+    telephone: '',
+    performance: '',
+    details: {
+      data: ''
+    },
+    mng_id: ''
+}
+
 export const doLogin = async (username: string, password: string) => {
     //  Prep. data for the request
     const data = {
@@ -24,5 +51,11 @@ export const doLogin = async (username: string, password: string) => {
     }
     const res = await fetch(`${env.API_BASE}:${env.API_PORT}/login`, requestOptions);
     const json: Account = await res.json();
+    return json;
+}
+
+export const fetchAccountData = async (id: string) => {
+    const res = await fetch(`${env.API_BASE}:${env.API_PORT}/accounts/${id}`);
+    const json: AccountProfile = await res.json();
     return json;
 }
