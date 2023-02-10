@@ -10,9 +10,12 @@ npm-debug.*
 *.orig.*
 web-build/
 
-/tests
 
 # macOS
 .DS_Store
 
 /app/config/env.ts
+
+#test
+/android
+/ios
