@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {departmentCardData} from '../../../assets/typings';
-import {FlatList, StyleSheet} from 'react-native';
+import {FlatList, StyleSheet, Text} from 'react-native';
 import DepartmentCard from '../../components/DepartmentCard';
 import MainContainer from '../../components/MainContainer';
 import BigText from '../../../assets/Texts/BigText';
@@ -10,51 +10,59 @@ import { useState } from 'react';
 
 const DashboardScreen = ({navigation}: any) => {
   const [searchText, setSearchText] = useState('');
+  const [fetch_data, setFetch_data] =  useState<Array<departmentCardData>>([])
   const [Data, setData] = React.useState(Array<departmentCardData>);
-  const DATA: Array<departmentCardData> = [
-    {
-      detailID: 1,
-      title: 'ต้มไก่',
-      productivity: 100,
-      entered: 20,
-      member: 20,
-      detailScreenName: 'Detail',
-    },
-    {
-      detailID: 2,
-      title: 'ทอดไก่',
-      productivity: 100,
-      entered: 20,
-      member: 20,
-      detailScreenName: 'Detail',
-    },
-    {
-      detailID: 3,
-      title: 'ตุ๋นไก่',
-      productivity: 100,
-      entered: 20,
-      member: 20,
-      detailScreenName: 'Detail',
-    },
-    {
-      detailID: 4,
-      title: 'นึ่งไก่',
-      productivity: 100,
-      entered: 20,
-      member: 20,
-      detailScreenName: 'Detail',
-    },
-  ];
+  // const DATA: Array<departmentCardData> = [
+  //   {
+  //     detailID: 1,
+  //     title: 'ต้มไก่',
+  //     productivity: 100,
+  //     entered: 20,
+  //     member: 20,
+  //     detailScreenName: 'Detail',
+  //   },
+  //   {
+  //     detailID: 2,
+  //     title: 'ทอดไก่',
+  //     productivity: 100,
+  //     entered: 20,
+  //     member: 20,
+  //     detailScreenName: 'Detail',
+  //   },
+  //   {
+  //     detailID: 3,
+  //     title: 'ตุ๋นไก่',
+  //     productivity: 100,
+  //     entered: 20,
+  //     member: 20,
+  //     detailScreenName: 'Detail',
+  //   },
+  //   {
+  //     detailID: 4,
+  //     title: 'นึ่งไก่',
+  //     productivity: 100,
+  //     entered: 20,
+  //     member: 20,
+  //     detailScreenName: 'Detail',
+  //   },
+  // ];
 
 
   const currentShifts = getCurrentShifts();
 
-
   React.useEffect(() => {
     currentShifts.then((res)=> {
+      setFetch_data(res)
       setData(res)
     });
   }, []);
+
+  const handle_search = (text: string) => {
+    setSearchText(text)
+    let new_data = fetch_data.filter((row_data)=> row_data.department.title.toLowerCase().includes(text.toLowerCase()))
+    setData(new_data? new_data: fetch_data)
+
+  }
 
   const renderDepartmentCard = ({item}: any) => (
     <DepartmentCard
@@ -64,8 +72,8 @@ const DashboardScreen = ({navigation}: any) => {
       testID="DepartmentCard"
     />
   );
+  // console.log(searchText)
 
-  // console.log(Data[0].department);
   return (
     <MainContainer>
       <SearchBar
@@ -75,7 +83,9 @@ const DashboardScreen = ({navigation}: any) => {
             round={true}
             lightTheme={true}
             value={searchText}
-            onChange={(text)=>{setSearchText(text)}}
+            onChangeText={(text)=>{
+              handle_search(text)
+            }}
           ></SearchBar>
       <FlatList style={ {width: '100%'}} data={Data} renderItem={renderDepartmentCard} />
     </MainContainer>
