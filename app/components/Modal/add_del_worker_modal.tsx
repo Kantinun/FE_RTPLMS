@@ -3,6 +3,9 @@ import { Text, View, StyleSheet, ScrollView} from 'react-native';
 import { Cell, Row, Table, TableWrapper } from 'react-native-table-component';
 import { SearchBar,CheckBox, Button} from '@rneui/themed'
 import Modal from "react-native-modal";
+import StepIndicator from 'react-native-step-indicator';
+import { colors } from '../../config/colors';
+import Swiper from 'react-native-swiper';
 
 const Add_del_worker_modal = (props: any) => {
   const data = props.data;
@@ -20,6 +23,90 @@ const Add_del_worker_modal = (props: any) => {
         }
         props.confirmHandler(newData)
   }
+    const [position, setPosition] = useState(0)
+    const indicatorStyles = {
+      stepIndicatorSize: 30,
+      currentStepIndicatorSize: 40,
+      separatorStrokeWidth: 3,
+      currentStepStrokeWidth: 5,
+      separatorFinishedColor: colors.primaryLight,
+      separatorUnFinishedColor: '#dddd',
+      stepIndicatorFinishedColor: colors.primaryLight,
+      stepIndicatorUnFinishedColor: '#aaaaaa',
+      stepStrokeCurrentColor: colors.primaryDark,
+      stepIndicatorCurrentColor: colors.primaryDark,
+      stepIndicatorLabelFontSize: 15,
+      currentStepIndicatorLabelFontSize: 15,
+      stepIndicatorLabelCurrentColor: 'white',
+      stepIndicatorLabelFinishedColor: '#ffffff',
+      stepIndicatorLabelUnFinishedColor: 'rgba(255,255,255,0.5)',
+      labelColor: '#888888',
+      labelSize: 15,
+      currentStepLabelColor: '#111111',
+      };
+      const resetParameter=()=>{
+        setPosition(0)
+        setSearchText('')
+      }
+      const onStepPress = (position: number) => {
+          setPosition(position);
+      };
+  const _renderForm  = () => {
+    return(
+      <View style={{backgroundColor: 'white', width: '100%', borderRadius: 20, paddingTop: 10}}>
+      <ScrollView>
+      <SearchBar
+          placeholder='Search Here...'
+          containerStyle={{backgroundColor: 'white', borderTopStartRadius: 20, borderTopEndRadius:20, borderTopWidth: 0, borderBottomWidth: 0}}
+          inputContainerStyle={{backgroundColor: '#eeee'}}
+          round={true}
+          lightTheme={true}
+          value={searchText}
+          onChange={(text)=>{setSearchText(text)}}
+        ></SearchBar>
+        <Table borderStyle={{borderWidth: 2, borderColor: '#eee', borderRadius:5}}>
+            <Row data={data.header} style={styles.head} textStyle={styles.text}></Row>
+              {
+                data.content.map((item)=>(
+                  <TableWrapper style={{ flexDirection: 'row'}}>
+                    <Cell data={<CheckBox
+                      center
+                      checked={item.isChecked}
+                      onPress={() => handleCheckboxClick(item.id)}
+                    />}> 
+                    </Cell>
+                    <Cell data={<Text style={{textAlign: 'center'}}>{item.name}</Text>}> </Cell>
+                    <Cell data={<Text style={{textAlign: 'center'}}>{item.performance}</Text>}> </Cell>
+                  </TableWrapper>
+                ))
+              }
+        </Table>
+        </ScrollView>
+      </View>
+    )
+  }
+
+  const _renderConfirmPage = (props) => {
+    const checkedPerson = props.data? props.data.content.filter((obj)=> obj.isChecked): []
+    return(
+      <View style={{alignItems: 'center', width: '100%'}}>
+        <Table 
+          borderStyle={{borderWidth: 2, borderColor: '#eee',}}
+          style={{width: '100%'}}
+        >
+              <Row data={["ชื่อ-นามสกุล", "กำลังการผลิต"]} style={styles.head} textStyle={styles.text} />
+              {
+              checkedPerson.map((rowData, index) => (
+              <TableWrapper style={styles.row}>
+                <Cell data={rowData.name} textStyle={styles.text}/>
+                <Cell data={rowData.performance} textStyle={styles.text}></Cell>
+              </TableWrapper>
+              ))
+              }
+          </Table>
+      </View>
+    )
+  }
 
   return (
     <Modal
@@ -28,41 +115,73 @@ const Add_del_worker_modal = (props: any) => {
         props.clickHandler(false);
       }}
     >
-      <View style={{backgroundColor: 'white', width: '100%', borderRadius: 20, paddingTop: 10}}>
-        <ScrollView>
-        <SearchBar
-            placeholder='Search Here...'
-            containerStyle={{backgroundColor: 'white', borderTopStartRadius: 20, borderTopEndRadius:20, borderTopWidth: 0, borderBottomWidth: 0}}
-            inputContainerStyle={{backgroundColor: '#eeee'}}
-            round={true}
-            lightTheme={true}
-            value={searchText}
-            onChange={(text)=>{setSearchText(text)}}
-          ></SearchBar>
-          <Table borderStyle={{borderWidth: 2, borderColor: '#eee', borderRadius:5}}>
-              <Row data={data.header} style={styles.head} textStyle={styles.text}></Row>
-                {
-                  data.content.map((item)=>(
-                    <TableWrapper style={{ flexDirection: 'row'}}>
-                      <Cell data={<CheckBox
-                        center
-                        checked={item.isChecked}
-                        onPress={() => handleCheckboxClick(item.id)}
-                      />}> 
-                      </Cell>
-                      <Cell data={<Text style={{textAlign: 'center'}}>{item.name}</Text>}> </Cell>
-                      <Cell data={<Text style={{textAlign: 'center'}}>{item.performance}</Text>}> </Cell>
-                    </TableWrapper>
-                  ))
-                }
-          </Table>
-          </ScrollView>
-          <View style={{width:'100%', flexDirection: 'row-reverse', padding: 15}}>
-            <Button title='Confirm' 
-              containerStyle={styles.footer_btn}
-              onPress={()=> props.handleConfirm(props.mode)}></Button>
-          </View>
-        </View>
+      <View style={{flex: 1}}>
+                <View
+                    style={{
+                        marginTop: 17,
+                        backgroundColor: "#ffffff",
+                        marginLeft: 10,
+                        marginRight: 10,
+                        marginBottom: 17,
+                        flex: 3,
+                        borderRadius:20,
+                    }}
+                >
+                    <View style={styles.stepIndicator}>
+                        <StepIndicator
+                        stepCount={2}
+                        customStyles={indicatorStyles}
+                        currentPosition={position}
+                        onPress={onStepPress}
+                        labels={['เลือกพนักงาน', 'ยืนยันข้อมูล']}
+                        />
+                    </View>
+                    <View style={{flex: 1}}>
+                    <ScrollView>
+                      <Swiper
+                          contentContainerStyle={{ alignItems: 'center', justifyContent: 'center'}}
+                          loop={false}
+                          index={position}
+                          autoplay={false}
+                          showsButtons={false}
+                          showsPagination={false}
+                          bounces={true}
+                          
+                          onIndexChanged={(page) => {
+                          setPosition(page);
+                          }}
+                      >
+                        <_renderForm/>
+                        <_renderConfirmPage data={data} />
+                      </Swiper>
+                      </ScrollView>
+                        <View style={{width:'100%', justifyContent: 'space-between', padding: 15, flexDirection: 'row', borderTopWidth: 1, borderTopColor: '#eeee'}}>
+                          <Button
+                            disabled={position==0} 
+                            title='Previous' 
+                            containerStyle={styles.footer_btn}
+                            onPress={()=>{
+                              setPosition(position-1)
+                          }}></Button>
+                          {position < 1?
+                            <Button title='Next' 
+                              containerStyle={styles.footer_btn}
+                              onPress={()=>{
+                                setPosition(position+1)
+                            }}></Button> 
+                          :
+                            <Button title='Comfirm' 
+                              containerStyle={styles.footer_btn}
+                              onPress={()=>{
+                                resetParameter()
+                                props.clickHandler(false)
+                                props.handleConfirm(props.mode)
+                            }}></Button> 
+                          }
+                        </View>
+                    </View>
+                </View>
+            </View>
     </Modal>
   );
 };
@@ -72,6 +191,11 @@ const styles = StyleSheet.create({
   text: { margin: 6, textAlign: 'center'},
   footer_btn:{
     borderRadius: 10,
-  }
+  },
+  stepIndicator: {
+    marginTop: 40,
+    marginBottom: 20,
+  },
+  row: { flexDirection: 'row', backgroundColor: 'white' },
 })
 export default Add_del_worker_modal;
