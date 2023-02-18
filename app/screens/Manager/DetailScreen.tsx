@@ -25,7 +25,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
   const [addOtVisible, setAddOtVisible] = useState(false);
   const [delOtVisible, setDelOtVisible] = useState(false);
   const [searchText, setSearchText] = useState('');
-  const updateSearch = (text: string) => {setSearchText(text)}
+
   const [date, setDate] = useState<Date>();
   const width = Dimensions.get('window').width;
   
@@ -45,15 +45,23 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
     }
   }
   
+  const [fetchData, setFetchData] = React.useState<DataForPlanAndOt>({plan: [], ot: []});
   const [dataForPlanAndOt, setDataForPlanAndOt] = React.useState<DataForPlanAndOt>({plan: [], ot: []});
   const accountInThisShift: Promise<any> = getAccountInThisShift(route.params.shift.shiftCode); // Call Api
 
+  const updateSearch = (text: string) => {
+    setSearchText(text)
+    setDataForPlanAndOt({plan: index==0?fetchData.plan.filter((data)=> data.name.toLowerCase().includes(text.toLowerCase())):fetchData.plan, 
+                        ot:index==1?fetchData.ot.filter((data)=> data.name.toLowerCase().includes(text.toLowerCase())):fetchData.ot})
+  }
+  
   React.useEffect(() => {
     accountInThisShift.then((res) => {
       
       return getDataForPlanAndOt(res);
     }).then((data) => {
       
+      setFetchData(data)
       setDataForPlanAndOt(data);
       setDate(new Date(route.params.shift.shiftDate))
     })
@@ -323,10 +331,10 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
         </Tab>
 
         <TabView value={index} onChange={setIndex} animationType="spring">
-          <TabView.Item style={{ backgroundColor: 'red', width: '100%' }}>
+          <TabView.Item style={{ width: '100%' }}>
           <DetailsDataTable dataPlan={dataForPlanAndOt.plan} mode='work_plan'></DetailsDataTable>
           </TabView.Item>
-          <TabView.Item style={{ backgroundColor: 'blue', width: '100%' }}>
+          <TabView.Item style={{  width: '100%' }}>
           <DetailsDataTable dataOt={dataForPlanAndOt.ot} mode='ot_plan'></DetailsDataTable>
           </TabView.Item>
         </TabView>
