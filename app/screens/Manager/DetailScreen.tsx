@@ -13,11 +13,15 @@ import Add_del_worker_modal from '../../components/Modal/add_del_worker_modal';
 import Add_del_ot_modal from '../../components/Modal/add_del_ot_modal';
 import {Button, SearchBar, Tab, TabView, Icon} from '@rneui/themed'
 import { Dropdown } from 'react-native-element-dropdown';
+import { useContext } from 'react';
+import { Appcontext } from '../../../AppContext';
 
 
 type Props = {};
 
 const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
+
+  const {state} = React.useContext(Appcontext);
   
   const navigation = useNavigation<NavigationProp<any>>();
   const [addWorkerVisible, setAddWorkerVisible] = useState(false);
@@ -138,7 +142,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
   const openAddModal = async () => {
     // Use manager id instead 1
     const tmp = {...modalAddData};
-    tmp.content = await getFreeWorkers('1',route.params.shift.shiftCode,route.params.shift.shiftDate);
+    tmp.content = await getFreeWorkers(state.data.id,route.params.shift.shiftCode,route.params.shift.shiftDate);
 
     setModalAddData(tmp);
     setAddWorkerVisible(true);

@@ -6,6 +6,8 @@ import styled from 'styled-components/native';
 import {colors} from '../config/colors';
 import BigText from '../../assets/Texts/BigText';
 import RegularText from '../../assets/Texts/RegularText';
+import moment from 'moment';
+import { useEffect } from 'react';
 
 const {white, black, primary} = colors;
 
@@ -38,6 +40,9 @@ const CardBody = styled.View`
   padding-horizontal: 24px;
 `;
 
+
+
+
 const DepartmentCard = (props: any) => {
   const navigation = useNavigation<NavigationProp<any>>();
   const screenName = props.detailScreenName;
@@ -50,7 +55,7 @@ const DepartmentCard = (props: any) => {
           onPress={() => {
             navigation.navigate(screenName, {
               department: props.department,
-              shift: props.shift
+              shift: props.currentShift
             })
           }}
           testID="DepartmentCard.DetailLink">
@@ -59,15 +64,14 @@ const DepartmentCard = (props: any) => {
       </CardHeadeer>
       <CardBody style={{height: '80%'}}>
         <RegularText>
-          กำลังการผลิต: <BigText>{props.shift.productivity} </BigText>
-          {/* กำลังการผลิต: <BigText>{props.shift.producttivity} </BigText> */}
+          กำลังการผลิต: <BigText>{props.currentShift.idealPerformance} </BigText>
           กก./ชม.
         </RegularText>
         <RegularText>
           เข้างานแล้ว:
           <BigText>
             {' '}
-            {props.shift.entered}/{props.shift.member}{' '}
+            {props.currentShift.entered}/{props.currentShift.member}{' '}
           </BigText>
           คน
         </RegularText>

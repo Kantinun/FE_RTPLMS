@@ -53,8 +53,7 @@ const Add_del_worker_modal = (props: any) => {
       };
   const _renderForm  = () => {
     return(
-      <View style={{backgroundColor: 'white', width: '100%', borderRadius: 20, paddingTop: 10}}>
-      <ScrollView>
+      <View style={{backgroundColor: 'white', width: '100%', borderRadius: 20, paddingTop: 10, flex: 1}}>
       <SearchBar
           placeholder='Search Here...'
           containerStyle={{backgroundColor: 'white', borderTopStartRadius: 20, borderTopEndRadius:20, borderTopWidth: 0, borderBottomWidth: 0}}
@@ -64,6 +63,7 @@ const Add_del_worker_modal = (props: any) => {
           value={searchText}
           onChange={(text)=>{setSearchText(text)}}
         ></SearchBar>
+        <ScrollView>
         <Table borderStyle={{borderWidth: 2, borderColor: '#eee', borderRadius:5}}>
             <Row data={data.header} style={styles.head} textStyle={styles.text}></Row>
               {
@@ -137,7 +137,6 @@ const Add_del_worker_modal = (props: any) => {
                         />
                     </View>
                     <View style={{flex: 1}}>
-                    <ScrollView>
                       <Swiper
                           contentContainerStyle={{ alignItems: 'center', justifyContent: 'center'}}
                           loop={false}
@@ -154,7 +153,6 @@ const Add_del_worker_modal = (props: any) => {
                         <_renderForm/>
                         <_renderConfirmPage data={data} />
                       </Swiper>
-                      </ScrollView>
                         <View style={{width:'100%', justifyContent: 'space-between', padding: 15, flexDirection: 'row', borderTopWidth: 1, borderTopColor: '#eeee'}}>
                           <Button
                             disabled={position==0} 
