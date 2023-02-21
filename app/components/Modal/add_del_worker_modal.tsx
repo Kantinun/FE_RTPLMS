@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import { Text, View, StyleSheet, ScrollView} from 'react-native';
+import { Text, View, StyleSheet, ScrollView, TextInput} from 'react-native';
 import { Cell, Row, Table, TableWrapper } from 'react-native-table-component';
-import { SearchBar,CheckBox, Button} from '@rneui/themed'
+import { SearchBar,CheckBox, Button, Icon} from '@rneui/themed'
 import Modal from "react-native-modal";
 import StepIndicator from 'react-native-step-indicator';
 import { colors } from '../../config/colors';
 import Swiper from 'react-native-swiper';
 
 const Add_del_worker_modal = (props: any) => {
-  const data = props.data;
-  const [searchText,setSearchText] = useState('')
+  let data = props.data
+  const [searchText, setSearchText] = useState('');
   const handleCheckboxClick = (id) => {
     let tmp = data.content.map((content)=>{
           if (content.id === id){
@@ -51,18 +51,42 @@ const Add_del_worker_modal = (props: any) => {
       const onStepPress = (position: number) => {
           setPosition(position);
       };
+      const handleSearch = (text: string) => {
+        setSearchText(text);
+      };
   const _renderForm  = () => {
     return(
       <View style={{backgroundColor: 'white', width: '100%', borderRadius: 20, paddingTop: 10, flex: 1}}>
-      <SearchBar
-          placeholder='Search Here...'
-          containerStyle={{backgroundColor: 'white', borderTopStartRadius: 20, borderTopEndRadius:20, borderTopWidth: 0, borderBottomWidth: 0}}
-          inputContainerStyle={{backgroundColor: '#eeee'}}
-          round={true}
-          lightTheme={true}
-          value={searchText}
-          onChange={(text)=>{setSearchText(text)}}
-        ></SearchBar>
+        {/* <View style={{height:'10%', 
+                      width:'90%', 
+                      justifyContent: 'center', 
+                      alignItems: 'center', 
+                      flexDirection: 'row', 
+                      backgroundColor:'#eeee', 
+                      borderRadius:10, 
+                      alignSelf: 'center',
+                      marginBottom: 10
+                    }}>
+          <Icon type='ionicon' name='search-sharp' size={15} color='#aaae' />
+          <TextInput
+              style={{ height: '100%', width: '80%', borderRadius: 10, padding: 10 }}
+              placeholder="SEARCH WORKER HERE ..."
+              placeholderTextColor="#aaae"
+              onChangeText={handleSearch}
+              value={searchText}
+            />
+        </View> */}
+        <SearchBar
+            placeholder='Search Here...'
+            containerStyle={{backgroundColor: 'white', borderRadius: 15}}
+            inputContainerStyle={{backgroundColor: '#eeee'}}
+            round={true}
+            lightTheme={true}
+            value={searchText}
+            onChangeText={(text)=>{
+              handleSearch(text)
+            }}
+          ></SearchBar>
         <ScrollView>
         <Table borderStyle={{borderWidth: 2, borderColor: '#eee', borderRadius:5}}>
             <Row data={data.header} style={styles.head} textStyle={styles.text}></Row>
@@ -87,7 +111,7 @@ const Add_del_worker_modal = (props: any) => {
   }
 
   const _renderConfirmPage = (props) => {
-    const checkedPerson = props.data? props.data.content.filter((obj)=> obj.isChecked): []
+    const checkedPerson = props.data.content? props.data.content.filter((obj)=> obj.isChecked): []
     return(
       <View style={{alignItems: 'center', width: '100%'}}>
         <Table 

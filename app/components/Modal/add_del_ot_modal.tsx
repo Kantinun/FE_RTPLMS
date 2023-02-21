@@ -18,21 +18,24 @@ function Add_del_ot_modal(props: unknown) {
 
     const headerAdd = ['Name', 'Perf.','Hours']
     const headerAddManual = ['','Name','Perf.']
-    const [mockupAddData, setMockupAddData] = useState([
+    const [fetch_data_add] = useState([
       {id:1, name:'นาย ก', performance:10, isCheck: false},
       {id:2, name:'นาย ข', performance:5, isCheck: false},
       {id:3, name:'นาย ค', performance:7, isCheck: false},
       {id:4, name:'นาย ง', performance:8, isCheck: false},
       {id:5, name:'นาย จ', performance:8, isCheck: false},
     ])
+    const [mockupAddData, setMockupAddData] = useState(fetch_data_add)
+
     const headerDel = ['','Name','Hours']
-    const [mockupDelData, setMockupDelData] = useState([
+    const [fetch_data_del] = useState([
       {id:1, name:'นาย ก', performance:10, hour: 4, isCheck: false},
       {id:2, name:'นาย ข', performance:5, hour: 3, isCheck: false},
       {id:3, name:'นาย ค', performance:7, hour: 3, isCheck: false},
       {id:4, name:'นาย ง', performance:8, hour: 2, isCheck: false},
       {id:5, name:'นาย จ', performance:8, hour: 4, isCheck: false},
     ])
+    const [mockupDelData, setMockupDelData] = useState(fetch_data_del)
 
     const [position, setPosition] = useState(0)
     const indicatorStyles = {
@@ -67,6 +70,15 @@ function Add_del_ot_modal(props: unknown) {
       setSelected_method(null)
       setBtn_group_index(null)
       setValue('')
+      setSearchText('')
+      setMockupAddData(fetch_data_add)
+      setMockupDelData(fetch_data_del)
+    }
+
+    const handle_search = (text, setDataMethod, fetchData) => {
+      setSearchText(text)
+      let newData = fetchData.filter((ele)=>ele.name.toLowerCase().includes(text.toLowerCase()))
+      setDataMethod(newData? newData: fetchData)
     }
 
     const _renderAddForm = () => {
@@ -149,13 +161,16 @@ function Add_del_ot_modal(props: unknown) {
                 round={true}
                 lightTheme={true}
                 value={searchText}
-                // onChange={(text)=>{setSearchText(text)}}
+                onChangeText={(text)=>{
+                  handle_search(text,setMockupAddData,fetch_data_add)
+                }}
               ></SearchBar>
 
               <Table borderStyle={{borderWidth: 2, borderColor: '#eee'}}>
                   <Row data={headerAddManual} style={styles.head} textStyle={styles.text} />
                   {
-                  mockupAddData.map((rowData, index) => (
+                  mockupAddData.map((rowData, index) => {
+                  return(
                   <TableWrapper style={{ flexDirection: 'row'}}>
                     <Cell data={<CheckBox
                       center
@@ -166,7 +181,9 @@ function Add_del_ot_modal(props: unknown) {
                     <Cell data={<Text style={{textAlign: 'center'}}>{rowData.name}</Text>}> </Cell>
                     <Cell data={<Text style={{textAlign: 'center'}}>{rowData.performance}</Text>}> </Cell>
                   </TableWrapper>
-                  ))
+                  )}
+                  
+                  )
                   }
               </Table>
             </View>
@@ -185,7 +202,9 @@ function Add_del_ot_modal(props: unknown) {
             round={true}
             lightTheme={true}
             value={searchText}
-            onChange={(text)=>{setSearchText(text)}}
+            onChangeText={(text)=>{
+              handle_search(text,setMockupDelData,fetch_data_del)
+            }}
           ></SearchBar>
           <Table borderStyle={{borderWidth: 2, borderColor: '#eee'}}>
                 <Row data={headerDel} style={styles.head} textStyle={styles.text} />
@@ -239,7 +258,10 @@ function Add_del_ot_modal(props: unknown) {
     return (
         <Modal 
             isVisible={props.visible}
-            onBackdropPress={()=>{props.clickHandler(!props.visible)}}
+            onBackdropPress={()=>{
+              props.clickHandler(!props.visible)
+              resetParameter()
+            }}
         >
             <View style={{flex: 1}}>
                 <View

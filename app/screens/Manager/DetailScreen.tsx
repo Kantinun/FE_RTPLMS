@@ -25,6 +25,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
   
   const navigation = useNavigation<NavigationProp<any>>();
   const [addWorkerVisible, setAddWorkerVisible] = useState(false);
+  const [addSearchText, setAddSearchText] = useState('')
   const [delWorkerVisible, setDelWorkerVisible] = useState(false);
   const [addOtVisible, setAddOtVisible] = useState(false);
   const [delOtVisible, setDelOtVisible] = useState(false);
@@ -73,63 +74,10 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
   const [modalAddData, setModalAddData] = useState<{header:string[], content:ModalAddData[]}>({
     header:['','ชื่อ-นามสกุล','กำลังการผลิต'],
     content: []
-    // content:
-    // [
-    //   {
-    //     name: 'นาย ก',
-    //     id: 1,
-    //     performance: '5',
-    //     isChecked: false
-    //   },
-    //   {
-    //     name: 'นาย ข',
-    //     id: 2,
-    //     performance: '7',
-    //     isChecked: false
-    //   },
-    //   {
-    //     name: 'นาย ค',
-    //     id: 3,
-    //     performance: '6',
-    //     isChecked: false
-    //   },
-    //   {
-    //     name: 'นาย ง',
-    //     id: 4,
-    //     performance: '8',
-    //     isChecked: false
-    //   },
-    // ]
   })
   const [modalDelData, setModalDelData] = useState<{header:string[], content:ModalAddData[]}>({
     header:['','ชื่อ-นามสกุล','กำลังการผลิต'],
     content: []
-    // [
-    //   {
-    //     name: 'นาย A',
-    //     id: 5,
-    //     performance: '5',
-    //     isChecked: false
-    //   },
-    //   {
-    //     name: 'นาย B',
-    //     id: 6,
-    //     performance: '7',
-    //     isChecked: false
-    //   },
-    //   {
-    //     name: 'นาย C',
-    //     id: 7,
-    //     performance: '6',
-    //     isChecked: false
-    //   },
-    //   {
-    //     name: 'นาย D',
-    //     id: 8,
-    //     performance: '8',
-    //     isChecked: false
-    //   },
-    // ]
   })
   const shifts = [
     { label: '09.00-17.00', value: 'S1' },
@@ -143,7 +91,9 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
     // Use manager id instead 1
     const tmp = {...modalAddData};
     tmp.content = await getFreeWorkers(state.data.id,route.params.shift.shiftCode,route.params.shift.shiftDate);
-
+    tmp.content.map((ele)=>{
+      ele = {...ele, isChecked: false}
+    })
     setModalAddData(tmp);
     setAddWorkerVisible(true);
   }
@@ -351,7 +301,9 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
         data={modalAddData} 
         confirmHandler={setModalAddData}
         handleConfirm={handleConfirm}
+        test={setAddSearchText}
         mode='add'
+
       />
       <Add_del_worker_modal 
         visible={delWorkerVisible} 
