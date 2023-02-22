@@ -9,7 +9,7 @@ import { useState } from "react";
 import { Appcontext } from "../../../AppContext";
 import moment from "moment";
 import { io } from "socket.io-client";
-import env from '../../config/env';
+import env from "../../config/env";
 
 const DashboardScreen = ({ navigation }: any) => {
   const { state } = React.useContext(Appcontext);
@@ -18,22 +18,45 @@ const DashboardScreen = ({ navigation }: any) => {
   const [Data, setData] = React.useState(Array<departmentCardData>);
 
   const department_details = get_departmentDetails(state.data.id);
-  
+
   // ===================
   // Web Socket
   // ===================
   const websocket = io(`${env.API_BASE}:${env.API_PORT}`);
+
   const updateSuccessProductTopic = `${state.data.id}-product`;
   const updateAttendanceTopic = `${state.data.id}-attendance`;
-  websocket.on('connect', () => {
-    console.log('connected');
+
+  websocket.on("connect", () => {
+    console.log("connected");
   });
-  websocket.on(updateSuccessProductTopic, (d: Object)=>{
-    console.log(d);
-  })
-  websocket.on(updateAttendanceTopic, (d: Object)=>{
-    console.log(d);
-  })
+
+  // Update success product
+  websocket.on(updateSuccessProductTopic, async (d: Object) => {
+    const new_deartment_detail = await get_departmentDetails(state.data.id);
+
+    new_deartment_detail
+      ? setFetch_data(new_deartment_detail)
+      : { department: [], shifts: [] };
+    new_deartment_detail
+      ? setData(new_deartment_detail)
+      : { department: [], shifts: [] };
+
+    console.log("success product updated");
+  });
+  // Update worker's attendace
+  websocket.on(updateAttendanceTopic, async (d: Object) => {
+    const new_deartment_detail = await get_departmentDetails(state.data.id);
+
+    new_deartment_detail
+      ? setFetch_data(new_deartment_detail)
+      : { department: [], shifts: [] };
+    new_deartment_detail
+      ? setData(new_deartment_detail)
+      : { department: [], shifts: [] };
+
+    console.log("attendance updated");
+  });
   // ===================
   // ===================
 
