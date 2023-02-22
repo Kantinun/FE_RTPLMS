@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Text, View, StyleSheet, ScrollView, TextInput} from 'react-native';
 import { Cell, Row, Table, TableWrapper } from 'react-native-table-component';
 import { SearchBar,CheckBox, Button, Icon} from '@rneui/themed'
@@ -8,8 +8,11 @@ import { colors } from '../../config/colors';
 import Swiper from 'react-native-swiper';
 
 const Add_del_worker_modal = (props: any) => {
-  let data = props.data
-  const [searchText, setSearchText] = useState('');
+  const [data, setData] = useState({...props.data});
+  useEffect(()=>{
+    setData({...props.data})
+  }, [props.data])
+  const [searchText, setSearchText]= useState('')
   const handleCheckboxClick = (id) => {
     let tmp = data.content.map((content)=>{
           if (content.id === id){
@@ -51,42 +54,18 @@ const Add_del_worker_modal = (props: any) => {
       const onStepPress = (position: number) => {
           setPosition(position);
       };
-      const handleSearch = (text: string) => {
-        setSearchText(text);
-      };
+  const handleSearch = (text: string) => {
+    setSearchText(text)
+    let new_data = data
+    let filter_data = props.data.content.filter((row_data)=> row_data.name.toLowerCase().includes(text.toLowerCase()))
+    console.log(filter_data? 'true': 'false')
+    new_data.content = filter_data? filter_data: props.data.content
+    setData(new_data)
+    console.log('props',props.data)
+    console.log('newData',new_data)
+  }
   const _renderForm  = () => {
     return(
-      <View style={{backgroundColor: 'white', width: '100%', borderRadius: 20, paddingTop: 10, flex: 1}}>
-        {/* <View style={{height:'10%', 
-                      width:'90%', 
-                      justifyContent: 'center', 
-                      alignItems: 'center', 
-                      flexDirection: 'row', 
-                      backgroundColor:'#eeee', 
-                      borderRadius:10, 
-                      alignSelf: 'center',
-                      marginBottom: 10
-                    }}>
-          <Icon type='ionicon' name='search-sharp' size={15} color='#aaae' />
-          <TextInput
-              style={{ height: '100%', width: '80%', borderRadius: 10, padding: 10 }}
-              placeholder="SEARCH WORKER HERE ..."
-              placeholderTextColor="#aaae"
-              onChangeText={handleSearch}
-              value={searchText}
-            />
-        </View> */}
-        <SearchBar
-            placeholder='Search Here...'
-            containerStyle={{backgroundColor: 'white', borderRadius: 15}}
-            inputContainerStyle={{backgroundColor: '#eeee'}}
-            round={true}
-            lightTheme={true}
-            value={searchText}
-            onChangeText={(text)=>{
-              handleSearch(text)
-            }}
-          ></SearchBar>
         <ScrollView>
         <Table borderStyle={{borderWidth: 2, borderColor: '#eee', borderRadius:5}}>
             <Row data={data.header} style={styles.head} textStyle={styles.text}></Row>
@@ -106,7 +85,6 @@ const Add_del_worker_modal = (props: any) => {
               }
         </Table>
         </ScrollView>
-      </View>
     )
   }
 
@@ -174,7 +152,20 @@ const Add_del_worker_modal = (props: any) => {
                           setPosition(page);
                           }}
                       >
+                      <View style={{backgroundColor: 'white', width: '100%', borderRadius: 20, paddingTop: 10, flex: 1}}>
+                        <SearchBar
+                          placeholder='Search Here...'
+                          containerStyle={{backgroundColor: 'white', borderTopStartRadius: 20, borderTopEndRadius:20, borderTopWidth: 0, borderBottomWidth: 0}}
+                          inputContainerStyle={{backgroundColor: '#eeee'}}
+                          round={true}
+                          lightTheme={true}
+                          value={searchText}
+                          onChangeText={(text)=>{
+                            handleSearch(text)
+                          }}
+                        ></SearchBar>
                         <_renderForm/>
+                      </View>
                         <_renderConfirmPage data={data} />
                       </Swiper>
                         <View style={{width:'100%', justifyContent: 'space-between', padding: 15, flexDirection: 'row', borderTopWidth: 1, borderTopColor: '#eeee'}}>

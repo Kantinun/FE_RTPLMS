@@ -104,7 +104,6 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
     tmp.content = dataForPlanAndOt.plan.map((account)=>{
       return {...account, isChecked: false}
     });
-
     setModalDelData(tmp);
     setDelWorkerVisible(true);
   }
