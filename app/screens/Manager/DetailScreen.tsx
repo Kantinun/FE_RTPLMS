@@ -88,7 +88,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
       } else {
         setRemainingTime(newRemainingTime);
       }
-    }, 1000);
+    }, 60000);
 
     return () => clearInterval(interval);
   }, [endTime]);
