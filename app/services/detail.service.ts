@@ -27,6 +27,29 @@ export interface ModalAddData {
     performance: string;
     isChecked: boolean;
 }
+
+export const getShift_li = async (department_id: string) =>{
+    const res = await fetch(`${env.API_BASE}:${env.API_PORT}/shifts/departments/${department_id}`)
+    const json = await res.json();
+    return dataHandler(json)
+}
+
+export const dataHandler = (data: any) => {
+    
+    return data[0].map((row)=>{
+        return{
+        shiftCode: String(row.shiftCode),
+        shiftDate: String(row.shiftDate),
+        shiftTime: String(row.shiftTime),
+        productivity: parseInt(row.successProduct),
+        entered: parseInt(row.checkInMember),
+        member: parseInt(row.allMember),
+        idealPerformance: parseInt(row.idealPerformance),
+        remain_time: row.remain_time,
+        }
+    })
+  };
+
 export const getAccountInThisShift = async (shiftCode: string) => {
     const res = await fetch(`${env.API_BASE}:${env.API_PORT}/detail/shift/${shiftCode}`);
     const json = await res.json();

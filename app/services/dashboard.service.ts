@@ -1,9 +1,9 @@
+import moment from "moment";
 import env from "../config/env";
 
 export const get_departmentDetails = async (mngId: string) => {
         const res = await fetch(`${env.API_BASE}:${env.API_PORT}/dashboard/${mngId}`);
         const json = await res.json();
-        // console.log(dataHandler(json))
         return(dataHandler(json));
 };
 
@@ -22,24 +22,15 @@ export const dataHandler = (data: any) => {
         shiftDate: String(shift.shiftDate),
         shiftTime: String(shift.shiftTime),
         productivity: parseInt(shift.successProduct),
-        entered: parseInt(shift.allMember),
-        member: parseInt(shift.checkInMember),
+        entered: parseInt(shift.checkInMember),
+        member: parseInt(shift.allMember),
         idealPerformance: parseInt(shift.idealPerformance),
+        remain_time: moment(`${Math.floor(shift.remain_time/60)}:${Math.floor(shift.remain_time%60)}`,'H:m'),
       }})
       ,
       detailScreenName: 'Detail',
 
     }
-    // const newData = {
-    //   detailID: parseInt(data.department[i].department_id),
-    //   title: String(data.department[i].name),
-    //   shiftCode: String(shift.shiftCode),
-    //   productivity: parseInt(shift.successProduct),
-    //   entered: parseInt(shift.allMember),
-    //   member: parseInt(shift.checkInMember),
-    //   detailScreenName: 'Detail',
-    // }
-    // console.log(newData);
     res.push(newData);
   }
   return res;

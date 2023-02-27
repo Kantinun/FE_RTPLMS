@@ -6,6 +6,7 @@ import Modal from "react-native-modal";
 import StepIndicator from 'react-native-step-indicator';
 import { colors } from '../../config/colors';
 import Swiper from 'react-native-swiper';
+import BigText from '../../../assets/Texts/BigText';
 
 const Add_del_worker_modal = (props: any) => {
   const [data, setData] = useState({...props.data});
@@ -129,6 +130,7 @@ const Add_del_worker_modal = (props: any) => {
                         borderRadius:20,
                     }}
                 >
+                  <BigText style={{marginTop:20}}>{props.mode==="add"? 'เพิ่มพนักงาน':'ลดพนักงาน'}</BigText>
                     <View style={styles.stepIndicator}>
                         <StepIndicator
                         stepCount={2}
@@ -206,7 +208,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   stepIndicator: {
-    marginTop: 40,
+    marginTop: 20,
     marginBottom: 20,
   },
   row: { flexDirection: 'row', backgroundColor: 'white' },
