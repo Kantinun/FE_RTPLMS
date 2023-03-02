@@ -28,10 +28,10 @@ export interface ModalAddData {
     isChecked: boolean;
 }
 
-export const getShift_li = async (department_id: string) =>{
-    const res = await fetch(`${env.API_BASE}:${env.API_PORT}/shifts/departments/${department_id}`)
+export const getShift_li = async (department_id: string, date: string) =>{
+    const res = await fetch(`${env.API_BASE}:${env.API_PORT}/shifts/departments/${department_id}/${date}`)
     const json = await res.json();
-    return dataHandler(json)
+    return json.error? []:dataHandler(json)
 }
 
 export const dataHandler = (data: any) => {
@@ -56,7 +56,6 @@ export const getAccountInThisShift = async (shiftCode: string) => {
 };
 
 export const getDataForPlanAndOt = (accounts: DetailResponse[]) => {
-    console.log('\x1b[35m%s\x1b[0m', accounts)
     const dataForPlanAndOt = accounts.reduce((obj: DataForPlanAndOt, account) => {
         obj.plan.push({
             name: account.name, 

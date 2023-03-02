@@ -35,7 +35,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
   
   navigation.setOptions({title: route.params.department.title});
   
-  const get_shift_li: Promise<any> = getShift_li(route.params.department.id)
+  const get_shift_li: Promise<any> = getShift_li(route.params.department.id, moment(date).format('YYYY-MM-DD'))
   const [shift_time_li,setShift_time_li] = useState([])
   const [shift_li, setShift_li] = useState([])
   const [currentShift, setCurrentShift] = useState(route.params.shift)
@@ -89,6 +89,26 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
 
     return () => clearInterval(interval);
   }, [endTime]);
+
+  useEffect(()=>{
+    get_shift_li.then((res)=> {
+      setShift_li(res)
+      //res is 2 dimention array then we use pop() to redimention to 1
+      let tmp_li = []
+      res.map((ele) => {
+        tmp_li.push({
+          label: `${moment(ele.shiftTime, 'HH:mm:ss').format('HH:mm')}-${moment(ele.shiftTime,'HH:mm:ss').add(8,'hours').format("HH:mm")}`,
+          value: ele.shiftCode,
+        })
+      })
+      setShift_time_li(tmp_li? tmp_li: [])
+      setFetchData({plan: [], ot: []})
+      setDataForPlanAndOt({plan: [], ot: []})
+      if(tmp_li.length==0){
+        setCurrentShift({})
+      }
+  } )
+  },[date])
 
   const [modalAddData, setModalAddData] = useState<{header:string[], content:ModalAddData[]}>({
     header:['','ชื่อ-นามสกุล','กำลังการผลิต'],
@@ -174,6 +194,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
         <MyDateTimePicker date={date} setDate={setDate} />
         <Dropdown
           style={[styles.dropdown,styles.raise]}
+          placeholder="Select shift"
           placeholderStyle={styles.placeholderStyle}
           selectedTextStyle={styles.selectedTextStyle}
           iconStyle={styles.iconStyle}

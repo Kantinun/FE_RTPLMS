@@ -59,11 +59,8 @@ const Add_del_worker_modal = (props: any) => {
     setSearchText(text)
     let new_data = data
     let filter_data = props.data.content.filter((row_data)=> row_data.name.toLowerCase().includes(text.toLowerCase()))
-    console.log(filter_data? 'true': 'false')
     new_data.content = filter_data? filter_data: props.data.content
     setData(new_data)
-    console.log('props',props.data)
-    console.log('newData',new_data)
   }
   const _renderForm  = () => {
     return(
