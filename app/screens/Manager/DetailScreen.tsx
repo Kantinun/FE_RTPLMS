@@ -225,7 +225,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
                     {item === 'page1' ? (
                       <View style={styles.statusCard}>
                         <BigText>ผลผลิต : {currentShift.productivity}</BigText>
-                        <BigText>เวลาที่เหลือ : {remainingTime.seconds()>0?`${remainingTime.hours()} ชม. ${remainingTime.minutes()} นาที`:'จบกะแล้ว'}</BigText>
+                        <BigText>เวลาที่เหลือ : {remainingTime.seconds()>0? remainingTime.asHours()<=8?`${remainingTime.hours()} ชม. ${remainingTime.minutes()} นาที`:'ยังไม่เริ่มกะ':'จบกะแล้ว'}</BigText>
                         <BigText>กำลังผลิต : {`${currentShift.idealPerformance} /ชม.`}</BigText>
                         <BigText>คาดการณ์ : {currentShift.member}</BigText>
                       </View>
