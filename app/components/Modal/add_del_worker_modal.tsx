@@ -64,8 +64,8 @@ const Add_del_worker_modal = (props: any) => {
   }
   const _renderForm  = () => {
     return(
-        <ScrollView>
-        <Table borderStyle={{borderWidth: 2, borderColor: '#eee', borderRadius:5}}>
+        <ScrollView style={{marginHorizontal: 5}}>
+        <Table borderStyle={{borderWidth: 2, borderColor: '#eee'}}>
             <Row data={data.header} style={styles.head} textStyle={styles.text}></Row>
               {
                 data.content.map((item)=>(
@@ -89,7 +89,7 @@ const Add_del_worker_modal = (props: any) => {
   const _renderConfirmPage = (props) => {
     const checkedPerson = props.data.content? props.data.content.filter((obj)=> obj.isChecked): []
     return(
-      <View style={{alignItems: 'center', width: '100%'}}>
+        <ScrollView style={{marginHorizontal: 5}}>
         <Table 
           borderStyle={{borderWidth: 2, borderColor: '#eee',}}
           style={{width: '100%'}}
@@ -104,7 +104,7 @@ const Add_del_worker_modal = (props: any) => {
               ))
               }
           </Table>
-      </View>
+          </ScrollView>
     )
   }
 
@@ -199,7 +199,7 @@ const Add_del_worker_modal = (props: any) => {
 };
 
 const styles = StyleSheet.create({
-  head: { height: 40, backgroundColor: '#ddd' },
+  head: { height: 40, backgroundColor: '#ddd', borderTopStartRadius: 15, borderTopEndRadius: 15},
   text: { margin: 6, textAlign: 'center'},
   footer_btn:{
     borderRadius: 10,

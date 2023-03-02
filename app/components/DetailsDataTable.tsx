@@ -62,7 +62,7 @@ function DetailsDataTable(props: any) {
 }
 
 const styles = StyleSheet.create({
-    head: { height: 40, backgroundColor: '#ddd' },
+    head: { height: 40, backgroundColor: '#ddd', borderTopStartRadius: 15, borderTopEndRadius: 15, marginTop: 10 },
     text: { margin: 6, textAlign: 'center'},
     container:{
         flexDirection: 'row',

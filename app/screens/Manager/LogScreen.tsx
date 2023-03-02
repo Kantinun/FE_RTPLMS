@@ -125,13 +125,13 @@ const LogContext = (props) => {
           }}
         />
       </View>
-      <View style={{flex:1, marginTop: 10, marginHorizontal: 5}}>
+      <View style={{marginTop: 10, marginHorizontal: 5, height: '85%'}}>
         <Table>
           <Row data={['Date', 'Action', 'Department']}
           style={{backgroundColor: colors.primaryDark, height:40, borderTopEndRadius: 20, borderTopStartRadius: 20}} 
           textStyle={{textAlign: 'center', color:'white'}}
           ></Row>
-          <ScrollView style={{height: '100%'}}>
+          <ScrollView style={{height: '80%'}}>
             <>
             {/* {console.log(data)} */}
             {

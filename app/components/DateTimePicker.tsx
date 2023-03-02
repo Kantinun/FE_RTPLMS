@@ -27,6 +27,7 @@ const MyDateTimePicker = (props: any) => {
       
     ></Button>
     <DateTimePickerModal
+      date={new Date(props.date)}
       isVisible={visible}
       mode="date"
       textColor='black'

@@ -11,6 +11,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import { Table, Row, Rows, TableWrapper, Cell } from 'react-native-table-component';
 import {CheckBox,Button,SearchBar} from '@rneui/themed'
 import { ScrollView } from 'react-native-gesture-handler';
+import BigText from '../../../assets/Texts/BigText';
 
 function Add_del_ot_modal(props: unknown) {
     
@@ -239,7 +240,6 @@ function Add_del_ot_modal(props: unknown) {
     const _renderConfirmPage = (data: unknown) => {
       const checkedPerson = data.filter((obj)=> obj.isCheck)
       return(
-        <View style={{alignItems: 'center', width: '100%'}}>
           <Table borderStyle={{borderWidth: 2, borderColor: '#eee'}}>
                 <Row data={headerAdd} style={styles.head} textStyle={styles.text} />
                 {
@@ -252,7 +252,6 @@ function Add_del_ot_modal(props: unknown) {
                 ))
                 }
             </Table>
-        </View>
       )
     }
     return (
@@ -275,6 +274,7 @@ function Add_del_ot_modal(props: unknown) {
                         borderRadius:20,
                     }}
                 >
+                  <BigText style={{marginTop:20}}>{props.mode==="add"? 'เพิ่มงานล่วงเวลา':'ลดงานล่วงเวลา'}</BigText>
                     <View style={styles.stepIndicator}>
                         <StepIndicator
                         stepCount={2}
@@ -285,7 +285,7 @@ function Add_del_ot_modal(props: unknown) {
                         />
                     </View>
                     <View style={{flex: 1}}>
-                    <ScrollView>
+                    <ScrollView style={{marginHorizontal: 5}}>
                       <Swiper
                           contentContainerStyle={{ alignItems: 'center', justifyContent: 'center'}}
                           loop={false}
@@ -375,7 +375,7 @@ const styles = StyleSheet.create({
       fontSize: 18,
       color: colors.primary
     },
-    head: { height: 40, backgroundColor: '#ddd', width: '100%'},
+    head: { height: 40, backgroundColor: '#ddd', width: '100%', borderTopStartRadius: 15, borderTopEndRadius: 15},
     text: { margin: 6, textAlign: 'center'},
     row: { flexDirection: 'row', backgroundColor: 'white' },
     footer_btn:{
