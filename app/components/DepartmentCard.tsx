@@ -46,6 +46,7 @@ const CardBody = styled.View`
 const DepartmentCard = (props: any) => {
   const navigation = useNavigation<NavigationProp<any>>();
   const screenName = props.detailScreenName;
+
   return (
     <CardView {...props}>
       <CardHeadeer style={{height: '20%', borderBottomWidth: 0.2}}>

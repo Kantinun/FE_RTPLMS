@@ -25,7 +25,6 @@ export const dataHandler = (data: any) => {
         entered: parseInt(shift.checkInMember),
         member: parseInt(shift.allMember),
         idealPerformance: parseInt(shift.idealPerformance),
-        remain_time: moment(`${Math.floor(shift.remain_time/60)}:${Math.floor(shift.remain_time%60)}`,'H:m'),
       }})
       ,
       detailScreenName: 'Detail',

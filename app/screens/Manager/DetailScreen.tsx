@@ -21,8 +21,6 @@ type Props = {};
 
 const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
 
-  console.log('\x1b[36m%s\x1b[0m',route.params)
-
   const {state} = React.useContext(Appcontext);
   
   const navigation = useNavigation<NavigationProp<any>>();
@@ -32,38 +30,36 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
   const [delOtVisible, setDelOtVisible] = useState(false);
   const [searchText, setSearchText] = useState('');
 
-  const [date, setDate] = useState<Date>();
+  const [date, setDate] = useState<Date>(new Date(route.params.shift.shiftDate));
   const width = Dimensions.get('window').width;
   
   navigation.setOptions({title: route.params.department.title});
   
-  const [fetchData, setFetchData] = React.useState<DataForPlanAndOt>({plan: [], ot: []});
-  const [dataForPlanAndOt, setDataForPlanAndOt] = React.useState<DataForPlanAndOt>({plan: [], ot: []});
-  const accountInThisShift: Promise<any> = getAccountInThisShift(route.params.shift.shiftCode); // Call Api
-
   const get_shift_li: Promise<any> = getShift_li(route.params.department.id)
   const [shift_time_li,setShift_time_li] = useState([])
   const [shift_li, setShift_li] = useState([])
+  const [currentShift, setCurrentShift] = useState(route.params.shift)
 
-  const [endTime, setEndTime] = useState(moment(route.params.shift.shiftTime,'HH:mm:ss').add(8,'hours')); // set shift end time
+  const [fetchData, setFetchData] = React.useState<DataForPlanAndOt>({plan: [], ot: []});
+  const [dataForPlanAndOt, setDataForPlanAndOt] = React.useState<DataForPlanAndOt>({plan: [], ot: []});
+  const accountInThisShift: Promise<any> = getAccountInThisShift(currentShift.shiftCode); // Call Api
+
+  const [endTime, setEndTime] = useState(moment(currentShift.shiftTime,'HH:mm:ss').add(8,'hours')); // set shift end time
   const [remainingTime, setRemainingTime] = useState(moment.duration(endTime.diff(moment()))); // calculate remaining time
 
   const updateSearch = (text: string) => {
     setSearchText(text)
     setDataForPlanAndOt({plan: index==0?fetchData.plan.filter((data)=> data.name.toLowerCase().includes(text.toLowerCase())):fetchData.plan, 
-                        ot:index==1?fetchData.ot.filter((data)=> data.name.toLowerCase().includes(text.toLowerCase())):fetchData.ot})
+                      ot:index==1?fetchData.ot.filter((data)=> data.name.toLowerCase().includes(text.toLowerCase())):fetchData.ot})
   }
   
   React.useEffect(() => {
-    console.log("\x1b[32m%s\x1b[0m",'Inside of useEffect initial')
     accountInThisShift.then((res) => {
-      
       return getDataForPlanAndOt(res);
     }).then((data) => {
       
       setFetchData(data)
       setDataForPlanAndOt(data);
-      setDate(new Date(route.params.shift.shiftDate))
     })
     get_shift_li.then((res)=> {
         setShift_li(res)
@@ -84,6 +80,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
     const interval = setInterval(() => {
       const newRemainingTime = moment.duration(endTime.diff(moment()));
       if (newRemainingTime.asSeconds() <= 0) {
+        setRemainingTime(newRemainingTime);
         clearInterval(interval);
       } else {
         setRemainingTime(newRemainingTime);
@@ -107,7 +104,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
   const openAddModal = async () => {
     // Use manager id instead 1
     const tmp = {...modalAddData};
-    tmp.content = await getFreeWorkers(state.data.id,route.params.shift.shiftCode,route.params.shift.shiftDate);
+    tmp.content = await getFreeWorkers(state.data.id,currentShift.shiftCode,currentShift.shiftDate);
     tmp.content.map((ele)=>{
       ele = {...ele, isChecked: false}
     })
@@ -131,8 +128,8 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
       modalDelData.content.filter((obj)=> obj.isChecked)
 
     const data = {
-      shiftCode: route.params.shift.shiftCode,
-      date: route.params.shift.shiftDate,
+      shiftCode: currentShift.shiftCode,
+      date: currentShift.shiftDate,
       accountIds:  selected.map((obj)=>obj.id)
     }
 
@@ -186,13 +183,19 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
           activeColor={colors.primaryLight}
           labelField="label"
           valueField="value"
-          value={route.params.shift.shiftCode}
+          value={currentShift.shiftCode}
           dropdownPosition='bottom'
-          onChange={(item) => {
-              navigation.navigate("Detail", {
-                department: route.params.department,
-                shift: shift_li.filter((ele)=>ele.shiftCode===item.value)[0]
+          onChange={async(item) => {
+              let newShift = await shift_li.filter((shift)=> shift.shiftCode == item.value)[0]
+              setCurrentShift(await newShift)
+              getAccountInThisShift(newShift.shiftCode).then((res) => {
+                return getDataForPlanAndOt(res);
+              }).then((data) => {
+                setFetchData(data)
+                setDataForPlanAndOt(data);
               })
+              setEndTime(moment(newShift.shiftTime,'HH:mm:ss').add(8,'hours'))
+              setRemainingTime(moment.duration(moment(newShift.shiftTime,'HH:mm:ss').add(8,'hours').diff(moment())))
           }}
           renderLeftIcon={() => (
             <Icon
@@ -221,16 +224,16 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
                   }}>
                     {item === 'page1' ? (
                       <View style={styles.statusCard}>
-                        <BigText>ผลผลิต : {route.params.shift.productivity}</BigText>
+                        <BigText>ผลผลิต : {currentShift.productivity}</BigText>
                         <BigText>เวลาที่เหลือ : {remainingTime.seconds()>0?`${remainingTime.hours()} ชม. ${remainingTime.minutes()} นาที`:'จบกะแล้ว'}</BigText>
-                        <BigText>กำลังผลิต : {`${route.params.shift.idealPerformance} /ชม.`}</BigText>
-                        <BigText>คาดการณ์ : {route.params.shift.member}</BigText>
+                        <BigText>กำลังผลิต : {`${currentShift.idealPerformance} /ชม.`}</BigText>
+                        <BigText>คาดการณ์ : {currentShift.member}</BigText>
                       </View>
                     ) : (
                       <View style={styles.statusCard}>
-                        <BigText>รหัสกะ : {route.params.shift.shiftCode}</BigText>
-                        <BigText>เวลากะ : {`${moment(route.params.shift.shiftTime, 'HH:mm:ss').format('HH:mm')}-${moment(route.params.shift.shiftTime,'HH:mm:ss').add(8,'hours').format("HH:mm")}`}</BigText>
-                        <BigText>จำนวนคน : {`${route.params.shift.entered}/${route.params.shift.member}`}</BigText>
+                        <BigText>รหัสกะ : {currentShift.shiftCode}</BigText>
+                        <BigText>เวลากะ : {`${moment(currentShift.shiftTime, 'HH:mm:ss').format('HH:mm')}-${moment(currentShift.shiftTime,'HH:mm:ss').add(8,'hours').format("HH:mm")}`}</BigText>
+                        <BigText>จำนวนคน : {`${currentShift.entered}/${currentShift.member}`}</BigText>
                       </View>
                     )}
                   </View>

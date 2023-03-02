@@ -45,7 +45,6 @@ export const dataHandler = (data: any) => {
         entered: parseInt(row.checkInMember),
         member: parseInt(row.allMember),
         idealPerformance: parseInt(row.idealPerformance),
-        remain_time: row.remain_time,
         }
     })
   };
@@ -53,11 +52,11 @@ export const dataHandler = (data: any) => {
 export const getAccountInThisShift = async (shiftCode: string) => {
     const res = await fetch(`${env.API_BASE}:${env.API_PORT}/detail/shift/${shiftCode}`);
     const json = await res.json();
-
-    return json;    
+    return json.error? []:json;    
 };
 
 export const getDataForPlanAndOt = (accounts: DetailResponse[]) => {
+    console.log('\x1b[35m%s\x1b[0m', accounts)
     const dataForPlanAndOt = accounts.reduce((obj: DataForPlanAndOt, account) => {
         obj.plan.push({
             name: account.name, 
