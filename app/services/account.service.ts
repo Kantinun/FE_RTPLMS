@@ -26,3 +26,9 @@ export const doLogin = async (username: string, password: string) => {
     const json: Account = await res.json();
     return json;
 }
+
+export const getAccountDetails = async (account_id: string) => {
+    const res = await fetch(`${env.API_BASE}:${env.API_PORT}/accounts/${account_id}`);
+    const json = await res.json();
+    return json;
+}
