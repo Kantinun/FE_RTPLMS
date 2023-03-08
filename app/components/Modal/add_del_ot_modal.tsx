@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Text, View} from 'react-native';
 import Modal from "react-native-modal";
 import StepIndicator from 'react-native-step-indicator';
 import Swiper from 'react-native-swiper';
@@ -8,35 +8,36 @@ import { colors } from '../../config/colors';
 import { Input } from '@rneui/themed';
 import { Dropdown } from 'react-native-element-dropdown';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import { Table, Row, Rows, TableWrapper, Cell } from 'react-native-table-component';
+import { Table, Row, TableWrapper, Cell } from 'react-native-table-component';
 import {CheckBox,Button,SearchBar} from '@rneui/themed'
 import { ScrollView } from 'react-native-gesture-handler';
 import BigText from '../../../assets/Texts/BigText';
 
 function Add_del_ot_modal(props: unknown) {
-    
-    const [searchText,setSearchText] = useState('')
+  const [searchText,setSearchText] = useState('')
+  
+  const headerAdd = ['Name', 'Perf.','Hours']
+  const headerAddManual = ['','Name','Perf.']
+  const headerDel = ['','Name','Hours']
 
-    const headerAdd = ['Name', 'Perf.','Hours']
-    const headerAddManual = ['','Name','Perf.']
-    const [fetch_data_add] = useState([
-      {id:1, name:'นาย ก', performance:10, isCheck: false},
-      {id:2, name:'นาย ข', performance:5, isCheck: false},
-      {id:3, name:'นาย ค', performance:7, isCheck: false},
-      {id:4, name:'นาย ง', performance:8, isCheck: false},
-      {id:5, name:'นาย จ', performance:8, isCheck: false},
-    ])
-    const [mockupAddData, setMockupAddData] = useState(fetch_data_add)
+  const [fetchData, setFetchData] = useState([])
+  const [data, setData] = useState([])
 
-    const headerDel = ['','Name','Hours']
-    const [fetch_data_del] = useState([
-      {id:1, name:'นาย ก', performance:10, hour: 4, isCheck: false},
-      {id:2, name:'นาย ข', performance:5, hour: 3, isCheck: false},
-      {id:3, name:'นาย ค', performance:7, hour: 3, isCheck: false},
-      {id:4, name:'นาย ง', performance:8, hour: 2, isCheck: false},
-      {id:5, name:'นาย จ', performance:8, hour: 4, isCheck: false},
-    ])
-    const [mockupDelData, setMockupDelData] = useState(fetch_data_del)
+  
+  useEffect(()=>{
+      const tmp_data = props.data.reduce((request_list, req)=> {
+        request_list.push({
+          account_id: req.account_id,
+          name: req.name, 
+          performance: req.performance,
+          hour: req.otDuration? req.otDuration:null,
+          isCheck: false
+        })
+        return request_list
+      },[])
+      setFetchData(tmp_data)
+      setData(tmp_data)
+  },[props.data])
 
     const [position, setPosition] = useState(0)
     const indicatorStyles = {
@@ -72,18 +73,18 @@ function Add_del_ot_modal(props: unknown) {
       setBtn_group_index(null)
       setValue('')
       setSearchText('')
-      setMockupAddData(fetch_data_add)
-      setMockupDelData(fetch_data_del)
+
+      setData(fetchData)
     }
 
-    const handle_search = (text, setDataMethod, fetchData) => {
+    const handle_search = (text: string) => {
       setSearchText(text)
       let newData = fetchData.filter((ele)=>ele.name.toLowerCase().includes(text.toLowerCase()))
-      setDataMethod(newData? newData: fetchData)
+      setData(newData? newData: fetchData)
     }
 
     const _renderAddForm = () => {
-      const data = [
+      const options = [
         { label: 'เลือกพนักงานด้วยตนเอง', value: 'เลือกพนักงานด้วยตนเอง' },
         { label: 'ทุกคนในกะ', value: 'ทุกคนในกะ' },
         { label: 'จำหน่ายงานตามลำดับการเข้างาน', value: 'จำหน่ายงานตามลำดับการเข้างาน' },
@@ -98,7 +99,7 @@ function Add_del_ot_modal(props: unknown) {
               placeholderStyle={styles.placeholderStyle}
               selectedTextStyle={styles.selectedTextStyle}
               iconStyle={styles.iconStyle}
-              data={data}
+              data={options}
               search={false}
               maxHeight={300}
               activeColor={colors.primaryLight}
@@ -163,20 +164,20 @@ function Add_del_ot_modal(props: unknown) {
                 lightTheme={true}
                 value={searchText}
                 onChangeText={(text)=>{
-                  handle_search(text,setMockupAddData,fetch_data_add)
+                  handle_search(text)
                 }}
               ></SearchBar>
 
               <Table borderStyle={{borderWidth: 2, borderColor: '#eee'}}>
                   <Row data={headerAddManual} style={styles.head} textStyle={styles.text} />
                   {
-                  mockupAddData.map((rowData, index) => {
+                  data.map((rowData, index) => {
                   return(
                   <TableWrapper style={{ flexDirection: 'row'}}>
                     <Cell data={<CheckBox
                       center
                       checked={rowData.isCheck}
-                      onPress={() => handleCheckboxClick(rowData.id, mockupAddData, setMockupAddData)}
+                      onPress={() => handleCheckboxClick(rowData.account_id)}
                     />}> 
                     </Cell>
                     <Cell data={<Text style={{textAlign: 'center'}}>{rowData.name}</Text>}> </Cell>
@@ -204,18 +205,18 @@ function Add_del_ot_modal(props: unknown) {
             lightTheme={true}
             value={searchText}
             onChangeText={(text)=>{
-              handle_search(text,setMockupDelData,fetch_data_del)
+              handle_search(text)
             }}
           ></SearchBar>
           <Table borderStyle={{borderWidth: 2, borderColor: '#eee'}}>
                 <Row data={headerDel} style={styles.head} textStyle={styles.text} />
                 {
-                mockupDelData.map((rowData, index) => (
+                data.map((rowData, index) => (
                 <TableWrapper style={{ flexDirection: 'row'}}>
                   <Cell data={<CheckBox
                     center
                     checked={rowData.isCheck}
-                    onPress={() => handleCheckboxClick(rowData.id,mockupDelData, setMockupDelData)}
+                    onPress={() => handleCheckboxClick(rowData.account_id)}
                   />}> 
                   </Cell>
                   <Cell data={<Text style={{textAlign: 'center'}}>{rowData.name}</Text>}> </Cell>
@@ -227,14 +228,14 @@ function Add_del_ot_modal(props: unknown) {
         </View>
       )
     }
-    const handleCheckboxClick = (id, data, handle) => {
+    const handleCheckboxClick = (id) => {
       let tmp = data.map((content)=>{
-            if (content.id === id){
+            if (content.account_id === id){
               return {...content, isCheck: !content.isCheck}
             }
             return content
           })
-          handle(tmp)
+          setData(tmp)
     }
 
     const _renderConfirmPage = (data: unknown) => {
@@ -303,7 +304,7 @@ function Add_del_ot_modal(props: unknown) {
                           {props.mode == 'add'?_renderAddForm(): _renderDelForm()}
                         </View>
                         <View>
-                          {props.mode == 'add'? _renderConfirmPage(mockupAddData): _renderConfirmPage(mockupDelData)}
+                          {_renderConfirmPage(data)}
                         </View>
                       </Swiper>
                       </ScrollView>
@@ -326,7 +327,7 @@ function Add_del_ot_modal(props: unknown) {
                               containerStyle={styles.footer_btn}
                               onPress={()=>{
                                 resetParameter()
-                                props.clickHandler(false)
+                                props.handleConfirm("delete",data.filter((obj)=> obj.isCheck).map(req=>req.account_id))
                             }}></Button> 
                           }
                         </View>

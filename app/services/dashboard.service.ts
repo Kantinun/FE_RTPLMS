@@ -1,4 +1,3 @@
-import moment from "moment";
 import env from "../config/env";
 
 export const get_departmentDetails = async (mngId: string) => {

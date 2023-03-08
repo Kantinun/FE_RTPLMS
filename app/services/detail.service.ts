@@ -65,7 +65,9 @@ export const getDataForPlanAndOt = (accounts: DetailResponse[]) => {
             performance: account.performance
         });
         account.otStatus && (obj.ot.push({
+            account_id: account.id,
             name: account.name, 
+            performance: account.performance,
             otDuration: account.otDuration, 
             otStatus: account.otStatus
         }))

@@ -7,6 +7,7 @@ import BigText from '../../../assets/Texts/BigText'
 import MyDateTimePicker from '../../components/DateTimePicker';
 import Carousel from 'react-native-reanimated-carousel';
 import { addWorker, DataForPlanAndOt, delWorker, DetailResponse, getAccountInThisShift, getDataForPlanAndOt, getFreeWorkers, getShift_li, ModalAddData } from '../../services/detail.service';
+import { deleteRequest } from '../../services/otRequest.service';
 import { colors } from '../../config/colors';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import Add_del_worker_modal from '../../components/Modal/add_del_worker_modal';
@@ -142,7 +143,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
     setDelWorkerVisible(true);
   }
   
-  const handleConfirm = (mode: string) => {
+  const handleWorkerModalConfirm = (mode: string) => {
     const selected = mode === 'add' ? 
       modalAddData.content.filter((obj)=> obj.isChecked):
       modalDelData.content.filter((obj)=> obj.isChecked)
@@ -188,6 +189,20 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
       });
     }
   }
+
+  const handleOTConfirm = (mode: string, account_id: string[]) => {
+      deleteRequest(state.data.id,currentShift.shiftCode,account_id).then((res)=>{
+        const tmp = {...dataForPlanAndOt}
+        account_id.forEach((id)=>{
+          const index = tmp.ot.findIndex((obj)=>obj.account_id===id)
+          tmp.ot.splice(index,1)
+        })
+        setDataForPlanAndOt(tmp)
+      })
+      .catch((e)=>{console.log(e)})
+      setDelOtVisible(false)
+  }
+
   return (
     <MainContainer>
       <View style={{marginVertical: 5, alignItems: 'center', flexDirection: 'row',justifyContent: 'center'}}>
@@ -332,14 +347,26 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
           </TabView.Item>
         </TabView>
       
-      <Add_del_ot_modal visible={addOtVisible} clickHandler={setAddOtVisible} mode='add'></Add_del_ot_modal>
-      <Add_del_ot_modal visible={delOtVisible} clickHandler={setDelOtVisible} mode='delete'></Add_del_ot_modal>
+      <Add_del_ot_modal 
+        visible={addOtVisible} 
+        clickHandler={setAddOtVisible} 
+        mode='add'
+        data={dataForPlanAndOt.ot}
+        handleConfirm={handleOTConfirm}
+      />
+      <Add_del_ot_modal 
+        visible={delOtVisible} 
+        clickHandler={setDelOtVisible} 
+        mode='delete'
+        data={dataForPlanAndOt.ot}
+        handleConfirm={handleOTConfirm}
+      />
       <Add_del_worker_modal 
         visible={addWorkerVisible} 
         clickHandler={setAddWorkerVisible} 
         data={modalAddData} 
         confirmHandler={setModalAddData}
-        handleConfirm={handleConfirm}
+        handleConfirm={handleWorkerModalConfirm}
         mode='add'
 
       />
@@ -348,7 +375,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
         clickHandler={setDelWorkerVisible} 
         data={modalDelData} 
         confirmHandler={setModalDelData}
-        handleConfirm={handleConfirm}
+        handleConfirm={handleWorkerModalConfirm}
         mode='delete'
       />
 
