@@ -1,5 +1,4 @@
 import env from "../config/env";
-const moment = require('moment');
 
 export interface OtRequestResponse {
     shift_code: string,
@@ -19,6 +18,16 @@ interface DeleteRequest{
     mngId: string;
     shiftCode: string;
     accountIds: string[];
+}
+
+interface CreateRequestProps{
+    shiftCode: string;
+    date: string;
+    method: string;
+    mngId: string;
+    unit?: string;
+    quantity?: number;
+    accountIds?: string[];
 }
 
 export const getOtRequest = async (accId: string) => {
@@ -68,4 +77,16 @@ export const deleteRequest = async (mng_id: string, shiftCode: string, accountId
     const res = await fetch(`${env.API_BASE}:${env.API_PORT}/request/`, requestOptions);
     // const json = await res.json()
     // return json
+}
+
+export const createRequest = async (requestProps: CreateRequestProps) => {
+    const requestOptions = {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body:JSON.stringify(requestProps),
+        }
+    const res = await fetch(`${env.API_BASE}:${env.API_PORT}/request/`, requestOptions);
 }

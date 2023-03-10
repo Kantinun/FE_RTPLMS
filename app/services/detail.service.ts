@@ -59,7 +59,7 @@ export const getDataForPlanAndOt = (accounts: DetailResponse[]) => {
     const dataForPlanAndOt = accounts.reduce((obj: DataForPlanAndOt, account) => {
         obj.plan.push({
             name: account.name, 
-            id: account.id,
+            account_id: account.id,
             checkInOut: `${account.checkInTime} - ${account.checkOutTime === '-' ? '':account.checkOutTime}`, 
             checkInStatus: account.checkInStatus,
             performance: account.performance

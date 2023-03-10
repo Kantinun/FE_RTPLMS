@@ -13,7 +13,7 @@ import {CheckBox,Button,SearchBar} from '@rneui/themed'
 import { ScrollView } from 'react-native-gesture-handler';
 import BigText from '../../../assets/Texts/BigText';
 
-function Add_del_ot_modal(props: unknown) {
+function Add_del_ot_modal(props) {
   const [searchText,setSearchText] = useState('')
   
   const headerAdd = ['Name', 'Perf.','Hours']
@@ -25,18 +25,8 @@ function Add_del_ot_modal(props: unknown) {
 
   
   useEffect(()=>{
-      const tmp_data = props.data.reduce((request_list, req)=> {
-        request_list.push({
-          account_id: req.account_id,
-          name: req.name, 
-          performance: req.performance,
-          hour: req.otDuration? req.otDuration:null,
-          isCheck: false
-        })
-        return request_list
-      },[])
-      setFetchData(tmp_data)
-      setData(tmp_data)
+    setFetchData(props.data)
+    setData(props.data)
   },[props.data])
 
     const [position, setPosition] = useState(0)
@@ -65,7 +55,7 @@ function Add_del_ot_modal(props: unknown) {
     };
     const [selected_method, setSelected_method] = React.useState(null);
     const [btn_group_index, setBtn_group_index] = useState(null)
-    const [value, setValue] = useState('')
+    const [value, setValue] = useState(null)
 
     const resetParameter=()=>{
       setPosition(0)
@@ -85,10 +75,10 @@ function Add_del_ot_modal(props: unknown) {
 
     const _renderAddForm = () => {
       const options = [
-        { label: 'เลือกพนักงานด้วยตนเอง', value: 'เลือกพนักงานด้วยตนเอง' },
-        { label: 'ทุกคนในกะ', value: 'ทุกคนในกะ' },
-        { label: 'จำหน่ายงานตามลำดับการเข้างาน', value: 'จำหน่ายงานตามลำดับการเข้างาน' },
-        { label: 'กำหนดเอง', value: 'กำหนดเอง' },
+        { label: 'เลือกพนักงานด้วยตนเอง', value: 'autoCalculateHour' },
+        { label: 'ทุกคนในกะ', value: 'assignEveryone' },
+        { label: 'จำหน่ายงานตามลำดับการเข้างาน', value: 'assignByCheckin' },
+        { label: 'กำหนดเอง', value: 'assignManual' },
       ]  
       return(
         <View style={{alignItems: 'center'}}>
@@ -109,6 +99,9 @@ function Add_del_ot_modal(props: unknown) {
               value={selected_method}
               dropdownPosition='bottom'
               onChange={item => {
+                if(item.value=='assignManual'){
+                  setBtn_group_index(1)
+                }
                 setSelected_method(item.value);
               }}
               renderLeftIcon={() => (
@@ -116,23 +109,23 @@ function Add_del_ot_modal(props: unknown) {
               )}
             />
           </View>
-          { (selected_method == 'จำหน่ายงานตามลำดับการเข้างาน'||selected_method==='กำหนดเอง') &&
+          { (selected_method == 'assignByCheckin'||selected_method==='assignManual') &&
           (<View style={{flexDirection: 'row', alignItems: 'center', marginHorizontal: 10, justifyContent: 'space-between', borderRadius: 10}}>
             <Text style={{fontSize: 15}}>จำนวน : </Text>
             <Input
               containerStyle={{flex: 1,}}
-              inputContainerStyle={{borderWidth:1, padding: 5, borderRadius: 10, borderColor: (selected_method==='เลือกพนักงานด้วยตนเอง'||selected_method==='ทุกคนในกะ')? '#aaa':colors.primary, alignSelf: 'center', marginTop: 20}}
+              inputContainerStyle={{borderWidth:1, padding: 5, borderRadius: 10, borderColor: (selected_method==='autoCalculateHour'||selected_method==='assignEveryone')? '#aaa':colors.primary, alignSelf: 'center', marginTop: 20}}
               placeholderTextColor='#aaaa'
               inputStyle={{textAlign: 'center', fontSize: 15}}
               placeholder="กรอกจำนวน"
               onChangeText={(text)=>{setValue(text)}}
               value={value? value: ''}
-              disabled={selected_method==='เลือกพนักงานด้วยตนเอง'||selected_method==='ทุกคนในกะ'}
+              disabled={selected_method==='autoCalculateHour'||selected_method==='assignEveryone'}
               keyboardType='numeric'
               
             />
           </View>)}
-          { (selected_method == 'จำหน่ายงานตามลำดับการเข้างาน'||selected_method==='กำหนดเอง') &&
+          { (selected_method == 'assignByCheckin'||selected_method==='assignManual') &&
           (<View style={{flexDirection: 'row', alignItems: 'center', marginHorizontal: 10, justifyContent: 'space-between'}}>
             <Text style={{fontSize: 15}}>หน่วย : </Text>
             <ButtonGroup
@@ -140,21 +133,21 @@ function Add_del_ot_modal(props: unknown) {
               onPress={(index) => {
                 setBtn_group_index(index)
               }}
-              selectedIndex={selected_method==='กำหนดเอง'? 1:btn_group_index}
+              selectedIndex={selected_method==='assignManual'? 1:btn_group_index}
               buttonContainerStyle={{borderColor: 'white', borderRadius:15}}
               containerStyle={{ marginBottom: 20, flex:1, borderColor: 'white', borderRadius:15}}
               textStyle={{fontSize: 15}}
               buttonStyle={{borderColor: colors.primary, backgroundColor: 'white', borderWidth: 1, borderRadius: 15}}
               selectedButtonStyle={{backgroundColor: colors.primaryDark}}
               selectedTextStyle={{color: 'white'}}
-              disabled={selected_method==='กำหนดเอง'}
+              disabled={selected_method==='assignManual'}
               disabledStyle={{borderColor: '#aaaa'}}
               disabledSelectedStyle={{backgroundColor: colors.primaryDark}}
               disabledSelectedTextStyle={{color:'white'}}
             ></ButtonGroup>
           </View>
           )}
-          {(selected_method == 'เลือกพนักงานด้วยตนเอง'||selected_method==='กำหนดเอง') &&(
+          {(selected_method == 'autoCalculateHour'||selected_method==='assignManual') &&(
             <View style={{width: '100%'}}>
               <SearchBar
                 placeholder='Search Here...'
@@ -248,7 +241,7 @@ function Add_del_ot_modal(props: unknown) {
                 <TableWrapper style={styles.row}>
                   <Cell data={rowData.name} textStyle={styles.text}/>
                   <Cell data={rowData.performance} textStyle={styles.text}></Cell>
-                  <Cell data={rowData.hour? rowData.hour: 2} textStyle={styles.text}></Cell>
+                  <Cell data={rowData.hour? rowData.hour: (value&&(btn_group_index==1))? value: '-'} textStyle={styles.text}></Cell>
                 </TableWrapper>
                 ))
                 }
@@ -327,7 +320,13 @@ function Add_del_ot_modal(props: unknown) {
                               containerStyle={styles.footer_btn}
                               onPress={()=>{
                                 resetParameter()
-                                props.handleConfirm("delete",data.filter((obj)=> obj.isCheck).map(req=>req.account_id))
+                                props.handleConfirm({
+                                  mode: props.mode,
+                                  method: selected_method,
+                                  unit: btn_group_index,
+                                  quantity: value,
+                                  accountIds: data.filter(acc=>acc.isCheck).map(acc=>acc.account_id)
+                                })
                             }}></Button> 
                           }
                         </View>
