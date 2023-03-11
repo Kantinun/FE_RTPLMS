@@ -130,9 +130,8 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
 
   const [index, setIndex] = React.useState(0);
 
-  const openAddModal = async (mode: string) => {
+  const openAddWorkerModal = async () => {
     // Use manager id instead 1
-    if (mode === 'worker'){
       const tmp = {...modalAddData};
       tmp.content = await getFreeWorkers(state.data.id,currentShift.shiftCode,currentShift.shiftDate);
       tmp.content.map((ele)=>{
@@ -140,14 +139,15 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
       })
       setModalAddData(tmp);
       setAddWorkerVisible(true);
-    }else if(mode === 'ot'){
-      const tmp = {...dataForPlanAndOt.ot}
+  }
+
+  const openAddOTModal= ()=>{
+    const tmp = dataForPlanAndOt.plan.filter((task)=> !dataForPlanAndOt.ot.map(req=>req.account_id).includes(task.account_id))
       tmp.map((req)=>{
         req = {...req, isCheck: false}
       })
       setOTData(tmp)
       setAddOtVisible(true)
-    }
   }
   
   const openDelWorkerModal = async () => {
@@ -232,9 +232,11 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
           quantity: OTProps.quantity,
           accountIds: OTProps.accountIds
         }).then(()=>{
-          accountInThisShift.then((res) => {
+          getAccountInThisShift(currentShift.shiftCode).then((res) => {
             return getDataForPlanAndOt(res);
           }).then((data) => {
+            console.log(data)
+
             setFetchData(data)
             setDataForPlanAndOt(data)
           })
@@ -247,6 +249,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
             const index = tmp.ot.findIndex((obj)=>obj.account_id===id)
             tmp.ot.splice(index,1)
           })
+          setFetchData(tmp)
           setDataForPlanAndOt(tmp)
         })
         .catch((e)=>{console.log(e)})
@@ -344,7 +347,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
                 raised={true}
                 containerStyle={{borderRadius: 20}}
                 buttonStyle={{backgroundColor:colors.green , borderColor: '#aaaa',borderRadius: 20}}
-                onPress={()=>{index==0? openAddModal('worker'): openAddModal('ot')}}
+                onPress={()=>{index==0? openAddWorkerModal(): openAddOTModal()}}
                 
               ></Button>
               <Button
@@ -400,13 +403,13 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
           </TabView.Item>
         </TabView>
       
-      {/* <Add_del_ot_modal 
+      <Add_del_ot_modal 
         visible={addOtVisible} 
         clickHandler={setAddOtVisible} 
         mode='add'
-        data={dataForPlanAndOt.plan.filter((task)=> !dataForPlanAndOt.ot.map(req=>req.account_id).includes(task.account_id))}
+        data={OTData}
         handleConfirm={handleOTConfirm}
-      /> */}
+      />
       <Add_del_ot_modal 
         visible={delOtVisible} 
         clickHandler={setDelOtVisible} 
