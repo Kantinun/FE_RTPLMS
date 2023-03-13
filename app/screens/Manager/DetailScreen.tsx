@@ -235,8 +235,6 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
           getAccountInThisShift(currentShift.shiftCode).then((res) => {
             return getDataForPlanAndOt(res);
           }).then((data) => {
-            console.log(data)
-
             setFetchData(data)
             setDataForPlanAndOt(data)
           })
