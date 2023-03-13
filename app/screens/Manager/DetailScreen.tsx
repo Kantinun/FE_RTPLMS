@@ -7,6 +7,7 @@ import BigText from '../../../assets/Texts/BigText'
 import MyDateTimePicker from '../../components/DateTimePicker';
 import Carousel from 'react-native-reanimated-carousel';
 import { addWorker, DataForPlanAndOt, delWorker, DetailResponse, getAccountInThisShift, getDataForPlanAndOt, getFreeWorkers, getShift_li, ModalAddData } from '../../services/detail.service';
+import { deleteRequest, createRequest } from '../../services/otRequest.service';
 import { colors } from '../../config/colors';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import Add_del_worker_modal from '../../components/Modal/add_del_worker_modal';
@@ -18,6 +19,13 @@ import moment from 'moment';
 
 
 type Props = {};
+interface OTConfirmProps {
+  mode: string;
+  method: string;
+  unit?: string;
+  quantity?: number;
+  accountIds: string[];
+}
 
 const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
 
@@ -42,6 +50,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
 
   const [fetchData, setFetchData] = React.useState<DataForPlanAndOt>({plan: [], ot: []});
   const [dataForPlanAndOt, setDataForPlanAndOt] = React.useState<DataForPlanAndOt>({plan: [], ot: []});
+  const [OTData, setOTData] = useState([])
   const accountInThisShift: Promise<any> = getAccountInThisShift(currentShift.shiftCode); // Call Api
 
   const [endTime, setEndTime] = useState(moment(currentShift.shiftTime,'HH:mm:ss').add(8,'hours')); // set shift end time
@@ -57,9 +66,9 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
     accountInThisShift.then((res) => {
       return getDataForPlanAndOt(res);
     }).then((data) => {
-      
       setFetchData(data)
       setDataForPlanAndOt(data);
+      setOTData(data.ot)
     })
     get_shift_li.then((res)=> {
         setShift_li(res)
@@ -121,28 +130,51 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
 
   const [index, setIndex] = React.useState(0);
 
-  const openAddModal = async () => {
+  const openAddWorkerModal = async () => {
     // Use manager id instead 1
-    const tmp = {...modalAddData};
-    tmp.content = await getFreeWorkers(state.data.id,currentShift.shiftCode,currentShift.shiftDate);
-    tmp.content.map((ele)=>{
-      ele = {...ele, isChecked: false}
-    })
-    setModalAddData(tmp);
-    setAddWorkerVisible(true);
+      const tmp = {...modalAddData};
+      tmp.content = await getFreeWorkers(state.data.id,currentShift.shiftCode,currentShift.shiftDate);
+      tmp.content.map((ele)=>{
+        ele = {...ele, isChecked: false}
+      })
+      setModalAddData(tmp);
+      setAddWorkerVisible(true);
+  }
+
+  const openAddOTModal= ()=>{
+    const tmp = dataForPlanAndOt.plan.filter((task)=> !dataForPlanAndOt.ot.map(req=>req.account_id).includes(task.account_id))
+      tmp.map((req)=>{
+        req = {...req, isCheck: false}
+      })
+      setOTData(tmp)
+      setAddOtVisible(true)
   }
   
-  const openDelModal = async () => {
+  const openDelWorkerModal = async () => {
     // Use manager id instead 1
-    const tmp = {...modalDelData};
-    tmp.content = dataForPlanAndOt.plan.map((account)=>{
-      return {...account, isChecked: false}
-    });
-    setModalDelData(tmp);
-    setDelWorkerVisible(true);
+      const tmp = {...modalDelData};
+      tmp.content = dataForPlanAndOt.plan.map((account)=>{
+        return {...account, isChecked: false}
+      });
+      setModalDelData(tmp);
+      setDelWorkerVisible(true);
+  }
+  const openDelOTModal = ()=>{
+    const tmp = dataForPlanAndOt.ot.reduce((request_list, req)=> {
+        request_list.push({
+          account_id: req.account_id,
+          name: req.name, 
+          performance: req.performance,
+          hour: req.otDuration? req.otDuration:null,
+          isCheck: false
+        })
+        return request_list
+      },[])
+      setOTData(tmp)
+      setDelOtVisible(true)
   }
   
-  const handleConfirm = (mode: string) => {
+  const handleWorkerModalConfirm = (mode: string) => {
     const selected = mode === 'add' ? 
       modalAddData.content.filter((obj)=> obj.isChecked):
       modalDelData.content.filter((obj)=> obj.isChecked)
@@ -188,6 +220,41 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
       });
     }
   }
+
+  const handleOTConfirm = (OTProps: OTConfirmProps) => {
+      if(OTProps.mode=='add'){
+        createRequest({
+          shiftCode: currentShift.shiftCode,
+          date: currentShift.shiftDate,
+          method: OTProps.method,
+          mngId: state.data.id,
+          unit: OTProps.unit,
+          quantity: OTProps.quantity,
+          accountIds: OTProps.accountIds
+        }).then(()=>{
+          getAccountInThisShift(currentShift.shiftCode).then((res) => {
+            return getDataForPlanAndOt(res);
+          }).then((data) => {
+            setFetchData(data)
+            setDataForPlanAndOt(data)
+          })
+        })
+        setAddOtVisible(false)
+      }else{
+        deleteRequest(state.data.id,currentShift.shiftCode,OTProps.accountIds).then((res)=>{
+          const tmp = {...dataForPlanAndOt}
+          OTProps.accountIds.forEach((id)=>{
+            const index = tmp.ot.findIndex((obj)=>obj.account_id===id)
+            tmp.ot.splice(index,1)
+          })
+          setFetchData(tmp)
+          setDataForPlanAndOt(tmp)
+        })
+        .catch((e)=>{console.log(e)})
+        setDelOtVisible(false)
+      }
+  }
+
   return (
     <MainContainer>
       <View style={{marginVertical: 5, alignItems: 'center', flexDirection: 'row',justifyContent: 'center'}}>
@@ -278,7 +345,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
                 raised={true}
                 containerStyle={{borderRadius: 20}}
                 buttonStyle={{backgroundColor:colors.green , borderColor: '#aaaa',borderRadius: 20}}
-                onPress={()=>{index==0? openAddModal(): setAddOtVisible(true)}}
+                onPress={()=>{index==0? openAddWorkerModal(): openAddOTModal()}}
                 
               ></Button>
               <Button
@@ -286,7 +353,9 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
                 raised={true}
                 containerStyle={{borderRadius: 20}}
                 buttonStyle={{backgroundColor:colors.red, borderRadius: 20, borderColor: '#aaaa'}}
-                onPress={()=>{index==0? openDelModal(): setDelOtVisible(true)}}
+                onPress={()=>{
+                  index==0?openDelWorkerModal():openDelOTModal()
+                }}
               ></Button>
           </View>
         </View> 
@@ -332,14 +401,26 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
           </TabView.Item>
         </TabView>
       
-      <Add_del_ot_modal visible={addOtVisible} clickHandler={setAddOtVisible} mode='add'></Add_del_ot_modal>
-      <Add_del_ot_modal visible={delOtVisible} clickHandler={setDelOtVisible} mode='delete'></Add_del_ot_modal>
+      <Add_del_ot_modal 
+        visible={addOtVisible} 
+        clickHandler={setAddOtVisible} 
+        mode='add'
+        data={OTData}
+        handleConfirm={handleOTConfirm}
+      />
+      <Add_del_ot_modal 
+        visible={delOtVisible} 
+        clickHandler={setDelOtVisible} 
+        mode='delete'
+        data={OTData}
+        handleConfirm={handleOTConfirm}
+      />
       <Add_del_worker_modal 
         visible={addWorkerVisible} 
         clickHandler={setAddWorkerVisible} 
         data={modalAddData} 
         confirmHandler={setModalAddData}
-        handleConfirm={handleConfirm}
+        handleConfirm={handleWorkerModalConfirm}
         mode='add'
 
       />
@@ -348,7 +429,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
         clickHandler={setDelWorkerVisible} 
         data={modalDelData} 
         confirmHandler={setModalDelData}
-        handleConfirm={handleConfirm}
+        handleConfirm={handleWorkerModalConfirm}
         mode='delete'
       />
 

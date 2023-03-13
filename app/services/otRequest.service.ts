@@ -1,5 +1,4 @@
 import env from "../config/env";
-const moment = require('moment');
 
 export interface OtRequestResponse {
     shift_code: string,
@@ -14,6 +13,23 @@ interface UpdateRequest {
     account_id: string;
     req_status: string;
 }
+
+interface DeleteRequest{
+    mngId: string;
+    shiftCode: string;
+    accountIds: string[];
+}
+
+interface CreateRequestProps{
+    shiftCode: string;
+    date: string;
+    method: string;
+    mngId: string;
+    unit?: string;
+    quantity?: number;
+    accountIds?: string[];
+}
+
 export const getOtRequest = async (accId: string) => {
     
     // Retrives TaskPlan
@@ -21,7 +37,6 @@ export const getOtRequest = async (accId: string) => {
         return res.json().then(json=>(json));
     })
     .catch(e=>{console.log(e)});
-    console.log(otRequestResponse)
     return otRequestResponse;
 }
 
@@ -42,6 +57,36 @@ export const updateRequest = async (id: string, shiftCode: string, status: strin
 
     const res = await fetch(`${env.API_BASE}:${env.API_PORT}/request/`, requestOptions);
     const json = await res.json()
-    console.log(json)
     return json
+}
+
+export const deleteRequest = async (mng_id: string, shiftCode: string, accountIds: string[]) => {
+    const data: DeleteRequest = {
+        mngId: mng_id,
+        shiftCode: shiftCode,
+        accountIds: accountIds,
+    }
+    const requestOptions = {
+        method: 'DELETE',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body:JSON.stringify(data),
+        }
+    const res = await fetch(`${env.API_BASE}:${env.API_PORT}/request/`, requestOptions);
+    // const json = await res.json()
+    // return json
+}
+
+export const createRequest = async (requestProps: CreateRequestProps) => {
+    const requestOptions = {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body:JSON.stringify(requestProps),
+        }
+    const res = await fetch(`${env.API_BASE}:${env.API_PORT}/request/`, requestOptions);
 }

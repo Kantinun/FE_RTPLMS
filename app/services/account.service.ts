@@ -54,8 +54,8 @@ export const doLogin = async (username: string, password: string) => {
     return json;
 }
 
-export const fetchAccountData = async (id: string) => {
-    const res = await fetch(`${env.API_BASE}:${env.API_PORT}/accounts/${id}`);
-    const json: AccountProfile = await res.json();
+export const getAccountDetails = async (account_id: string) => {
+    const res = await fetch(`${env.API_BASE}:${env.API_PORT}/accounts/${account_id}`);
+    const json = await res.json();
     return json;
 }

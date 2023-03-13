@@ -46,7 +46,7 @@ const _render_details = (props:any) => {
       </View>
       <Text>{`Action: ${data? data.action:''}`}</Text>
       <Text>{`Department id: ${data? data.details.department_id:''}`}</Text>
-      <Text>{`Department: ${data? data.details.department:''}`}</Text>
+      <Text>{`Department: ${data? data.details.department_name:''}`}</Text>
       <Text>{`Account id: ${data? data.details.account_id:''}`}</Text>
       <Text>{`Create at: ${data? moment(data.create_at).format('D MMMM YYYY'):''}`}</Text>
     </Dialog>

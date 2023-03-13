@@ -10,9 +10,11 @@ import BigText from '../../../assets/Texts/BigText';
 
 const Add_del_worker_modal = (props: any) => {
   const [data, setData] = useState({...props.data});
+
   useEffect(()=>{
     setData({...props.data})
   }, [props.data])
+  
   const [searchText, setSearchText]= useState('')
   const handleCheckboxClick = (id) => {
     let tmp = data.content.map((content)=>{
