@@ -1,16 +1,47 @@
-import React, {useState} from 'react';
-import { StyleSheet, Text, View, Button, TextInput, TouchableOpacity } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { Table, Row, Rows, TableWrapper, Cell } from 'react-native-table-component';
+import { Table, Row, TableWrapper, Cell } from 'react-native-table-component';
 import Icon from 'react-native-vector-icons/AntDesign';
+import { Appcontext } from '../../AppContext';
 import { colors } from '../config/colors';
-import { DetailResponse } from '../services/detail.service';
+import { getAccountInThisShift, getDataForPlanAndOt } from '../services/detail.service';
+import { io } from "socket.io-client";
+import env from "../config/env";
 
 function DetailsDataTable(props: any) {
     const [searchText, setSearchText] = useState('');
-
+    const [dataPlan, setDataPlan] = useState(props.dataPlan);
+    const [dataOt, setDataOt] = useState(props.dataOt);
     const workPlanTableHead = ['Name', 'In - Out', 'Status'];
     const otPlanTableHead = ["Name", "Number of Hour", "Status"];
+    const { state } = React.useContext(Appcontext);
+    
+    useEffect(()=>{
+        // ===================
+        // Web Socket
+        // ===================
+        const websocket = io(`${env.API_BASE}:${env.API_PORT}`);
+        const updateAttendanceTopic = `${state.data.id}-attendance`;
+
+        
+        // Update worker's attendace
+        websocket.on(updateAttendanceTopic, async (d: Object) => {
+            await getAccountInThisShift(props.shiftCode).then((res) => {
+                return getDataForPlanAndOt(res);
+              }).then((data) => {
+                
+                setDataPlan(data.plan)
+                setDataOt(data.ot);
+              })
+        });
+        return () => {
+            websocket.close();
+        };
+        // ===================
+        // ===================
+    },[]);
+
 
     const ot_hour_element = (value: any) => (
         <View style={{flexDirection:'row', justifyContent: 'center', alignItems: 'center'}}>
@@ -28,7 +59,7 @@ function DetailsDataTable(props: any) {
             {(props.mode==='work_plan') &&
             (<Table borderStyle={{borderWidth: 2, borderColor: '#eee'}}>
                <Row data={workPlanTableHead} style={styles.head} textStyle={styles.text}/>
-               {props.dataPlan.map((rowData, index) => (
+               {dataPlan.map((rowData, index) => (
                 <TableWrapper key={index} style={styles.row}>
                     <Cell data={rowData.name} textStyle={styles.text}/>
                     <Cell data={rowData.checkInOut} textStyle={styles.text}/>
@@ -42,7 +73,7 @@ function DetailsDataTable(props: any) {
             (<Table borderStyle={{borderWidth: 2, borderColor: '#eee'}}>
                 <Row data={otPlanTableHead} style={styles.head} textStyle={styles.text} />
                 {
-                props.dataOt.map((rowData, index) => (
+                dataOt.map((rowData, index) => (
                 <TableWrapper key={index} style={styles.row}>
                     {/* {
                     rowData.map((cellData, cellIndex) => (

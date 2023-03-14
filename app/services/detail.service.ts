@@ -125,3 +125,10 @@ export const delWorker = async (data: any) => {
     const json = await res.json()
     return json
 }
+
+export const getShiftStatus = async (id: string) => {
+    const res = await fetch(`${env.API_BASE}:${env.API_PORT}/shifts/${id}`);
+    const json = await res.json();
+
+    return json.error? null: json;
+}
