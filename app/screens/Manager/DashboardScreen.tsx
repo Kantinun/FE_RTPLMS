@@ -7,9 +7,9 @@ import { get_departmentDetails } from "../../services/dashboard.service";
 import { SearchBar } from "@rneui/themed";
 import { useState } from "react";
 import { Appcontext } from "../../../AppContext";
-import moment from "moment";
 import { io } from "socket.io-client";
 import env from "../../config/env";
+import { filterCurrentShiftFrom } from "../../lib/filterCurrentShift";
 
 const DashboardScreen = ({ navigation }: any) => {
   const { state } = React.useContext(Appcontext);
@@ -19,52 +19,56 @@ const DashboardScreen = ({ navigation }: any) => {
 
   const department_details = get_departmentDetails(state.data.id);
 
-  // ===================
-  // Web Socket
-  // ===================
-  const websocket = io(`${env.API_BASE}:${env.API_PORT}`);
-
-  const updateSuccessProductTopic = `${state.data.id}-product`;
-  const updateAttendanceTopic = `${state.data.id}-attendance`;
-
-  websocket.on("connect", () => {
-    console.log("connected");
-  });
-
-  // Update success product
-  websocket.on(updateSuccessProductTopic, async (d: Object) => {
-    const new_deartment_detail = await get_departmentDetails(state.data.id);
-
-    new_deartment_detail
-      ? setFetch_data(new_deartment_detail)
-      : { department: [], shifts: [] };
-    new_deartment_detail
-      ? setData(new_deartment_detail)
-      : { department: [], shifts: [] };
-
-    console.log("success product updated");
-  });
-  // Update worker's attendace
-  websocket.on(updateAttendanceTopic, async (d: Object) => {
-    const new_deartment_detail = await get_departmentDetails(state.data.id);
-
-    new_deartment_detail
-      ? setFetch_data(new_deartment_detail)
-      : { department: [], shifts: [] };
-    new_deartment_detail
-      ? setData(new_deartment_detail)
-      : { department: [], shifts: [] };
-
-    console.log("attendance updated");
-  });
-  // ===================
-  // ===================
-
   React.useEffect(() => {
     department_details.then((res) => {
       res ? setFetch_data(res) : { department: [], shifts: [] };
       res ? setData(res) : { department: [], shifts: [] };
     });
+
+    // ===================
+    // Web Socket
+    // ===================
+    const websocket = io(`${env.API_BASE}:${env.API_PORT}`);
+
+    const updateSuccessProductTopic = `${state.data.id}-product`;
+    const updateAttendanceTopic = `${state.data.id}-attendance`;
+
+    websocket.on("connect", () => {
+      console.log("connected");
+    });
+
+    // Update success product
+    websocket.on(updateSuccessProductTopic, async (d: Object) => {
+      const new_deartment_detail = await get_departmentDetails(state.data.id);
+
+      new_deartment_detail
+        ? setFetch_data(new_deartment_detail)
+        : { department: [], shifts: [] };
+      new_deartment_detail
+        ? setData(new_deartment_detail)
+        : { department: [], shifts: [] };
+
+      console.log("success product updated");
+    });
+    // Update worker's attendace
+    websocket.on(updateAttendanceTopic, async (d: Object) => {
+      const new_deartment_detail = await get_departmentDetails(state.data.id);
+
+      new_deartment_detail
+        ? setFetch_data(new_deartment_detail)
+        : { department: [], shifts: [] };
+      new_deartment_detail
+        ? setData(new_deartment_detail)
+        : { department: [], shifts: [] };
+
+      console.log("attendance updated");
+    });
+
+    return () => {
+      websocket.close();
+    };
+    // ===================
+    // ===================
   }, []);
 
   const handle_search = (text: string) => {
@@ -76,17 +80,7 @@ const DashboardScreen = ({ navigation }: any) => {
   };
 
   const renderDepartmentCard = ({ item }: any) => {
-    const current_shift = item.shift.filter((shift) => {
-      let now = moment();
-      let shift_time = moment(
-        `${shift.shiftDate} ${shift.shiftTime}`,
-        "YYYY/MM/DD HH:mm:ss"
-      );
-      return shift_time.isBefore(now) && shift_time.add(8, "hours").isAfter(now)
-        ? shift
-        : null;
-      // Use pop() because fileter() will return Array but we need only the first object that match with condition then we use pop() to get it <3
-    })[0];
+    const current_shift = filterCurrentShiftFrom(item.shift);
 
     return (
       <DepartmentCard

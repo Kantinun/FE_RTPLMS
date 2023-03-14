@@ -1,11 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import { Dimensions, ScrollView, StyleSheet, View} from 'react-native';
+import { ScrollView, StyleSheet, View} from 'react-native';
 
 import DetailsDataTable from '../../components/DetailsDataTable';
 import MainContainer from '../../components/MainContainer';
-import BigText from '../../../assets/Texts/BigText'
 import MyDateTimePicker from '../../components/DateTimePicker';
-import Carousel from 'react-native-reanimated-carousel';
 import { addWorker, DataForPlanAndOt, delWorker, DetailResponse, getAccountInThisShift, getDataForPlanAndOt, getFreeWorkers, getShift_li, ModalAddData } from '../../services/detail.service';
 import { colors } from '../../config/colors';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
@@ -15,7 +13,7 @@ import {Button, SearchBar, Tab, TabView, Icon} from '@rneui/themed'
 import { Dropdown } from 'react-native-element-dropdown';
 import { Appcontext } from '../../../AppContext';
 import moment from 'moment';
-
+import DetailCarousel from '../../components/DetailCarousel';
 
 type Props = {};
 
@@ -31,7 +29,6 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
   const [searchText, setSearchText] = useState('');
 
   const [date, setDate] = useState<Date>(new Date(route.params.shift.shiftDate));
-  const width = Dimensions.get('window').width;
   
   navigation.setOptions({title: route.params.department.title});
   
@@ -52,7 +49,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
     setDataForPlanAndOt({plan: index==0?fetchData.plan.filter((data)=> data.name.toLowerCase().includes(text.toLowerCase())):fetchData.plan, 
                       ot:index==1?fetchData.ot.filter((data)=> data.name.toLowerCase().includes(text.toLowerCase())):fetchData.ot})
   }
-  
+
   React.useEffect(() => {
     accountInThisShift.then((res) => {
       return getDataForPlanAndOt(res);
@@ -229,37 +226,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
         />
       </View>
       <View style={{alignItems: 'center' }}>
-            <Carousel
-                loop
-                width={width}
-                height={width / 2}
-                autoPlay={true}
-                autoPlayInterval={5000}
-                mode="parallax"
-                data={['page1','page2']}
-                scrollAnimationDuration={1000}
-                renderItem={({ item }) => (
-                  <View style={{
-                      flex:1,
-                      alignItems: 'center',
-                  }}>
-                    {item === 'page1' ? (
-                      <View style={styles.statusCard}>
-                        <BigText>ผลผลิต : {currentShift.productivity}</BigText>
-                        <BigText>เวลาที่เหลือ : {remainingTime.seconds()>0? remainingTime.asHours()<=8?`${remainingTime.hours()} ชม. ${remainingTime.minutes()} นาที`:'ยังไม่เริ่มกะ':'จบกะแล้ว'}</BigText>
-                        <BigText>กำลังผลิต : {`${currentShift.idealPerformance} /ชม.`}</BigText>
-                        <BigText>คาดการณ์ : {currentShift.member}</BigText>
-                      </View>
-                    ) : (
-                      <View style={styles.statusCard}>
-                        <BigText>รหัสกะ : {currentShift.shiftCode}</BigText>
-                        <BigText>เวลากะ : {`${moment(currentShift.shiftTime, 'HH:mm:ss').format('HH:mm')}-${moment(currentShift.shiftTime,'HH:mm:ss').add(8,'hours').format("HH:mm")}`}</BigText>
-                        <BigText>จำนวนคน : {`${currentShift.entered}/${currentShift.member}`}</BigText>
-                      </View>
-                    )}
-                  </View>
-              )}
-            />
+            <DetailCarousel remainingTime={remainingTime} currentShift={currentShift}/>
         </View>
 
         <View style={{flexDirection: 'row',justifyContent: 'center', alignItems:'center', backgroundColor: 'white', borderTopLeftRadius:20, borderTopRightRadius:20}}>
@@ -325,10 +292,10 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
 
         <TabView value={index} onChange={setIndex} animationType="spring">
           <TabView.Item style={{ width: '100%' }}>
-          <DetailsDataTable dataPlan={dataForPlanAndOt.plan} mode='work_plan'></DetailsDataTable>
+          <DetailsDataTable dataPlan={dataForPlanAndOt.plan} shiftCode={currentShift.shiftCode} mode='work_plan'></DetailsDataTable>
           </TabView.Item>
           <TabView.Item style={{  width: '100%' }}>
-          <DetailsDataTable dataOt={dataForPlanAndOt.ot} mode='ot_plan'></DetailsDataTable>
+          <DetailsDataTable dataOt={dataForPlanAndOt.ot} shiftCode={currentShift.shiftCode} mode='ot_plan'></DetailsDataTable>
           </TabView.Item>
         </TabView>
       
