@@ -45,7 +45,10 @@ function DetailsDataTable(props: any) {
         if(props.dataPlan!=dataPlan){
             setDataPlan(props.dataPlan)
         }
-    },[props.dataPlan])
+        if(props.dataOt!=dataOt){
+            setDataOt(props.dataOt)
+        }
+    },[props.dataPlan,props.dataOt])
 
 
     const ot_hour_element = (value: any) => (
