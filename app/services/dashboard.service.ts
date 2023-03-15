@@ -12,7 +12,7 @@ export const dataHandler = (data: any) => {
   for(let i=0; i < len ; i++){
     let newData = {
       department: {
-        id: parseInt(data.department[i].department_id),
+        id: data.department[i].department_id,
         title: String(data.department[i].name),
       },
       shift: data.shifts[i].map((shift)=>{

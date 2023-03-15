@@ -26,7 +26,6 @@ interface OTConfirmProps {
 }
 
 const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
-
   const {state} = React.useContext(Appcontext);
   
   const navigation = useNavigation<NavigationProp<any>>();
@@ -48,7 +47,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
   const [fetchData, setFetchData] = React.useState<DataForPlanAndOt>({plan: [], ot: []});
   const [dataForPlanAndOt, setDataForPlanAndOt] = React.useState<DataForPlanAndOt>({plan: [], ot: []});
   const [OTData, setOTData] = useState([])
-  const accountInThisShift: Promise<any> = getAccountInThisShift(currentShift.shiftCode); // Call Api
+  const accountInThisShift: Promise<any> = getAccountInThisShift(route.params.shift.shiftCode); // Call Api
 
   const [endTime, setEndTime] = useState(moment(currentShift.shiftTime,'HH:mm:ss').add(8,'hours')); // set shift end time
   const [remainingTime, setRemainingTime] = useState(moment.duration(endTime.diff(moment()))); // calculate remaining time
@@ -81,7 +80,6 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
     } )
   }, []);
   
-
   useEffect(() => {
     const interval = setInterval(() => {
       const newRemainingTime = moment.duration(endTime.diff(moment()));
@@ -130,7 +128,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
   const openAddWorkerModal = async () => {
     // Use manager id instead 1
       const tmp = {...modalAddData};
-      tmp.content = await getFreeWorkers(state.data.id,currentShift.shiftCode,currentShift.shiftDate);
+      tmp.content = await getFreeWorkers(state.data.id,route.params.shift.shiftCode,route.params.shift.shiftDate);
       tmp.content.map((ele)=>{
         ele = {...ele, isChecked: false}
       })
@@ -361,10 +359,10 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
 
         <TabView value={index} onChange={setIndex} animationType="spring">
           <TabView.Item style={{ width: '100%' }}>
-          <DetailsDataTable dataPlan={dataForPlanAndOt.plan} shiftCode={currentShift.shiftCode} mode='work_plan'></DetailsDataTable>
+          <DetailsDataTable dataPlan={dataForPlanAndOt.plan} shiftCode={route.params.shift.shiftCode} mode='work_plan'></DetailsDataTable>
           </TabView.Item>
           <TabView.Item style={{  width: '100%' }}>
-          <DetailsDataTable dataOt={dataForPlanAndOt.ot} shiftCode={currentShift.shiftCode} mode='ot_plan'></DetailsDataTable>
+          <DetailsDataTable dataOt={dataForPlanAndOt.ot} shiftCode={route.params.shift.shiftCode} mode='ot_plan'></DetailsDataTable>
           </TabView.Item>
         </TabView>
       

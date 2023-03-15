@@ -7,6 +7,7 @@ import { Account, doLogin } from '../services/account.service';
 function MyLoginScreen(props) {
     let {state,authContext} = useContext(Appcontext)
     let email = '';
+    let password = '';
     return (
         <LoginScreen
         logoImageSource={require("../../assets/favicon.png")}
@@ -18,7 +19,7 @@ function MyLoginScreen(props) {
         }}
         onLoginPress={ async () => {
             
-            const res: Account = await doLogin(email.toLocaleLowerCase(), '1234');
+            const res: Account = await doLogin(email.toLocaleLowerCase(), password);
             if (res.id)
                 authContext.signIn(res);
 
@@ -27,7 +28,7 @@ function MyLoginScreen(props) {
         onEmailChange={(txt: string) => {
             email = txt
         }}
-        onPasswordChange={(password: string) => {}}
+        onPasswordChange={(txt: string) => {password=txt}}
         disableSocialButtons={true}
         emailPlaceholder='Username'
         />
