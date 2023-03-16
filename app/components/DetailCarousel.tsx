@@ -68,6 +68,12 @@ function DetailCarousel(props: any) {
     }
   }, [props.remainingTime]);
 
+  useEffect(()=>{
+    if(props.currentShift!= currentShift){
+      setCurrentShift(props.currentShift)
+    }
+  },[props.currentShift])
+
   return (
     <Carousel
       loop
