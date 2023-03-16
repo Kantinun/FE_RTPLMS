@@ -158,7 +158,7 @@ const App = () => {
     )
   }
   const LoginScreen = () => (
-      <MyLoginScreen />
+      <MyLoginScreen testID='t-login'/>
   )
   
   return (

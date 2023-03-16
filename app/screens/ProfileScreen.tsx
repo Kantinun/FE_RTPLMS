@@ -4,7 +4,6 @@ import {Text, TouchableOpacity, View} from 'react-native';
 import { Avatar, Icon } from '@rneui/themed';
 import { Appcontext } from '../../AppContext';
 import { colors } from '../config/colors';
-import { useState } from 'react';
 import { getAccountDetails } from '../services/account.service';
 
 const Stack = createNativeStackNavigator();
