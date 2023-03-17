@@ -44,6 +44,7 @@ function TaskPlanScreen(props: unknown) {
     
     const setTaskPlanData = () => {
         taskPlanData.then((res: TaskPlanDateData)=>{
+            console.log(res)
             setData(res);
         });
     };
@@ -86,7 +87,7 @@ function TaskPlanScreen(props: unknown) {
             // onPress={() => Alert.alert(reservation.name)}
         >
             <Text style={{ fontSize, color }}>{!reservation.OTHour? `เวลาเข้างาน  ${reservation.checkin? reservation.checkin:''}  น.( ${reservation.status? reservation.status:'ยังไม่เข้างาน'} )`:`จำนวนชั่วโมง OT  ${reservation.OTHour? reservation.OTHour:''}  ชม.`}</Text>
-            <Text style={{ fontSize, color }}>{`เวลางาน  ${reservation.OTHour? `${reservation.shiftTime.split('-')[1]}-${moment(reservation.shiftTime.split('-')[1],'HH.mm').add(reservation.OTHour, 'hours').format('HH.mm')}`: reservation.shiftTime}  น.`}</Text>
+            <Text style={{ fontSize, color }}>{`เวลางาน  ${reservation.OTHour? `${moment(reservation.shiftTime,'HH:mm:ss').add(8,'hours').format('HH:mm')}-${moment(reservation.shiftTime,'HH:mm:ss').add(8+parseFloat(reservation.OTHour),'hours').format("HH:mm")}`: `${moment(reservation.shiftTime,'HH:mm:ss').format('HH:mm')}-${moment(reservation.shiftTime,'HH:mm:ss').add(8,'hours').format('HH:mm')}`}  น.`}</Text>
             <Text style={{ fontSize, color }}>{`แผนก  ${reservation.department? reservation.department: '-'}`}</Text>
         </TouchableOpacity>
         );

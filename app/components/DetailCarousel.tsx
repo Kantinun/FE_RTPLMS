@@ -6,12 +6,14 @@ import { io } from "socket.io-client";
 import env from "../config/env";
 import { Appcontext } from "../../AppContext";
 import { getShiftStatus } from "../services/detail.service";
+import { Badge } from "@rneui/themed";
 const moment = require("moment");
 
 function DetailCarousel(props: any) {
   const { state } = React.useContext(Appcontext);
   const [currentShift, setCurrentShift] = useState(props.currentShift);
   const [remainingTime, setRemainingTime] = useState(props.remainingTime);
+  const [prediction_status, setPrediction_status] = useState('')
   const width = Dimensions.get("window").width;
   async function handleUpdate(shiftCode: string, setCurrentShift: Function) {
     getShiftStatus(shiftCode).then((shift) => {
@@ -74,6 +76,14 @@ function DetailCarousel(props: any) {
     }
   },[props.currentShift])
 
+  const Prediction_badge = (props)=> (
+        <Badge 
+          value={props.status}
+          status="success" 
+          textStyle={{fontSize: 20}}
+          badgeStyle={{flex:3}}
+        />)
+
   return (
     <Carousel
       loop
@@ -105,7 +115,10 @@ function DetailCarousel(props: any) {
               <BigText>
                 กำลังผลิต : {`${currentShift.idealPerformance} /ชม.`}
               </BigText>
-              <BigText>คาดการณ์ : {currentShift.member}</BigText>
+              <View style={{flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: 5}}>
+                <BigText>คาดการณ์ : </BigText>
+                <Prediction_badge status='สำเร็จตามเป้าหมาย'/>
+              </View>
             </View>
           ) : (
             <View style={styles.statusCard}>

@@ -26,6 +26,7 @@ interface OTConfirmProps {
 }
 
 const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
+
   const {state} = React.useContext(Appcontext);
   
   const navigation = useNavigation<NavigationProp<any>>();
@@ -59,6 +60,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
   }
 
   React.useEffect(() => {
+    console.log(route.params.shift)
     accountInThisShift.then((res) => {
       return getDataForPlanAndOt(res);
     }).then((data) => {
