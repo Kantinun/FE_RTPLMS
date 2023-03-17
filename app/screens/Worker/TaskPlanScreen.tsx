@@ -44,7 +44,6 @@ function TaskPlanScreen(props: unknown) {
     
     const setTaskPlanData = () => {
         taskPlanData.then((res: TaskPlanDateData)=>{
-            console.log(res)
             setData(res);
         });
     };

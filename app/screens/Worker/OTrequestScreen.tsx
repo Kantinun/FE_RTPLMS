@@ -45,13 +45,14 @@ function OTrequestScreen(props) {
 
     const ot_respond_handler = (shift_code:string, action: string) => {
         
-        updateRequest(state.data.id, shift_code, shift_code).then(res=>{
+        updateRequest(state.data.id, shift_code, action).then(res=>{
             let new_data: OtRequestResponse[] = data.map((data)=>{
                 if (data.shift_code===shift_code){
                     return {...data, req_status: action}
                 }
                 return data;
             })
+            setFetchData(new_data)
             setData(new_data);
         })
     }
