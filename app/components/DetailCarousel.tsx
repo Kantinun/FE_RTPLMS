@@ -15,6 +15,7 @@ function DetailCarousel(props: any) {
   const [remainingTime, setRemainingTime] = useState(props.remainingTime);
   const [prediction_status, setPrediction_status] = useState('')
   const width = Dimensions.get("window").width;
+
   async function handleUpdate(shiftCode: string, setCurrentShift: Function) {
     getShiftStatus(shiftCode).then((shift) => {
       if (!shift) {
@@ -32,8 +33,13 @@ function DetailCarousel(props: any) {
         idealPerformance: parseInt(shift.ideal_performance),
       };
       setCurrentShift(shiftFormated);
-      console.log(shiftFormated);
       console.log("success product updated");
+
+      //Update prediction status
+      getShiftPrediction(shiftCode).then((res) => {
+        setPrediction_status(res.prediction);
+      });
+
     });
   }
   useEffect(() => {
@@ -73,7 +79,12 @@ function DetailCarousel(props: any) {
   }, [props.remainingTime]);
 
   useEffect(()=>{
-    handleShiftChange()
+    if (props.currentShift !== currentShift) {
+     setCurrentShift(props.currentShift);
+    }
+    getShiftPrediction(props.currentShift.shiftCode).then((res) => {
+      setPrediction_status(res.prediction);
+    });
   },[props.currentShift])
 
   const handleShiftChange = async () => {
