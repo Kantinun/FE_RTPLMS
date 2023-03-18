@@ -35,13 +35,12 @@ export const getShift_li = async (department_id: string, date: string) =>{
 }
 
 export const dataHandler = (data: any) => {
-    
     return data[0].map((row)=>{
         return{
         shiftCode: String(row.shiftCode),
         shiftDate: String(row.shiftDate),
         shiftTime: String(row.shiftTime),
-        succes_product_in_shiftTime: parseFloat(row.successProduct),
+        success_product_in_shiftTime: parseFloat(row.success_product_in_shiftTime),
         success_product_in_OTTime: parseFloat(row.success_product_in_OTTime),
         product_target: parseFloat(row.product_target),
         entered: parseInt(row.checkInMember),

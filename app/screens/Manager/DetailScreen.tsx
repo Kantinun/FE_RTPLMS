@@ -43,13 +43,12 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
   const [shift_time_li,setShift_time_li] = useState([])
   const [shift_li, setShift_li] = useState([])
   const [currentShift, setCurrentShift] = useState(route.params.shift)
-
   const [fetchData, setFetchData] = React.useState<DataForPlanAndOt>({plan: [], ot: []});
   const [dataForPlanAndOt, setDataForPlanAndOt] = React.useState<DataForPlanAndOt>({plan: [], ot: []});
   const [OTData, setOTData] = useState([])
   const accountInThisShift: Promise<any> = getAccountInThisShift(route.params.shift.shiftCode); // Call Api
 
-  const [endTime, setEndTime] = useState(moment(currentShift.shiftTime,'HH:mm:ss').add(8,'hours')); // set shift end time
+  const [endTime, setEndTime] = useState(moment(`${currentShift.shiftDate} ${currentShift.shiftTime}`,'YYYY/MM/DD HH:mm:ss').add(8,'hours')); // set shift end time
   const [remainingTime, setRemainingTime] = useState(moment.duration(endTime.diff(moment()))); // calculate remaining time
 
   const updateSearch = (text: string) => {
@@ -278,8 +277,8 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
               setFetchData(data)
               setDataForPlanAndOt(data);
             })
-            setEndTime(moment(newShift.shiftTime,'HH:mm:ss').add(8,'hours'))
-            setRemainingTime(moment.duration(moment(newShift.shiftTime,'HH:mm:ss').add(8,'hours').diff(moment())))
+            setEndTime(moment(`${newShift.shiftDate} ${newShift.shiftTime}`,'YYYY/MM/DD HH:mm:ss').add(8,'hours'))
+            setRemainingTime(moment.duration(moment(`${newShift.shiftDate} ${newShift.shiftTime}`,'YYYY/MM/DD HH:mm:ss').add(8,'hours').diff(moment())))
           }}
           renderLeftIcon={() => (
             <Icon

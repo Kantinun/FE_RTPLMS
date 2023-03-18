@@ -5,7 +5,7 @@ import BigText from "../../assets/Texts/BigText";
 import { io } from "socket.io-client";
 import env from "../config/env";
 import { Appcontext } from "../../AppContext";
-import { getShiftStatus } from "../services/detail.service";
+import { getShiftStatus, getShiftPrediction } from "../services/detail.service";
 import { Badge } from "@rneui/themed";
 const moment = require("moment");
 
@@ -24,7 +24,9 @@ function DetailCarousel(props: any) {
         shiftCode: String(shift.shift_code),
         shiftDate: String(shift.shift_date),
         shiftTime: String(shift.shift_time),
-        productivity: parseInt(shift.success_product),
+        success_product_in_shiftTime: parseFloat(shift.success_product_in_shiftTime),
+        success_product_in_OTTime: parseFloat(shift.success_product_in_OTTime),
+        product_target: parseFloat(shift.product_target),
         entered: parseInt(shift.checkin_member),
         member: parseInt(shift.all_member),
         idealPerformance: parseInt(shift.ideal_performance),
@@ -71,15 +73,21 @@ function DetailCarousel(props: any) {
   }, [props.remainingTime]);
 
   useEffect(()=>{
-    if(props.currentShift!= currentShift){
-      setCurrentShift(props.currentShift)
-    }
+    handleShiftChange()
   },[props.currentShift])
 
+  const handleShiftChange = async () => {
+    if (props.currentShift !== currentShift) {
+      await Promise.resolve(setCurrentShift(props.currentShift));
+    }
+    await getShiftPrediction(currentShift.shiftCode).then((res) => {
+      setPrediction_status(res.prediction);
+    });
+  };
   const Prediction_badge = (props)=> (
         <Badge 
           value={props.status}
-          status="success" 
+          status={props.status==="จบกะแล้ว"? "primary": props.status==="สำเร็จในเวลา"? "success":"error"}
           textStyle={{fontSize: 20}}
           badgeStyle={{flex:3}}
         />)
@@ -117,7 +125,7 @@ function DetailCarousel(props: any) {
               </BigText>
               <View style={{flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: 5}}>
                 <BigText>คาดการณ์ : </BigText>
-                <Prediction_badge status='สำเร็จตามเป้าหมาย'/>
+                <Prediction_badge status={prediction_status}/>
               </View>
             </View>
           ) : (
