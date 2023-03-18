@@ -103,7 +103,7 @@ function DetailCarousel(props: any) {
         >
           {item === "page1" ? (
             <View style={styles.statusCard}>
-              <BigText>ผลผลิต : {currentShift.productivity}</BigText>
+              <BigText>ผลผลิต : {currentShift.success_product_in_shiftTime+currentShift.success_product_in_OTTime}</BigText>
               <BigText>
                 เวลาที่เหลือ :{" "}
                 {remainingTime.seconds() > 0
