@@ -7,11 +7,9 @@ import DetailScreen from './app/screens/Manager/DetailScreen';
 import TaskPlanScreen from './app/screens/Worker/TaskPlanScreen';
 import OTrequestScreen from './app/screens/Worker/OTrequestScreen';
 import LogScreen from './app/screens/Manager/LogScreen';
-
+import { RootSiblingParent } from 'react-native-root-siblings';
 import MyLoginScreen from './app/screens/LoginScreen';
-
 import { Appcontext } from './AppContext';
-
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 const Stack = createNativeStackNavigator();
@@ -162,6 +160,7 @@ const App = () => {
   )
   
   return (
+    <RootSiblingParent>
     <Appcontext.Provider value={{state,authContext}}>
       <NavigationContainer>
         <Stack.Navigator
@@ -196,6 +195,7 @@ const App = () => {
         </Stack.Navigator>
       </NavigationContainer>
     </Appcontext.Provider>
+    </RootSiblingParent>
   );
 };
 export default App;
