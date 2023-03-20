@@ -22,10 +22,21 @@ function DetailsDataTable(props: any) {
         // ===================
         const websocket = io(`${env.API_BASE}:${env.API_PORT}`);
         const updateAttendanceTopic = `${state.data.id}-attendance`;
-
+        const updateRequestTopic = `${state.data.id}-request`;
         
         // Update worker's attendace
         websocket.on(updateAttendanceTopic, async (d: Object) => {
+            await getAccountInThisShift(props.shiftCode).then((res) => {
+                return getDataForPlanAndOt(res);
+              }).then((data) => {
+                
+                setDataPlan(data.plan)
+                setDataOt(data.ot);
+              })
+        });
+
+        // Update worker's request
+        websocket.on(updateRequestTopic, async (d: Object) => {
             await getAccountInThisShift(props.shiftCode).then((res) => {
                 return getDataForPlanAndOt(res);
               }).then((data) => {
