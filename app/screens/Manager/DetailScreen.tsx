@@ -4,7 +4,7 @@ import { ScrollView, StyleSheet, View} from 'react-native';
 import DetailsDataTable from '../../components/DetailsDataTable';
 import MainContainer from '../../components/MainContainer';
 import MyDateTimePicker from '../../components/DateTimePicker';
-import { addWorker, DataForPlanAndOt, delWorker, DetailResponse, getAccountInThisShift, getDataForPlanAndOt, getFreeWorkers, getShift_li, ModalAddData } from '../../services/detail.service';
+import { addWorker, DataForPlanAndOt, delWorker, getAccountInThisShift, getDataForPlanAndOt, getFreeWorkers, getShift_li, ModalAddData, getShiftPrediction } from '../../services/detail.service';
 import { deleteRequest, createRequest } from '../../services/otRequest.service';
 import { colors } from '../../config/colors';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
@@ -43,13 +43,12 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
   const [shift_time_li,setShift_time_li] = useState([])
   const [shift_li, setShift_li] = useState([])
   const [currentShift, setCurrentShift] = useState(route.params.shift)
-
   const [fetchData, setFetchData] = React.useState<DataForPlanAndOt>({plan: [], ot: []});
   const [dataForPlanAndOt, setDataForPlanAndOt] = React.useState<DataForPlanAndOt>({plan: [], ot: []});
   const [OTData, setOTData] = useState([])
   const accountInThisShift: Promise<any> = getAccountInThisShift(route.params.shift.shiftCode); // Call Api
 
-  const [endTime, setEndTime] = useState(moment(currentShift.shiftTime,'HH:mm:ss').add(8,'hours')); // set shift end time
+  const [endTime, setEndTime] = useState(moment(`${currentShift.shiftDate} ${currentShift.shiftTime}`,'YYYY/MM/DD HH:mm:ss').add(8,'hours')); // set shift end time
   const [remainingTime, setRemainingTime] = useState(moment.duration(endTime.diff(moment()))); // calculate remaining time
 
   const updateSearch = (text: string) => {
@@ -128,7 +127,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
   const openAddWorkerModal = async () => {
     // Use manager id instead 1
       const tmp = {...modalAddData};
-      tmp.content = await getFreeWorkers(state.data.id,route.params.shift.shiftCode,route.params.shift.shiftDate);
+      tmp.content = await getFreeWorkers(state.data.id,currentShift.shiftCode,currentShift.shiftDate);
       tmp.content.map((ele)=>{
         ele = {...ele, isChecked: false}
       })
@@ -269,16 +268,17 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
           value={currentShift.shiftCode}
           dropdownPosition='bottom'
           onChange={async(item) => {
-              let newShift = await shift_li.filter((shift)=> shift.shiftCode == item.value)[0]
-              setCurrentShift(await newShift)
-              getAccountInThisShift(newShift.shiftCode).then((res) => {
-                return getDataForPlanAndOt(res);
-              }).then((data) => {
-                setFetchData(data)
-                setDataForPlanAndOt(data);
-              })
-              setEndTime(moment(newShift.shiftTime,'HH:mm:ss').add(8,'hours'))
-              setRemainingTime(moment.duration(moment(newShift.shiftTime,'HH:mm:ss').add(8,'hours').diff(moment())))
+            
+            let newShift = await shift_li.filter((shift)=> shift.shiftCode == item.value)[0]
+            setCurrentShift(await newShift)
+            getAccountInThisShift(newShift.shiftCode).then((res) => {
+              return getDataForPlanAndOt(res);
+            }).then((data) => {
+              setFetchData(data)
+              setDataForPlanAndOt(data);
+            })
+            setEndTime(moment(`${newShift.shiftDate} ${newShift.shiftTime}`,'YYYY/MM/DD HH:mm:ss').add(8,'hours'))
+            setRemainingTime(moment.duration(moment(`${newShift.shiftDate} ${newShift.shiftTime}`,'YYYY/MM/DD HH:mm:ss').add(8,'hours').diff(moment())))
           }}
           renderLeftIcon={() => (
             <Icon
@@ -359,10 +359,10 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
 
         <TabView value={index} onChange={setIndex} animationType="spring">
           <TabView.Item style={{ width: '100%' }}>
-          <DetailsDataTable dataPlan={dataForPlanAndOt.plan} shiftCode={route.params.shift.shiftCode} mode='work_plan'></DetailsDataTable>
+          <DetailsDataTable dataPlan={dataForPlanAndOt.plan} shiftCode={currentShift.shiftCode} mode='work_plan'></DetailsDataTable>
           </TabView.Item>
           <TabView.Item style={{  width: '100%' }}>
-          <DetailsDataTable dataOt={dataForPlanAndOt.ot} shiftCode={route.params.shift.shiftCode} mode='ot_plan'></DetailsDataTable>
+          <DetailsDataTable dataOt={dataForPlanAndOt.ot} shiftCode={currentShift.shiftCode} mode='ot_plan'></DetailsDataTable>
           </TabView.Item>
         </TabView>
       
