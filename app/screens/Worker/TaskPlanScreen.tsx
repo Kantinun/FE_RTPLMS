@@ -6,6 +6,8 @@ import MainContainer from '../../components/MainContainer';
 import { colors } from '../../config/colors';
 import { Appcontext } from '../../../AppContext';
 import { getTaskPlanByAccountId, TaskPlanDateData } from '../../services/taskPlanScreen.service';
+import { io } from 'socket.io-client';
+import env from "../../config/env";
 
 interface Props {}
 
@@ -40,15 +42,37 @@ function TaskPlanScreen(props: unknown) {
     const {state} = useContext(Appcontext);
     const [data, setData] = useState<TaskPlanDateData>({});
     
-    const taskPlanData = getTaskPlanByAccountId(state.data.id);
     
-    const setTaskPlanData = () => {
-        taskPlanData.then((res: TaskPlanDateData)=>{
+
+    
+    useEffect(()=>{
+        // Fetch data
+        const taskPlanData = getTaskPlanByAccountId(state.data.id)
+        .then((res: TaskPlanDateData)=>{
             setData(res);
         });
-    };
-    
-    useEffect(setTaskPlanData,[]);
+
+
+        // ===================
+        // Web Socket
+        // ===================
+        const websocket = io(`${env.API_BASE}:${env.API_PORT}`);
+        const updateRequestTopic = `${state.data.id}-request`;
+        
+        // Update worker's request
+        websocket.on(updateRequestTopic, async (d: Object) => {
+            const taskPlanData = getTaskPlanByAccountId(state.data.id)
+            .then((res: TaskPlanDateData)=>{
+                setData(res);
+            });
+        });
+
+        return () => {
+            websocket.close();
+        };
+        // ===================
+        // ===================
+    },[]);
     // ===========================================================================
         
     // use for gen mockup data
