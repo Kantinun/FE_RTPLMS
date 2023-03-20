@@ -109,7 +109,7 @@ function TaskPlanScreen(props: unknown) {
             style={[styles.item, { height: 80}]}
             // onPress={() => Alert.alert(reservation.name)}
         >
-            <Text style={{ fontSize, color }}>{!reservation.OTHour? `เวลาเข้างาน  ${reservation.checkin? reservation.checkin:''}  น.( ${reservation.status? reservation.status:'ยังไม่เข้างาน'} )`:`จำนวนชั่วโมง OT  ${reservation.OTHour? reservation.OTHour:''}  ชม.`}</Text>
+            <Text style={{ fontSize, color }}>{!reservation.OTHour? `เวลาเข้างาน  ${reservation.checkin? reservation.checkin:''}  น. ( ${reservation.status? reservation.status:'ยังไม่เข้างาน'} )`:`จำนวนชั่วโมง OT  ${reservation.OTHour? reservation.OTHour:''}  ชม. ( ${reservation.reqStatus? reservation.reqStatus:'-'} )`}</Text>
             <Text style={{ fontSize, color }}>{`เวลางาน  ${reservation.OTHour? `${moment(reservation.shiftTime,'HH:mm:ss').add(8,'hours').format('HH:mm')}-${moment(reservation.shiftTime,'HH:mm:ss').add(8+parseFloat(reservation.OTHour),'hours').format("HH:mm")}`: `${moment(reservation.shiftTime,'HH:mm:ss').format('HH:mm')}-${moment(reservation.shiftTime,'HH:mm:ss').add(8,'hours').format('HH:mm')}`}  น.`}</Text>
             <Text style={{ fontSize, color }}>{`แผนก  ${reservation.department? reservation.department: '-'}`}</Text>
         </TouchableOpacity>
@@ -125,7 +125,7 @@ function TaskPlanScreen(props: unknown) {
     };
 
     const rowHasChanged = (r1: AgendaEntry, r2: AgendaEntry) => {
-        return r1.name !== r2.name;
+        return r1 !== r2;
     };
 
     return (
