@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import { ScrollView, StyleSheet, View} from 'react-native';
-
 import DetailsDataTable from '../../components/DetailsDataTable';
 import MainContainer from '../../components/MainContainer';
 import MyDateTimePicker from '../../components/DateTimePicker';
@@ -15,6 +14,8 @@ import { Dropdown } from 'react-native-element-dropdown';
 import { Appcontext } from '../../../AppContext';
 import moment from 'moment';
 import DetailCarousel from '../../components/DetailCarousel';
+import Toast from 'react-native-root-toast';
+
 
 type Props = {};
 interface OTConfirmProps {
@@ -176,7 +177,8 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
     const data = {
       shiftCode: currentShift.shiftCode,
       date: currentShift.shiftDate,
-      accountIds:  selected.map((obj)=>obj.id)
+      accountIds:  selected.map((obj)=>obj.account_id),
+      mng_id: state.data.id
     }
 
     if(mode === 'add'){
@@ -186,14 +188,35 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
         const tmp = {...dataForPlanAndOt};
         selected.forEach((account)=> {
         tmp.plan.push({
-          id: account.id,
+          account_id: account.account_id,
           name: account.name,
           checkInOut: "-",
           checkInStatus: 'ยังไม่เข้างาน',
           performance: account.performance,
         })
-      });  
-      setDataForPlanAndOt(tmp);
+        })
+        if (res.error){
+          let toast = Toast.show('Add worker failed', {
+              duration: Toast.durations.SHORT,
+              position: Toast.positions.TOP,
+              backgroundColor: 'red',
+              shadow: true,
+              animation: true,
+              hideOnPress: true,
+              delay: 0,
+          });
+        }else{
+          setDataForPlanAndOt(tmp);
+          let toast = Toast.show('Add worker successful', {
+              duration: Toast.durations.SHORT,
+              position: Toast.positions.TOP,
+              backgroundColor: 'green',
+              shadow: true,
+              animation: true,
+              hideOnPress: true,
+              delay: 0,
+          });
+        }
       })
       .catch((e)=>{
         console.log(e);
@@ -204,10 +227,31 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
       .then((res)=>{
         const tmp = {...dataForPlanAndOt};
         data.accountIds.forEach((id)=>{
-        const index = tmp.plan.findIndex((obj)=>(obj.id === id));
+        const index = tmp.plan.findIndex((obj)=>(obj.account_id === id));
         tmp.plan.splice(index,1)
       })
-      setDataForPlanAndOt(tmp);
+      if (res.error){
+        let toast = Toast.show('Remove worker failed', {
+            duration: Toast.durations.SHORT,
+            position: Toast.positions.TOP,
+            backgroundColor: 'red',
+            shadow: true,
+            animation: true,
+            hideOnPress: true,
+            delay: 0,
+        });
+      }else{
+        setDataForPlanAndOt(tmp);
+        let toast = Toast.show('Remove worker successful', {
+            duration: Toast.durations.SHORT,
+            position: Toast.positions.TOP,
+            backgroundColor: 'green',
+            shadow: true,
+            animation: true,
+            hideOnPress: true,
+            delay: 0,
+        });
+      }
       })
       .catch((e)=>{
         console.log(e);

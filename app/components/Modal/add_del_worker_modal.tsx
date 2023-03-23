@@ -18,7 +18,7 @@ const Add_del_worker_modal = (props: any) => {
   const [searchText, setSearchText]= useState('')
   const handleCheckboxClick = (id) => {
     let tmp = data.content.map((content)=>{
-          if (content.id === id){
+          if (content.account_id === id){
             return {...content, isChecked: !content.isChecked}
           }
           return content
@@ -75,11 +75,10 @@ const Add_del_worker_modal = (props: any) => {
                     <Cell data={<CheckBox
                       center
                       checked={item.isChecked}
-                      onPress={() => handleCheckboxClick(item.id)}
-                    />}> 
-                    </Cell>
-                    <Cell data={<Text style={{textAlign: 'center'}}>{item.name}</Text>}> </Cell>
-                    <Cell data={<Text style={{textAlign: 'center'}}>{item.performance}</Text>}> </Cell>
+                      onPress={() => handleCheckboxClick(item.account_id)}
+                    />}/> 
+                    <Cell data={<Text style={{textAlign: 'center'}}>{item.name}</Text>}/>
+                    <Cell data={<Text style={{textAlign: 'center'}}>{item.performance}</Text>}/>
                   </TableWrapper>
                 ))
               }

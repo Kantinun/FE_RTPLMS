@@ -22,8 +22,8 @@ export interface GetFreeWorkerResponse {
     performance: string;
 }
 export interface ModalAddData {
+    account_id: any;
     name: string;
-    id: string;
     performance: string;
     isChecked: boolean;
 }
@@ -86,7 +86,7 @@ export const getFreeWorkers = async (managerId: string, shiftCode:string, date: 
             const newArrObj = !arrObj.statusCode? arrObj.map((account: GetFreeWorkerResponse)=>{
                 return {
                     name: account.fullname,
-                    id: account.account_id,
+                    account_id: account.account_id,
                     performance: account.performance,
                     isChecked: false,
                 }

@@ -102,7 +102,7 @@ const LogContext = (props) => {
                 case 0:
                   return option.push('Add Worker')
                 case 1:
-                  return option.push('DELETE')
+                  return option.push('Delete Worker')
                 case 2:
                   return option.push('Add OT')
                 case 3:
