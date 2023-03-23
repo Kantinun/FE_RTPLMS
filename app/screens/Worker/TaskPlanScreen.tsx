@@ -6,6 +6,8 @@ import MainContainer from '../../components/MainContainer';
 import { colors } from '../../config/colors';
 import { Appcontext } from '../../../AppContext';
 import { getTaskPlanByAccountId, TaskPlanDateData } from '../../services/taskPlanScreen.service';
+import { io } from 'socket.io-client';
+import env from "../../config/env";
 
 interface Props {}
 
@@ -40,15 +42,37 @@ function TaskPlanScreen(props: unknown) {
     const {state} = useContext(Appcontext);
     const [data, setData] = useState<TaskPlanDateData>({});
     
-    const taskPlanData = getTaskPlanByAccountId(state.data.id);
     
-    const setTaskPlanData = () => {
-        taskPlanData.then((res: TaskPlanDateData)=>{
+
+    
+    useEffect(()=>{
+        // Fetch data
+        const taskPlanData = getTaskPlanByAccountId(state.data.id)
+        .then((res: TaskPlanDateData)=>{
             setData(res);
         });
-    };
-    
-    useEffect(setTaskPlanData,[]);
+
+
+        // ===================
+        // Web Socket
+        // ===================
+        const websocket = io(`${env.API_BASE}:${env.API_PORT}`);
+        const updateRequestTopic = `${state.data.id}-request`;
+        
+        // Update worker's request
+        websocket.on(updateRequestTopic, async (d: Object) => {
+            const taskPlanData = getTaskPlanByAccountId(state.data.id)
+            .then((res: TaskPlanDateData)=>{
+                setData(res);
+            });
+        });
+
+        return () => {
+            websocket.close();
+        };
+        // ===================
+        // ===================
+    },[]);
     // ===========================================================================
         
     // use for gen mockup data
@@ -85,7 +109,7 @@ function TaskPlanScreen(props: unknown) {
             style={[styles.item, { height: 80}]}
             // onPress={() => Alert.alert(reservation.name)}
         >
-            <Text style={{ fontSize, color }}>{!reservation.OTHour? `เวลาเข้างาน  ${reservation.checkin? reservation.checkin:''}  น.( ${reservation.status? reservation.status:'ยังไม่เข้างาน'} )`:`จำนวนชั่วโมง OT  ${reservation.OTHour? reservation.OTHour:''}  ชม.`}</Text>
+            <Text style={{ fontSize, color }}>{!reservation.OTHour? `เวลาเข้างาน  ${reservation.checkin? reservation.checkin:''}  น. ( ${reservation.status? reservation.status:'ยังไม่เข้างาน'} )`:`จำนวนชั่วโมง OT  ${reservation.OTHour? reservation.OTHour:''}  ชม. ( ${reservation.reqStatus? reservation.reqStatus:'-'} )`}</Text>
             <Text style={{ fontSize, color }}>{`เวลางาน  ${reservation.OTHour? `${moment(reservation.shiftTime,'HH:mm:ss').add(8,'hours').format('HH:mm')}-${moment(reservation.shiftTime,'HH:mm:ss').add(8+parseFloat(reservation.OTHour),'hours').format("HH:mm")}`: `${moment(reservation.shiftTime,'HH:mm:ss').format('HH:mm')}-${moment(reservation.shiftTime,'HH:mm:ss').add(8,'hours').format('HH:mm')}`}  น.`}</Text>
             <Text style={{ fontSize, color }}>{`แผนก  ${reservation.department? reservation.department: '-'}`}</Text>
         </TouchableOpacity>
@@ -101,7 +125,7 @@ function TaskPlanScreen(props: unknown) {
     };
 
     const rowHasChanged = (r1: AgendaEntry, r2: AgendaEntry) => {
-        return r1.name !== r2.name;
+        return r1 !== r2;
     };
 
     return (

@@ -12,6 +12,7 @@ interface OtPlanData {
     department: string;
     shiftTime: string;
     OTHour: string;
+    reqStatus: string;
 }
 
 interface TaskPlanDataResponse {
@@ -85,7 +86,8 @@ const changeTaskPlanFormat = (taskPlanResponse: TaskPlanDataResponse[], otPlanRe
         const work: OtPlanData= {
             department: otPlan.department_name,
             shiftTime: otPlan.shift_time,
-            OTHour: otPlan.number_of_hour
+            OTHour: otPlan.number_of_hour,
+            reqStatus: otPlan.req_status
         };
         
         const date =  moment(otPlan.date, 'YYYY-MM-DDTHH:mm:ssZ').format('YYYY-MM-DD');
