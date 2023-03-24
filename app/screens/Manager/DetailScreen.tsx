@@ -206,6 +206,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
               delay: 0,
           });
         }else{
+          setFetchData(tmp)
           setDataForPlanAndOt(tmp);
           let toast = Toast.show('Add worker successful', {
               duration: Toast.durations.SHORT,
@@ -241,6 +242,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
             delay: 0,
         });
       }else{
+        setFetchData(tmp)
         setDataForPlanAndOt(tmp);
         let toast = Toast.show('Remove worker successful', {
             duration: Toast.durations.SHORT,
@@ -285,8 +287,29 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
             const index = tmp.ot.findIndex((obj)=>obj.account_id===id)
             tmp.ot.splice(index,1)
           })
-          setFetchData(tmp)
-          setDataForPlanAndOt(tmp)
+          if (res.error){
+            let toast = Toast.show('Remove worker failed', {
+                duration: Toast.durations.SHORT,
+                position: Toast.positions.TOP,
+                backgroundColor: 'red',
+                shadow: true,
+                animation: true,
+                hideOnPress: true,
+                delay: 0,
+            });
+          }else{
+            setFetchData(tmp)
+            setDataForPlanAndOt(tmp)
+            let toast = Toast.show('Remove worker successful', {
+                duration: Toast.durations.SHORT,
+                position: Toast.positions.TOP,
+                backgroundColor: 'green',
+                shadow: true,
+                animation: true,
+                hideOnPress: true,
+                delay: 0,
+            });
+          }
         })
         .catch((e)=>{console.log(e)})
         setDelOtVisible(false)

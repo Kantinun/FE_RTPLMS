@@ -75,8 +75,8 @@ export const deleteRequest = async (mng_id: string, shiftCode: string, accountId
         body:JSON.stringify(data),
         }
     const res = await fetch(`${env.API_BASE}:${env.API_PORT}/request/`, requestOptions);
-    // const json = await res.json()
-    // return json
+    const json = await res.json()
+    return json
 }
 
 export const createRequest = async (requestProps: CreateRequestProps) => {
