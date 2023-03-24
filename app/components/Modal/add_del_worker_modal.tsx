@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, StyleSheet, ScrollView, TextInput} from 'react-native';
+import { Text, View, StyleSheet, ScrollView, TextInput, FlatList} from 'react-native';
 import { Cell, Row, Table, TableWrapper } from 'react-native-table-component';
 import { SearchBar,CheckBox, Button, Icon} from '@rneui/themed'
 import Modal from "react-native-modal";
@@ -49,7 +49,7 @@ const Add_del_worker_modal = (props: any) => {
       labelColor: '#888888',
       labelSize: 15,
       currentStepLabelColor: '#111111',
-      };
+    };
       const resetParameter=()=>{
         setPosition(0)
         setSearchText('')
@@ -66,46 +66,37 @@ const Add_del_worker_modal = (props: any) => {
   }
   const _renderForm  = () => {
     return(
-        <ScrollView style={{marginHorizontal: 5}}>
-        <Table borderStyle={{borderWidth: 2, borderColor: '#eee'}}>
-            <Row data={data.header} style={styles.head} textStyle={styles.text}></Row>
-              {
-                data.content.map((item)=>(
-                  <TableWrapper style={{ flexDirection: 'row'}}>
-                    <Cell data={<CheckBox
-                      center
-                      checked={item.isChecked}
-                      onPress={() => handleCheckboxClick(item.account_id)}
-                    />}/> 
-                    <Cell data={<Text style={{textAlign: 'center'}}>{item.name}</Text>}/>
-                    <Cell data={<Text style={{textAlign: 'center'}}>{item.performance}</Text>}/>
-                  </TableWrapper>
-                ))
-              }
-        </Table>
-        </ScrollView>
+      <FlatList
+        data={data.content}
+        keyExtractor={item => item.account_id.toString()}
+        renderItem={({ item }) => (
+          <TableWrapper style={{ flexDirection: 'row'}}>
+            <Cell data={<CheckBox
+              center
+              checked={item.isChecked}
+              onPress={() => handleCheckboxClick(item.account_id)}
+            />}/> 
+            <Cell data={<Text style={{textAlign: 'center'}}>{item.name}</Text>}/>
+            <Cell data={<Text style={{textAlign: 'center'}}>{item.performance}</Text>}/>
+          </TableWrapper>
+        )}
+      />
     )
   }
 
   const _renderConfirmPage = (props) => {
     const checkedPerson = props.data.content? props.data.content.filter((obj)=> obj.isChecked): []
     return(
-        <ScrollView style={{marginHorizontal: 5}}>
-        <Table 
-          borderStyle={{borderWidth: 2, borderColor: '#eee',}}
-          style={{width: '100%'}}
-        >
-              <Row data={["ชื่อ-นามสกุล", "กำลังการผลิต"]} style={styles.head} textStyle={styles.text} />
-              {
-              checkedPerson.map((rowData, index) => (
-              <TableWrapper style={styles.row}>
-                <Cell data={rowData.name} textStyle={styles.text}/>
-                <Cell data={rowData.performance} textStyle={styles.text}></Cell>
-              </TableWrapper>
-              ))
-              }
-          </Table>
-          </ScrollView>
+      <FlatList
+        data={checkedPerson}
+        keyExtractor={item => item.account_id}
+        renderItem={({ item }) => (
+          <TableWrapper style={styles.row}>
+            <Cell data={item.name} textStyle={styles.text}/>
+            <Cell data={item.performance} textStyle={styles.text}></Cell>
+          </TableWrapper>
+          )}
+      />
     )
   }
 
@@ -164,9 +155,21 @@ const Add_del_worker_modal = (props: any) => {
                             handleSearch(text)
                           }}
                         ></SearchBar>
-                        <_renderForm/>
+                        <Table 
+                          borderStyle={{borderWidth: 2, borderColor: '#eee',}}
+                          style={styles.table}
+                        >
+                            <Row data={["","ชื่อ-นามสกุล", "กำลังการผลิต"]} style={styles.head} textStyle={styles.text} />
+                            <_renderForm/>
+                        </Table>
                       </View>
+                      <Table 
+                        borderStyle={{borderWidth: 2, borderColor: '#eee',}}
+                        style={styles.table}
+                      >
+                        <Row data={["ชื่อ-นามสกุล", "กำลังการผลิต"]} style={styles.head} textStyle={styles.text} />
                         <_renderConfirmPage data={data} />
+                      </Table>
                       </Swiper>
                         <View style={{width:'100%', justifyContent: 'space-between', padding: 15, flexDirection: 'row', borderTopWidth: 1, borderTopColor: '#eeee'}}>
                           <Button
@@ -210,5 +213,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   row: { flexDirection: 'row', backgroundColor: 'white' },
+  table:{width: '98%', alignSelf:'center'},
 })
 export default Add_del_worker_modal;
