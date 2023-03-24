@@ -271,13 +271,35 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
           unit: OTProps.unit,
           quantity: OTProps.quantity,
           accountIds: OTProps.accountIds
-        }).then(()=>{
-          getAccountInThisShift(currentShift.shiftCode).then((res) => {
-            return getDataForPlanAndOt(res);
-          }).then((data) => {
-            setFetchData(data)
-            setDataForPlanAndOt(data)
-          })
+        }).then((res)=>{
+          if (res.error){
+            let toast = Toast.show('Add OT requests failed', {
+                duration: Toast.durations.SHORT,
+                position: Toast.positions.TOP,
+                backgroundColor: 'red',
+                shadow: true,
+                animation: true,
+                hideOnPress: true,
+                delay: 0,
+            });
+          }else{
+            getAccountInThisShift(currentShift.shiftCode).then((res) => {
+              return getDataForPlanAndOt(res);
+            }).then((data) => {
+              setFetchData(data)
+              setDataForPlanAndOt(data)
+            })
+
+            let toast = Toast.show('Add OT requests successful', {
+                duration: Toast.durations.SHORT,
+                position: Toast.positions.TOP,
+                backgroundColor: 'green',
+                shadow: true,
+                animation: true,
+                hideOnPress: true,
+                delay: 0,
+            });
+          }
         })
         setAddOtVisible(false)
       }else{
@@ -288,7 +310,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
             tmp.ot.splice(index,1)
           })
           if (res.error){
-            let toast = Toast.show('Remove worker failed', {
+            let toast = Toast.show('Remove OT requests failed', {
                 duration: Toast.durations.SHORT,
                 position: Toast.positions.TOP,
                 backgroundColor: 'red',
@@ -300,7 +322,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
           }else{
             setFetchData(tmp)
             setDataForPlanAndOt(tmp)
-            let toast = Toast.show('Remove worker successful', {
+            let toast = Toast.show('Remove OT requests successful', {
                 duration: Toast.durations.SHORT,
                 position: Toast.positions.TOP,
                 backgroundColor: 'green',

@@ -89,4 +89,6 @@ export const createRequest = async (requestProps: CreateRequestProps) => {
         body:JSON.stringify(requestProps),
         }
     const res = await fetch(`${env.API_BASE}:${env.API_PORT}/request/`, requestOptions);
+    const json = res.json()
+    return json
 }
