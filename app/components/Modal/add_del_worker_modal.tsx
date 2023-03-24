@@ -155,13 +155,8 @@ const Add_del_worker_modal = (props: any) => {
                             handleSearch(text)
                           }}
                         ></SearchBar>
-                        <Table 
-                          borderStyle={{borderWidth: 2, borderColor: '#eee',}}
-                          style={styles.table}
-                        >
-                            <Row data={["","ชื่อ-นามสกุล", "กำลังการผลิต"]} style={styles.head} textStyle={styles.text} />
-                            <_renderForm/>
-                        </Table>
+                        <Row data={["","ชื่อ-นามสกุล", "กำลังการผลิต"]} style={styles.head} textStyle={styles.text} />
+                        <_renderForm/>
                       </View>
                       <Table 
                         borderStyle={{borderWidth: 2, borderColor: '#eee',}}
