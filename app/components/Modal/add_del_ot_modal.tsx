@@ -160,7 +160,7 @@ function Add_del_ot_modal(props) {
                   handle_search(text)
                 }}
               ></SearchBar>
-
+              <ScrollView>
               <Table borderStyle={{borderWidth: 2, borderColor: '#eee'}}>
                   <Row data={headerAddManual} style={styles.head} textStyle={styles.text} />
                   {
@@ -171,16 +171,16 @@ function Add_del_ot_modal(props) {
                       center
                       checked={rowData.isCheck}
                       onPress={() => handleCheckboxClick(rowData.account_id)}
-                    />}> 
-                    </Cell>
-                    <Cell data={<Text style={{textAlign: 'center'}}>{rowData.name}</Text>}> </Cell>
-                    <Cell data={<Text style={{textAlign: 'center'}}>{rowData.performance}</Text>}> </Cell>
+                    />}/> 
+                    <Cell data={<Text style={{textAlign: 'center'}}>{rowData.name}</Text>}/>
+                    <Cell data={<Text style={{textAlign: 'center'}}>{rowData.performance}</Text>}/>
                   </TableWrapper>
                   )}
                   
                   )
                   }
               </Table>
+              </ScrollView>
             </View>
           )}
         </View>
@@ -279,7 +279,7 @@ function Add_del_ot_modal(props) {
                         />
                     </View>
                     <View style={{flex: 1}}>
-                    <ScrollView style={{marginHorizontal: 5}}>
+                    {/* <ScrollView style={{marginHorizontal: 5}}> */}
                       <Swiper
                           contentContainerStyle={{ alignItems: 'center', justifyContent: 'center'}}
                           loop={false}
@@ -294,13 +294,17 @@ function Add_del_ot_modal(props) {
                           }}
                       >
                         <View>
+                          <ScrollView style={{marginHorizontal: 5}}>
                           {props.mode == 'add'?_renderAddForm(): _renderDelForm()}
+                          </ScrollView>
                         </View>
                         <View>
+                          <ScrollView style={{marginHorizontal: 5}}>
                           {_renderConfirmPage(data)}
+                          </ScrollView>
                         </View>
                       </Swiper>
-                      </ScrollView>
+                      {/* </ScrollView> */}
                         <View style={{width:'100%', justifyContent: 'space-between', padding: 15, flexDirection: 'row', borderTopWidth: 1, borderTopColor: '#eeee'}}>
                           <Button
                             disabled={position==0} 
