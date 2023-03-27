@@ -161,8 +161,7 @@ function Add_del_ot_modal(props) {
                 }}
               ></SearchBar>
               <ScrollView>
-              <Table borderStyle={{borderWidth: 2, borderColor: '#eee'}}>
-                  <Row data={headerAddManual} style={styles.head} textStyle={styles.text} />
+                 <Row data={headerAddManual} style={styles.head} textStyle={styles.text} />
                   {
                   data.map((rowData, index) => {
                   return(
@@ -179,7 +178,6 @@ function Add_del_ot_modal(props) {
                   
                   )
                   }
-              </Table>
               </ScrollView>
             </View>
           )}
@@ -201,8 +199,7 @@ function Add_del_ot_modal(props) {
               handle_search(text)
             }}
           ></SearchBar>
-          <Table borderStyle={{borderWidth: 2, borderColor: '#eee'}}>
-                <Row data={headerDel} style={styles.head} textStyle={styles.text} />
+               <Row data={headerDel} style={styles.head} textStyle={styles.text} />
                 {
                 data.map((rowData, index) => (
                 <TableWrapper style={{ flexDirection: 'row'}}>
@@ -210,14 +207,12 @@ function Add_del_ot_modal(props) {
                     center
                     checked={rowData.isCheck}
                     onPress={() => handleCheckboxClick(rowData.account_id)}
-                  />}> 
-                  </Cell>
-                  <Cell data={<Text style={{textAlign: 'center'}}>{rowData.name}</Text>}> </Cell>
-                  <Cell data={<Text style={{textAlign: 'center'}}>{rowData.hour}</Text>}> </Cell>
+                  />}/> 
+                  <Cell data={<Text style={{textAlign: 'center'}}>{rowData.name}</Text>}/>
+                  <Cell data={<Text style={{textAlign: 'center'}}>{rowData.hour}</Text>}/>
                 </TableWrapper>
                 ))
                 }
-            </Table>
         </View>
       )
     }
@@ -231,7 +226,7 @@ function Add_del_ot_modal(props) {
           setData(tmp)
     }
 
-    const _renderConfirmPage = (data: unknown) => {
+    const _renderConfirmPage = (data) => {
       const checkedPerson = data.filter((obj)=> obj.isCheck)
       return(
           <Table borderStyle={{borderWidth: 2, borderColor: '#eee'}}>
@@ -240,8 +235,8 @@ function Add_del_ot_modal(props) {
                 checkedPerson.map((rowData, index) => (
                 <TableWrapper style={styles.row}>
                   <Cell data={rowData.name} textStyle={styles.text}/>
-                  <Cell data={rowData.performance} textStyle={styles.text}></Cell>
-                  <Cell data={rowData.hour? rowData.hour: (value&&(btn_group_index==1))? value: '-'} textStyle={styles.text}></Cell>
+                  <Cell data={rowData.performance} textStyle={styles.text}/>
+                  <Cell data={rowData.hour? rowData.hour: (value&&(btn_group_index==1))? value: '-'} textStyle={styles.text}/>
                 </TableWrapper>
                 ))
                 }
