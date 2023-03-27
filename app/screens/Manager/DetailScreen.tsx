@@ -108,9 +108,6 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
       setShift_time_li(tmp_li? tmp_li: [])
       setFetchData({plan: [], ot: []})
       setDataForPlanAndOt({plan: [], ot: []})
-      if(tmp_li.length==0){
-        setCurrentShift({})
-      }
   } )
   },[date])
 
@@ -167,6 +164,11 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
       },[])
       setOTData(tmp)
       setDelOtVisible(true)
+  }
+
+  const handleChangeDate = (date) => {
+    setCurrentShift({})
+    setDate(date)
   }
   
   const handleWorkerModalConfirm = (mode: string) => {
@@ -341,7 +343,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
   return (
     <MainContainer>
       <View style={{marginVertical: 5, alignItems: 'center', flexDirection: 'row',justifyContent: 'center'}}>
-        <MyDateTimePicker date={date} setDate={setDate} />
+        <MyDateTimePicker date={date} setDate={handleChangeDate} />
         <Dropdown
           style={[styles.dropdown,styles.raise]}
           placeholder="Select shift"
