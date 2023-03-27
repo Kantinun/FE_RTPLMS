@@ -122,7 +122,7 @@ function DetailCarousel(props: any) {
         >
           {item === "page1" ? (
             <View style={styles.statusCard}>
-              <BigText>ผลผลิต : {currentShift.success_product_in_shiftTime+currentShift.success_product_in_OTTime} / {currentShift.product_target}</BigText>
+              <BigText>ผลผลิต : {currentShift.success_product_in_shiftTime?currentShift.success_product_in_shiftTime+currentShift.success_product_in_OTTime:0} / {currentShift.product_target?currentShift.product_target:0}</BigText>
               <BigText>
                 เวลาที่เหลือ :{" "}
                 {remainingTime.seconds() > 0
@@ -132,7 +132,7 @@ function DetailCarousel(props: any) {
                   : "--:--"}
               </BigText>
               <BigText>
-                กำลังผลิต : {`${currentShift.idealPerformance} /ชม.`}
+                กำลังผลิต : {`${currentShift.idealPerformance?currentShift.idealPerformance:0} /ชม.`}
               </BigText>
               <View style={{flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: 5}}>
                 <BigText>คาดการณ์ : </BigText>
@@ -141,17 +141,21 @@ function DetailCarousel(props: any) {
             </View>
           ) : (
             <View style={styles.statusCard}>
-              <BigText>รหัสกะ : {currentShift.shiftCode}</BigText>
+              <BigText>รหัสกะ : {currentShift.shiftCode?currentShift.shiftCode:"-"}</BigText>
               <BigText>
                 เวลากะ :{" "}
-                {`${moment(currentShift.shiftTime, "HH:mm:ss").format(
+                {currentShift.shiftTime?
+                `${moment(currentShift.shiftTime, "HH:mm:ss").format(
                   "HH:mm"
                 )}-${moment(currentShift.shiftTime, "HH:mm:ss")
                   .add(8, "hours")
-                  .format("HH:mm")}`}
+                  .format("HH:mm")}`
+                :
+                `-`
+                }
               </BigText>
               <BigText>
-                จำนวนคน : {`${currentShift.entered}/${currentShift.member}`}
+                จำนวนคน : {currentShift.entered&&currentShift.member?`${currentShift.entered}/${currentShift.member}`:`-/-`}
               </BigText>
             </View>
           )}

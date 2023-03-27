@@ -169,6 +169,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
   const handleChangeDate = (date) => {
     setCurrentShift({})
     setDate(date)
+    setRemainingTime(moment.duration(0))
   }
   
   const handleWorkerModalConfirm = (mode: string) => {
