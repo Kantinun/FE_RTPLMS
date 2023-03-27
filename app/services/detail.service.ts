@@ -61,7 +61,7 @@ export const getDataForPlanAndOt = (accounts: DetailResponse[]) => {
         obj.plan.push({
             name: account.name, 
             account_id: account.id,
-            checkInOut: `${moment(account.checkInTime, "HH:mm:ss").format("HH:mm")} - ${!account.checkOutTime||account.checkOutTime==" "? '':moment(account.checkOutTime, "HH:mm:ss").format("HH:mm")}`, 
+            checkInOut: `${!account.checkInTime||account.checkInTime==" "? '':moment(account.checkInTime, "HH:mm:ss").format("HH:mm")} - ${!account.checkOutTime||account.checkOutTime==" "? '':moment(account.checkOutTime, "HH:mm:ss").format("HH:mm")}`, 
             checkInStatus: account.checkInStatus,
             performance: account.performance
         });
