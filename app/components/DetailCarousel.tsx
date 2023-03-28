@@ -98,9 +98,9 @@ function DetailCarousel(props: any) {
   const Prediction_badge = (props)=> (
         <Badge 
           value={props.status}
-          status={props.status==="จบกะแล้ว"? "primary": props.status==="สำเร็จในเวลา"? "success":"error"}
+          status={props.status==="จบกะแล้ว"? "primary": props.status==="สำเร็จในเวลา"||props.status==="สำเร็จตามเป้าหมาย"? "success":"error"}
           textStyle={{fontSize: 20}}
-          badgeStyle={{flex:3}}
+          badgeStyle={{height: '100%', marginHorizontal: 5}}
         />)
 
   return (
@@ -108,11 +108,17 @@ function DetailCarousel(props: any) {
       loop
       width={width}
       height={width / 2}
-      autoPlay={true}
+      autoPlay={prediction_status!="จบกะแล้ว"}
       autoPlayInterval={5000}
       mode="parallax"
-      data={["page1", "page2"]}
+      data={prediction_status=="จบกะแล้ว"?["page1"]:["page1", "page2"]}
       scrollAnimationDuration={1000}
+      withAnimation={{
+        type: "spring",
+        config: {
+          damping: 13,
+        },
+      }}
       renderItem={({ item }) => (
         <View
           style={{
@@ -122,21 +128,37 @@ function DetailCarousel(props: any) {
         >
           {item === "page1" ? (
             <View style={styles.statusCard}>
-              <BigText>ผลผลิต : {currentShift.success_product_in_shiftTime?currentShift.success_product_in_shiftTime+currentShift.success_product_in_OTTime:0} / {currentShift.product_target?currentShift.product_target:0}</BigText>
+              {prediction_status=="จบกะแล้ว"&&<BigText>รหัสกะ : {currentShift.shiftCode?currentShift.shiftCode:"-"}</BigText>}
+              {prediction_status=="จบกะแล้ว"&&
               <BigText>
+                เวลากะ :{" "}
+                {currentShift.shiftTime?
+                `${moment(currentShift.shiftTime, "HH:mm:ss").format(
+                  "HH:mm"
+                )}-${moment(currentShift.shiftTime, "HH:mm:ss")
+                  .add(8, "hours")
+                  .format("HH:mm")}`
+                :
+                `-`
+                }
+              </BigText>
+              }
+              <BigText>ผลผลิต : {currentShift.success_product_in_shiftTime?currentShift.success_product_in_shiftTime+currentShift.success_product_in_OTTime:0} / {currentShift.product_target?currentShift.product_target:0}</BigText>
+              {prediction_status!="จบกะแล้ว"&&<BigText>
                 เวลาที่เหลือ :{" "}
                 {remainingTime.seconds() > 0
                   ? remainingTime.asHours() <= 8
                     ? `${remainingTime.hours()} ชม. ${remainingTime.minutes()} นาที`
                     : "ยังไม่เริ่มกะ"
                   : "--:--"}
-              </BigText>
-              <BigText>
+              </BigText>}
+              {prediction_status!="จบกะแล้ว"&&<BigText>
                 กำลังผลิต : {`${currentShift.idealPerformance?currentShift.idealPerformance:0} /ชม.`}
-              </BigText>
-              <View style={{flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: 5}}>
-                <BigText>คาดการณ์ : </BigText>
+              </BigText>}
+              <View style={{flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: 5, height:'20%'}}>
+                {prediction_status!="จบกะแล้ว"&&<BigText>คาดการณ์ : </BigText>}
                 <Prediction_badge status={prediction_status}/>
+                {prediction_status=="จบกะแล้ว"&&<Prediction_badge status={currentShift.success_product_in_shiftTime+currentShift.success_product_in_OTTime>=currentShift.product_target? "สำเร็จตามเป้าหมาย":"ไม่สำเร็จตามเป้าหมาย"}/>}
               </View>
             </View>
           ) : (
@@ -154,9 +176,9 @@ function DetailCarousel(props: any) {
                 `-`
                 }
               </BigText>
-              <BigText>
+              {prediction_status!="จบกะแล้ว"&&<BigText>
                 จำนวนคน : {currentShift.entered&&currentShift.member?`${currentShift.entered}/${currentShift.member}`:`-/-`}
-              </BigText>
+              </BigText>}
             </View>
           )}
         </View>
