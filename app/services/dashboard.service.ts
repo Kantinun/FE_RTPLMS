@@ -26,6 +26,7 @@ export const dataHandler = (data: any) => {
         entered: parseInt(shift.checkInMember),
         member: parseInt(shift.allMember),
         idealPerformance: parseInt(shift.idealPerformance),
+        actualPerformance: parseFloat(shift.actual_performance)
       }})
       ,
       detailScreenName: 'Detail',

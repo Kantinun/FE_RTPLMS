@@ -46,6 +46,7 @@ export const dataHandler = (data: any) => {
         entered: parseInt(row.checkInMember),
         member: parseInt(row.allMember),
         idealPerformance: parseInt(row.idealPerformance),
+        actualPerformance: parseFloat(row.actual_performance)
         }
     })
   };

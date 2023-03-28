@@ -30,7 +30,7 @@ function DetailCarousel(props: any) {
         product_target: parseFloat(shift.product_target),
         entered: parseInt(shift.checkin_member),
         member: parseInt(shift.all_member),
-        idealPerformance: parseInt(shift.ideal_performance),
+        idealPerformance: parseFloat(shift.ideal_performance),
       };
       setCurrentShift(shiftFormated);
       console.log("success product updated");
@@ -153,7 +153,7 @@ function DetailCarousel(props: any) {
                   : "--:--"}
               </BigText>}
               {prediction_status!="จบกะแล้ว"&&<BigText>
-                กำลังผลิต : {`${currentShift.idealPerformance?currentShift.idealPerformance:0} /ชม.`}
+                กำลังผลิต : {`${currentShift.actualPerformance>0? currentShift.actualPerformance.toFixed(2): currentShift.idealPerformance} /ชม.`}
               </BigText>}
               <View style={{flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: 5, height:'20%'}}>
                 {prediction_status!="จบกะแล้ว"&&<BigText>คาดการณ์ : </BigText>}
