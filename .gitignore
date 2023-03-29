@@ -14,8 +14,9 @@ web-build/
 # macOS
 .DS_Store
 
-/app/config/env.ts
+# /app/config/env.ts
 
 #test
 /android
 /ios
+artifacts/
