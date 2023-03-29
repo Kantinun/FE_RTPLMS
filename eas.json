@@ -3,6 +3,13 @@
     "version": ">= 3.5.2"
   },
   "build": {
+    "development-simulator": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "ios": {
+        "simulator": true
+      }
+    },
     "development": {
       "developmentClient": true,
       "distribution": "internal",
@@ -22,6 +29,15 @@
     "production": {
       "ios": {
         "resourceClass": "m1-medium"
+      }
+    },
+    "test": {
+      "android": {
+        "gradleCommand": ":app:assembleRelease :app:assembleAndroidTest -DtestBuildType=release",
+        "withoutCredentials": true
+      },
+      "ios": {
+        "simulator": true
       }
     }
   },

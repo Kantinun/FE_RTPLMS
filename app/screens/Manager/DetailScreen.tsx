@@ -1,10 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import { ScrollView, StyleSheet, View} from 'react-native';
-
 import DetailsDataTable from '../../components/DetailsDataTable';
 import MainContainer from '../../components/MainContainer';
 import MyDateTimePicker from '../../components/DateTimePicker';
-import { addWorker, DataForPlanAndOt, delWorker, DetailResponse, getAccountInThisShift, getDataForPlanAndOt, getFreeWorkers, getShift_li, ModalAddData } from '../../services/detail.service';
+import { addWorker, DataForPlanAndOt, delWorker, getAccountInThisShift, getDataForPlanAndOt, getFreeWorkers, getShift_li, ModalAddData, getShiftPrediction } from '../../services/detail.service';
 import { deleteRequest, createRequest } from '../../services/otRequest.service';
 import { colors } from '../../config/colors';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
@@ -15,6 +14,8 @@ import { Dropdown } from 'react-native-element-dropdown';
 import { Appcontext } from '../../../AppContext';
 import moment from 'moment';
 import DetailCarousel from '../../components/DetailCarousel';
+import Toast from 'react-native-root-toast';
+
 
 type Props = {};
 interface OTConfirmProps {
@@ -26,7 +27,6 @@ interface OTConfirmProps {
 }
 
 const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
-
   const {state} = React.useContext(Appcontext);
   
   const navigation = useNavigation<NavigationProp<any>>();
@@ -36,7 +36,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
   const [delOtVisible, setDelOtVisible] = useState(false);
   const [searchText, setSearchText] = useState('');
 
-  const [date, setDate] = useState<Date>(new Date(route.params.shift.shiftDate));
+  const [date, setDate] = useState<Date>(new Date(moment(route.params.shift.shiftDate, "YYYY/MM/DD").format('YYYY-MM-DD')));
   
   navigation.setOptions({title: route.params.department.title});
   
@@ -44,13 +44,12 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
   const [shift_time_li,setShift_time_li] = useState([])
   const [shift_li, setShift_li] = useState([])
   const [currentShift, setCurrentShift] = useState(route.params.shift)
-
   const [fetchData, setFetchData] = React.useState<DataForPlanAndOt>({plan: [], ot: []});
   const [dataForPlanAndOt, setDataForPlanAndOt] = React.useState<DataForPlanAndOt>({plan: [], ot: []});
   const [OTData, setOTData] = useState([])
-  const accountInThisShift: Promise<any> = getAccountInThisShift(currentShift.shiftCode); // Call Api
+  const accountInThisShift: Promise<any> = getAccountInThisShift(route.params.shift.shiftCode); // Call Api
 
-  const [endTime, setEndTime] = useState(moment(currentShift.shiftTime,'HH:mm:ss').add(8,'hours')); // set shift end time
+  const [endTime, setEndTime] = useState(moment(`${currentShift.shiftDate} ${currentShift.shiftTime}`,'YYYY/MM/DD HH:mm:ss').add(8,'hours')); // set shift end time
   const [remainingTime, setRemainingTime] = useState(moment.duration(endTime.diff(moment()))); // calculate remaining time
 
   const updateSearch = (text: string) => {
@@ -79,9 +78,9 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
         })
         setShift_time_li(tmp_li? tmp_li: [])
     } )
+
   }, []);
   
-
   useEffect(() => {
     const interval = setInterval(() => {
       const newRemainingTime = moment.duration(endTime.diff(moment()));
@@ -110,9 +109,6 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
       setShift_time_li(tmp_li? tmp_li: [])
       setFetchData({plan: [], ot: []})
       setDataForPlanAndOt({plan: [], ot: []})
-      if(tmp_li.length==0){
-        setCurrentShift({})
-      }
   } )
   },[date])
 
@@ -170,6 +166,12 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
       setOTData(tmp)
       setDelOtVisible(true)
   }
+
+  const handleChangeDate = (date) => {
+    setCurrentShift({})
+    setDate(date)
+    setRemainingTime(moment.duration(0))
+  }
   
   const handleWorkerModalConfirm = (mode: string) => {
     const selected = mode === 'add' ? 
@@ -179,7 +181,8 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
     const data = {
       shiftCode: currentShift.shiftCode,
       date: currentShift.shiftDate,
-      accountIds:  selected.map((obj)=>obj.id)
+      accountIds:  selected.map((obj)=>obj.account_id),
+      mng_id: state.data.id
     }
 
     if(mode === 'add'){
@@ -189,14 +192,36 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
         const tmp = {...dataForPlanAndOt};
         selected.forEach((account)=> {
         tmp.plan.push({
-          id: account.id,
+          account_id: account.account_id,
           name: account.name,
           checkInOut: "-",
           checkInStatus: 'ยังไม่เข้างาน',
           performance: account.performance,
         })
-      });  
-      setDataForPlanAndOt(tmp);
+        })
+        if (res.error){
+          let toast = Toast.show('Add worker failed', {
+              duration: Toast.durations.SHORT,
+              position: Toast.positions.TOP,
+              backgroundColor: 'red',
+              shadow: true,
+              animation: true,
+              hideOnPress: true,
+              delay: 0,
+          });
+        }else{
+          setFetchData(tmp)
+          setDataForPlanAndOt(tmp);
+          let toast = Toast.show('Add worker successful', {
+              duration: Toast.durations.SHORT,
+              position: Toast.positions.TOP,
+              backgroundColor: 'green',
+              shadow: true,
+              animation: true,
+              hideOnPress: true,
+              delay: 0,
+          });
+        }
       })
       .catch((e)=>{
         console.log(e);
@@ -207,10 +232,32 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
       .then((res)=>{
         const tmp = {...dataForPlanAndOt};
         data.accountIds.forEach((id)=>{
-        const index = tmp.plan.findIndex((obj)=>(obj.id === id));
+        const index = tmp.plan.findIndex((obj)=>(obj.account_id === id));
         tmp.plan.splice(index,1)
       })
-      setDataForPlanAndOt(tmp);
+      if (res.error){
+        let toast = Toast.show('Remove worker failed', {
+            duration: Toast.durations.SHORT,
+            position: Toast.positions.TOP,
+            backgroundColor: 'red',
+            shadow: true,
+            animation: true,
+            hideOnPress: true,
+            delay: 0,
+        });
+      }else{
+        setFetchData(tmp)
+        setDataForPlanAndOt(tmp);
+        let toast = Toast.show('Remove worker successful', {
+            duration: Toast.durations.SHORT,
+            position: Toast.positions.TOP,
+            backgroundColor: 'green',
+            shadow: true,
+            animation: true,
+            hideOnPress: true,
+            delay: 0,
+        });
+      }
       })
       .catch((e)=>{
         console.log(e);
@@ -228,13 +275,35 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
           unit: OTProps.unit,
           quantity: OTProps.quantity,
           accountIds: OTProps.accountIds
-        }).then(()=>{
-          getAccountInThisShift(currentShift.shiftCode).then((res) => {
-            return getDataForPlanAndOt(res);
-          }).then((data) => {
-            setFetchData(data)
-            setDataForPlanAndOt(data)
-          })
+        }).then((res)=>{
+          if (res.error){
+            let toast = Toast.show('Add OT requests failed', {
+                duration: Toast.durations.SHORT,
+                position: Toast.positions.TOP,
+                backgroundColor: 'red',
+                shadow: true,
+                animation: true,
+                hideOnPress: true,
+                delay: 0,
+            });
+          }else{
+            getAccountInThisShift(currentShift.shiftCode).then((res) => {
+              return getDataForPlanAndOt(res);
+            }).then((data) => {
+              setFetchData(data)
+              setDataForPlanAndOt(data)
+            })
+
+            let toast = Toast.show('Add OT requests successful', {
+                duration: Toast.durations.SHORT,
+                position: Toast.positions.TOP,
+                backgroundColor: 'green',
+                shadow: true,
+                animation: true,
+                hideOnPress: true,
+                delay: 0,
+            });
+          }
         })
         setAddOtVisible(false)
       }else{
@@ -244,8 +313,29 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
             const index = tmp.ot.findIndex((obj)=>obj.account_id===id)
             tmp.ot.splice(index,1)
           })
-          setFetchData(tmp)
-          setDataForPlanAndOt(tmp)
+          if (res.error){
+            let toast = Toast.show('Remove OT requests failed', {
+                duration: Toast.durations.SHORT,
+                position: Toast.positions.TOP,
+                backgroundColor: 'red',
+                shadow: true,
+                animation: true,
+                hideOnPress: true,
+                delay: 0,
+            });
+          }else{
+            setFetchData(tmp)
+            setDataForPlanAndOt(tmp)
+            let toast = Toast.show('Remove OT requests successful', {
+                duration: Toast.durations.SHORT,
+                position: Toast.positions.TOP,
+                backgroundColor: 'green',
+                shadow: true,
+                animation: true,
+                hideOnPress: true,
+                delay: 0,
+            });
+          }
         })
         .catch((e)=>{console.log(e)})
         setDelOtVisible(false)
@@ -255,7 +345,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
   return (
     <MainContainer>
       <View style={{marginVertical: 5, alignItems: 'center', flexDirection: 'row',justifyContent: 'center'}}>
-        <MyDateTimePicker date={date} setDate={setDate} />
+        <MyDateTimePicker date={date} setDate={handleChangeDate} />
         <Dropdown
           style={[styles.dropdown,styles.raise]}
           placeholder="Select shift"
@@ -271,16 +361,17 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
           value={currentShift.shiftCode}
           dropdownPosition='bottom'
           onChange={async(item) => {
-              let newShift = await shift_li.filter((shift)=> shift.shiftCode == item.value)[0]
-              setCurrentShift(await newShift)
-              getAccountInThisShift(newShift.shiftCode).then((res) => {
-                return getDataForPlanAndOt(res);
-              }).then((data) => {
-                setFetchData(data)
-                setDataForPlanAndOt(data);
-              })
-              setEndTime(moment(newShift.shiftTime,'HH:mm:ss').add(8,'hours'))
-              setRemainingTime(moment.duration(moment(newShift.shiftTime,'HH:mm:ss').add(8,'hours').diff(moment())))
+            
+            let newShift = await shift_li.filter((shift)=> shift.shiftCode == item.value)[0]
+            setCurrentShift(await newShift)
+            getAccountInThisShift(newShift.shiftCode).then((res) => {
+              return getDataForPlanAndOt(res);
+            }).then((data) => {
+              setFetchData(data)
+              setDataForPlanAndOt(data);
+            })
+            setEndTime(moment(`${newShift.shiftDate} ${newShift.shiftTime}`,'YYYY/MM/DD HH:mm:ss').add(8,'hours'))
+            setRemainingTime(moment.duration(moment(`${newShift.shiftDate} ${newShift.shiftTime}`,'YYYY/MM/DD HH:mm:ss').add(8,'hours').diff(moment())))
           }}
           renderLeftIcon={() => (
             <Icon
@@ -313,7 +404,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
                 containerStyle={{borderRadius: 20}}
                 buttonStyle={{backgroundColor:colors.green , borderColor: '#aaaa',borderRadius: 20}}
                 onPress={()=>{index==0? openAddWorkerModal(): openAddOTModal()}}
-                
+                testID='detail-addModal'
               ></Button>
               <Button
                 icon={<Icon name={index==0? 'account-multiple-minus':'clock-minus'} type='material-community' size={25} color='white'></Icon>}
@@ -323,6 +414,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
                 onPress={()=>{
                   index==0?openDelWorkerModal():openDelOTModal()
                 }}
+                testID='detail-removeModal'
               ></Button>
           </View>
         </View> 
@@ -359,7 +451,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
           />
         </Tab>
 
-        <TabView value={index} onChange={setIndex} animationType="spring">
+        <TabView value={index} onChange={()=>setIndex} animationType="spring">
           <TabView.Item style={{ width: '100%' }}>
           <DetailsDataTable dataPlan={dataForPlanAndOt.plan} shiftCode={currentShift.shiftCode} mode='work_plan'></DetailsDataTable>
           </TabView.Item>

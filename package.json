@@ -1,11 +1,10 @@
 {
   "name": "fe_rtplms",
   "version": "1.0.0",
-  "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "start": "expo start --dev-client",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "web": "expo start --web",
     "test": "jest"
   },
@@ -15,13 +14,13 @@
     "@react-navigation/native-stack": "^6.9.7",
     "@rneui/themed": "^4.0.0-rc.7",
     "deprecated-react-native-prop-types": "^4.0.0",
-    "expo": "^48.0.7",
-    "expo-dev-client": "~2.1.5",
+    "expo": "~48.0.9",
+    "expo-dev-client": "~2.1.6",
     "expo-secure-store": "^12.1.1",
     "moment": "^2.29.4",
-    "react": "^18.2.0",
+    "react": "18.2.0",
     "react-dom": "^18.2.0",
-    "react-native": "^0.71.4",
+    "react-native": "0.71.4",
     "react-native-calendars": "^1.1293.0",
     "react-native-element-dropdown": "^2.5.3",
     "react-native-gesture-handler": "^2.8.0",
@@ -29,8 +28,10 @@
     "react-native-modal": "^13.0.1",
     "react-native-modal-datetime-picker": "^14.0.1",
     "react-native-page-control": "^1.1.2",
-    "react-native-reanimated": "^3.0.2",
+    "react-native-reanimated": "~2.14.4",
     "react-native-reanimated-carousel": "^3.1.5",
+    "react-native-root-siblings": "^4.1.1",
+    "react-native-root-toast": "^3.4.1",
     "react-native-safe-area-context": "^4.5.0",
     "react-native-screens": "^3.20.0",
     "react-native-snap-carousel": "^3.9.1",
@@ -40,14 +41,17 @@
     "react-native-text-input-interactive": "^0.1.4",
     "react-native-vector-icons": "^9.2.0",
     "socket.io-client": "^4.6.1",
-    "styled-components": "^5.3.6"
+    "styled-components": "^5.3.6",
+    "typescript": "^4.6.3",
+    "expo-splash-screen": "~0.18.1",
+    "expo-status-bar": "~1.4.4"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
     "@testing-library/dom": "^9.0.1",
     "@testing-library/jest-native": "^5.4.2",
     "@testing-library/react-native": "^11.5.4",
-    "@testing-library/user-event": "^13.5.0",
+    "@testing-library/user-event": "^14.4.3",
     "@types/jest": "^29.4.4",
     "@types/react": "~18.0.14",
     "@types/react-native": "^0.71.3",
@@ -73,7 +77,7 @@
       "^.+\\.(js|jsx|ts|tsx)?$": "../babel-jest.js"
     },
     "transformIgnorePatterns": [
-      "node_modules/(?!(@react-native|react-native|@react-navigation|@rneui|react-native-size-matters|react-native-ratings|react-native-table-component|react-native-vector-icons|@expo|expo-.*|@react-native-community|react-native-|react-native-modal|react-native-modal-datetime-picker|react-native-modal|react-native-animatable|react-native-swiper|react-native-element-dropdown|react-native-calendars|react-native-swipe-gestures|react-native-login-screen|react-native-text-input-interactive)/)"
+      "node_modules/(?!(@react-native|react-native|@react-navigation|@rneui|react-native-size-matters|react-native-ratings|react-native-table-component|react-native-vector-icons|@expo|expo-.*|@react-native-community|react-native-|react-native-modal|react-native-modal-datetime-picker|react-native-modal|react-native-animatable|react-native-swiper|react-native-element-dropdown|react-native-calendars|react-native-swipe-gestures|react-native-login-screen|react-native-text-input-interactive)|react-native-reanimated-carousel/)"
     ]
   },
   "detox": {

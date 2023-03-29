@@ -22,8 +22,8 @@ export interface GetFreeWorkerResponse {
     performance: string;
 }
 export interface ModalAddData {
+    account_id: any;
     name: string;
-    id: string;
     performance: string;
     isChecked: boolean;
 }
@@ -35,16 +35,18 @@ export const getShift_li = async (department_id: string, date: string) =>{
 }
 
 export const dataHandler = (data: any) => {
-    
     return data[0].map((row)=>{
         return{
         shiftCode: String(row.shiftCode),
         shiftDate: String(row.shiftDate),
         shiftTime: String(row.shiftTime),
-        productivity: parseInt(row.successProduct),
+        success_product_in_shiftTime: parseFloat(row.success_product_in_shiftTime),
+        success_product_in_OTTime: parseFloat(row.success_product_in_OTTime),
+        product_target: parseFloat(row.product_target),
         entered: parseInt(row.checkInMember),
         member: parseInt(row.allMember),
         idealPerformance: parseInt(row.idealPerformance),
+        actualPerformance: parseFloat(row.actual_performance)
         }
     })
   };
@@ -60,7 +62,7 @@ export const getDataForPlanAndOt = (accounts: DetailResponse[]) => {
         obj.plan.push({
             name: account.name, 
             account_id: account.id,
-            checkInOut: `${account.checkInTime} - ${account.checkOutTime === '-' ? '':account.checkOutTime}`, 
+            checkInOut: `${!account.checkInTime||account.checkInTime==" "? '':moment(account.checkInTime, "HH:mm:ss").format("HH:mm")} - ${!account.checkOutTime||account.checkOutTime==" "? '':moment(account.checkOutTime, "HH:mm:ss").format("HH:mm")}`, 
             checkInStatus: account.checkInStatus,
             performance: account.performance
         });
@@ -85,7 +87,7 @@ export const getFreeWorkers = async (managerId: string, shiftCode:string, date: 
             const newArrObj = !arrObj.statusCode? arrObj.map((account: GetFreeWorkerResponse)=>{
                 return {
                     name: account.fullname,
-                    id: account.account_id,
+                    account_id: account.account_id,
                     performance: account.performance,
                     isChecked: false,
                 }
@@ -131,4 +133,10 @@ export const getShiftStatus = async (id: string) => {
     const json = await res.json();
 
     return json.error? null: json;
+}
+
+export const getShiftPrediction =async (shift_code: string) => {
+    const res = await fetch(`${env.API_BASE}:${env.API_PORT}/detail/prediction/${shift_code}`)
+    const json = await res.json();
+    return json
 }

@@ -12,7 +12,7 @@ export const dataHandler = (data: any) => {
   for(let i=0; i < len ; i++){
     let newData = {
       department: {
-        id: parseInt(data.department[i].department_id),
+        id: data.department[i].department_id,
         title: String(data.department[i].name),
       },
       shift: data.shifts[i].map((shift)=>{
@@ -20,10 +20,13 @@ export const dataHandler = (data: any) => {
         shiftCode: String(shift.shiftCode),
         shiftDate: String(shift.shiftDate),
         shiftTime: String(shift.shiftTime),
-        productivity: parseInt(shift.successProduct),
+        success_product_in_shiftTime: parseFloat(shift.success_product_in_shiftTime),
+        success_product_in_OTTime: parseFloat(shift.success_product_in_OTTime),
+        product_target: parseFloat(shift.product_target),
         entered: parseInt(shift.checkInMember),
         member: parseInt(shift.allMember),
         idealPerformance: parseInt(shift.idealPerformance),
+        actualPerformance: parseFloat(shift.actual_performance)
       }})
       ,
       detailScreenName: 'Detail',

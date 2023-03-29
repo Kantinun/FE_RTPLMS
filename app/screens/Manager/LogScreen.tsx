@@ -100,13 +100,13 @@ const LogContext = (props) => {
             value.map((index:number)=>{
               switch (index){
                 case 0:
-                  return option.push('ADD')
+                  return option.push('Add Worker')
                 case 1:
-                  return option.push('DELETE')
+                  return option.push('Delete Worker')
                 case 2:
-                  return option.push('ADD_OT')
+                  return option.push('Add OT')
                 case 3:
-                  return option.push('DELETE_OT')
+                  return option.push('Delete OT')
                 case 4:
                   return option.push('EDIT_OT')
                 default:
@@ -148,7 +148,7 @@ const LogContext = (props) => {
                 <Cell data={rowData.action} 
                 textStyle={{color:'#111a', textAlign: 'center', fontSize:15, marginVertical:10}}></Cell>
 
-                <Cell data={rowData.details.department} 
+                <Cell data={rowData.details.department_name} 
                 textStyle={{color:'#111a', textAlign: 'center', fontSize:15, marginVertical:10}}></Cell>
               </TableWrapper>
               </TouchableOpacity>

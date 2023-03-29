@@ -10,8 +10,7 @@ import { io } from "socket.io-client";
 import env from "../config/env";
 
 function DetailsDataTable(props: any) {
-    const [searchText, setSearchText] = useState('');
-    const [dataPlan, setDataPlan] = useState(props.dataPlan);
+    const [dataPlan, setDataPlan] = useState([]);
     const [dataOt, setDataOt] = useState(props.dataOt);
     const workPlanTableHead = ['Name', 'In - Out', 'Status'];
     const otPlanTableHead = ["Name", "Number of Hour", "Status"];
@@ -23,10 +22,21 @@ function DetailsDataTable(props: any) {
         // ===================
         const websocket = io(`${env.API_BASE}:${env.API_PORT}`);
         const updateAttendanceTopic = `${state.data.id}-attendance`;
-
+        const updateRequestTopic = `${state.data.id}-request`;
         
         // Update worker's attendace
         websocket.on(updateAttendanceTopic, async (d: Object) => {
+            await getAccountInThisShift(props.shiftCode).then((res) => {
+                return getDataForPlanAndOt(res);
+              }).then((data) => {
+                
+                setDataPlan(data.plan)
+                setDataOt(data.ot);
+              })
+        });
+
+        // Update worker's request
+        websocket.on(updateRequestTopic, async (d: Object) => {
             await getAccountInThisShift(props.shiftCode).then((res) => {
                 return getDataForPlanAndOt(res);
               }).then((data) => {
@@ -41,6 +51,15 @@ function DetailsDataTable(props: any) {
         // ===================
         // ===================
     },[]);
+
+    useEffect(()=>{
+        if(props.dataPlan!=dataPlan){
+            setDataPlan(props.dataPlan)
+        }
+        if(props.dataOt!=dataOt){
+            setDataOt(props.dataOt)
+        }
+    },[props.dataPlan,props.dataOt])
 
 
     const ot_hour_element = (value: any) => (
@@ -59,13 +78,15 @@ function DetailsDataTable(props: any) {
             {(props.mode==='work_plan') &&
             (<Table borderStyle={{borderWidth: 2, borderColor: '#eee'}}>
                <Row data={workPlanTableHead} style={styles.head} textStyle={styles.text}/>
-               {dataPlan.map((rowData, index) => (
+               {dataPlan.map((rowData, index) => 
+               {
+                return(
                 <TableWrapper key={index} style={styles.row}>
                     <Cell data={rowData.name} textStyle={styles.text}/>
                     <Cell data={rowData.checkInOut} textStyle={styles.text}/>
                     <Cell data={rowData.checkInStatus} textStyle={styles.text}/>
                 </TableWrapper>
-                ))
+                )})
                 }
             </Table>
             )}

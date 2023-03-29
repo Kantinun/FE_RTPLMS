@@ -59,20 +59,19 @@ const DepartmentCard = (props: any) => {
               shift: props.currentShift
             })
           }}
-          testID="DepartmentCard.DetailLink">
+          testID={`DepartmentCard.DetailLink.${props.department.title || "ชื่อแผนก"}`}>
           รายละเอียด
         </RegularText>
       </CardHeadeer>
       <CardBody style={{height: '80%'}}>
         <RegularText>
-          กำลังการผลิต: <BigText>{props.currentShift.idealPerformance} </BigText>
+          กำลังการผลิต: <BigText>{props.currentShift?.idealPerformance || '--'} </BigText>
           กก./ชม.
         </RegularText>
         <RegularText>
           เข้างานแล้ว:
           <BigText>
-            {' '}
-            {props.currentShift.entered}/{props.currentShift.member}{' '}
+            {` ${props.currentShift?.entered}/${props.currentShift?.member} ` || '--'}
           </BigText>
           คน
         </RegularText>

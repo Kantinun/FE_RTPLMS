@@ -5,7 +5,7 @@ export interface Log {
     log_id: string;
     action: string;
     details: {
-        department: string,
+        department_name: string,
         department_id: string,
         account_id: Array<string>
     };

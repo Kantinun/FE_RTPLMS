@@ -7,6 +7,8 @@ import { colors } from '../../config/colors';
 import moment from 'moment';
 import { Appcontext } from '../../../AppContext';
 import { getOtRequest, OtRequestResponse, updateRequest } from '../../services/otRequest.service';
+import { io } from 'socket.io-client';
+import env from "../../config/env";
 
 const Acction_btn = (props: any) => {
     return(
@@ -33,25 +35,46 @@ function OTrequestScreen(props) {
     const [fetch_data, setFetchData] = useState<OtRequestResponse[]>([])
     const {state} = useContext(Appcontext);
 
-    // Fetch data
-    const otRequestData = getOtRequest(state.data.id);
-    const setOtRequestData = () => {
-        otRequestData.then((res)=>{
+    useEffect(()=>{
+        // Fetch data
+        const otRequestData = getOtRequest(state.data.id).then((res)=>{
             setData(res);
             setFetchData(res);
-        })
-    }
-    useEffect(setOtRequestData,[]);
+        });
+        
+        // ===================
+        // Web Socket
+        // ===================
+        const websocket = io(`${env.API_BASE}:${env.API_PORT}`);
+        const updateRequestTopic = `${state.data.id}-request`;
+        
+        // Update worker's request
+        websocket.on(updateRequestTopic, async (d: Object) => {
+            console.log('update: ',d)
+            const otRequestData = getOtRequest(state.data.id).then((res)=>{
+                setData(res);
+                setFetchData(res);
+            });
+        });
+
+        return () => {
+            websocket.close();
+        };
+        // ===================
+        // ===================
+
+    },[]);
 
     const ot_respond_handler = (shift_code:string, action: string) => {
         
-        updateRequest(state.data.id, shift_code, shift_code).then(res=>{
+        updateRequest(state.data.id, shift_code, action).then(res=>{
             let new_data: OtRequestResponse[] = data.map((data)=>{
                 if (data.shift_code===shift_code){
                     return {...data, req_status: action}
                 }
                 return data;
             })
+            setFetchData(new_data)
             setData(new_data);
         })
     }
@@ -136,7 +159,7 @@ function OTrequestScreen(props) {
                                 </View>
                                 }
                                 <View style={{marginHorizontal: 10,}}>
-                                    <RegularText>วันที่ {moment(data.Date).format('D MMMM YYYY')}</RegularText>
+                                    <RegularText>วันที่ {moment(data.date).format('D MMMM YYYY')}</RegularText>
                                     <RegularText>เวลา {data.work_time}</RegularText>
                                     <RegularText>({data.number_of_hour} ชม.)</RegularText>
                                     <Text style={{color: '#aaaa'}}
