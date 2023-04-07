@@ -25,12 +25,13 @@ function DetailCarousel(props: any) {
         shiftCode: String(shift.shift_code),
         shiftDate: String(shift.shift_date),
         shiftTime: String(shift.shift_time),
-        success_product_in_shiftTime: parseFloat(shift.success_product_in_shiftTime),
-        success_product_in_OTTime: parseFloat(shift.success_product_in_OTTime),
+        success_product_in_shiftTime: parseFloat(shift.success_product_in_shift_time),
+        success_product_in_OTTime: parseFloat(shift.success_product_in_OT_time),
         product_target: parseFloat(shift.product_target),
         entered: parseInt(shift.checkin_member),
         member: parseInt(shift.all_member),
         idealPerformance: parseFloat(shift.ideal_performance),
+        actualPerformance: parseFloat(shift.actual_performance)
       };
       setCurrentShift(shiftFormated);
       console.log("success product updated");
@@ -58,6 +59,7 @@ function DetailCarousel(props: any) {
     // Update success product
     websocket.on(updateSuccessProductTopic, async (d: Object) => {
       await handleUpdate(currentShift.shiftCode, setCurrentShift);
+      console.log(currentShift);
     });
 
     // Update worker's attendace
