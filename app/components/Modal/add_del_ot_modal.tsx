@@ -107,6 +107,7 @@ function Add_del_ot_modal(props) {
               renderLeftIcon={() => (
                 <Icon style={styles.icon} color="black" name="user-plus" size={15} />
               )}
+              testID='select-assign-method'
             />
           </View>
           { (selected_method == 'assignByCheckin'||selected_method==='assignManual') &&
