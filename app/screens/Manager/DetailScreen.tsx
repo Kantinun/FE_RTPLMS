@@ -273,10 +273,10 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
           mngId: state.data.id,
           unit: OTProps.unit,
           quantity: OTProps.quantity,
-          accountIds: OTProps.accountIds
+          accountIds: OTProps.method==="assignEveryone"? OTData.map((row)=>row.account_id):OTProps.accountIds
         }).then((res)=>{
           if (res.error){
-            let toast = Toast.show('Add OT requests failed', {
+            let toast = Toast.show(`Add OT requests failed : ${res.message}`, {
                 duration: Toast.durations.SHORT,
                 position: Toast.positions.TOP,
                 backgroundColor: 'red',
