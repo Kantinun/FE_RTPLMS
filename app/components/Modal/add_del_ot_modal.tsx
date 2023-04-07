@@ -75,10 +75,10 @@ function Add_del_ot_modal(props) {
 
     const _renderAddForm = () => {
       const options = [
-        { label: 'เลือกพนักงานด้วยตนเอง', value: 'autoCalculateHour' },
+        { label: 'เลือกพนักงานด้วยตนเอง', value: 'manual_select_worker' },
         { label: 'ทุกคนในกะ', value: 'assignEveryone' },
         { label: 'จำหน่ายงานตามลำดับการเข้างาน', value: 'assignByCheckin' },
-        { label: 'กำหนดเอง', value: 'assignManual' },
+        { label: 'กำหนดเอง', value: 'manual' },
       ]  
       return(
         <View style={{alignItems: 'center'}}>
@@ -99,7 +99,7 @@ function Add_del_ot_modal(props) {
               value={selected_method}
               dropdownPosition='bottom'
               onChange={item => {
-                if(item.value=='assignManual'){
+                if(item.value=='manual'){
                   setBtn_group_index(1)
                 }
                 setSelected_method(item.value);
@@ -109,23 +109,23 @@ function Add_del_ot_modal(props) {
               )}
             />
           </View>
-          { (selected_method == 'assignByCheckin'||selected_method==='assignManual') &&
+          { (selected_method == 'assignByCheckin'||selected_method==='manual') &&
           (<View style={{flexDirection: 'row', alignItems: 'center', marginHorizontal: 10, justifyContent: 'space-between', borderRadius: 10}}>
             <Text style={{fontSize: 15}}>จำนวน : </Text>
             <Input
               containerStyle={{flex: 1,}}
-              inputContainerStyle={{borderWidth:1, padding: 5, borderRadius: 10, borderColor: (selected_method==='autoCalculateHour'||selected_method==='assignEveryone')? '#aaa':colors.primary, alignSelf: 'center', marginTop: 20}}
+              inputContainerStyle={{borderWidth:1, padding: 5, borderRadius: 10, borderColor: (selected_method==='manual_select_worker'||selected_method==='assignEveryone')? '#aaa':colors.primary, alignSelf: 'center', marginTop: 20}}
               placeholderTextColor='#aaaa'
               inputStyle={{textAlign: 'center', fontSize: 15}}
               placeholder="กรอกจำนวน"
               onChangeText={(text)=>{setValue(text)}}
               value={value? value: ''}
-              disabled={selected_method==='autoCalculateHour'||selected_method==='assignEveryone'}
+              disabled={selected_method==='manual_select_worker'||selected_method==='assignEveryone'}
               keyboardType='numeric'
               
             />
           </View>)}
-          { (selected_method == 'assignByCheckin'||selected_method==='assignManual') &&
+          { (selected_method == 'assignByCheckin'||selected_method==='manual') &&
           (<View style={{flexDirection: 'row', alignItems: 'center', marginHorizontal: 10, justifyContent: 'space-between'}}>
             <Text style={{fontSize: 15}}>หน่วย : </Text>
             <ButtonGroup
@@ -133,21 +133,21 @@ function Add_del_ot_modal(props) {
               onPress={(index) => {
                 setBtn_group_index(index)
               }}
-              selectedIndex={selected_method==='assignManual'? 1:btn_group_index}
+              selectedIndex={selected_method==='manual'? 1:btn_group_index}
               buttonContainerStyle={{borderColor: 'white', borderRadius:15}}
               containerStyle={{ marginBottom: 20, flex:1, borderColor: 'white', borderRadius:15}}
               textStyle={{fontSize: 15}}
               buttonStyle={{borderColor: colors.primary, backgroundColor: 'white', borderWidth: 1, borderRadius: 15}}
               selectedButtonStyle={{backgroundColor: colors.primaryDark}}
               selectedTextStyle={{color: 'white'}}
-              disabled={selected_method==='assignManual'}
+              disabled={selected_method==='manual'}
               disabledStyle={{borderColor: '#aaaa'}}
               disabledSelectedStyle={{backgroundColor: colors.primaryDark}}
               disabledSelectedTextStyle={{color:'white'}}
             ></ButtonGroup>
           </View>
           )}
-          {(selected_method == 'autoCalculateHour'||selected_method==='assignManual') &&(
+          {(selected_method == 'manual_select_worker'||selected_method==='manual') &&(
             <View style={{width: '100%'}}>
               <SearchBar
                 placeholder='Search Here...'
