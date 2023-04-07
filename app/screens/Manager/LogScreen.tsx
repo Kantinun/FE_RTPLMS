@@ -67,12 +67,18 @@ const LogContext = (props) => {
   <Acction_btn textColor={colors.primaryDark} iconName='clock-edit' iconType='material-community' labelText='แก้ไข OT'/>,
 ]
   const fetch_data: Promise<any> = getDataForLogScreen(props.state.data.id, moment(date).format('YYYY-MM-DD') );
-  useEffect(()=>{moment
+  useEffect(()=>{
     fetch_data.then((logs: Log[]) => {
       setInitData(logs? logs:[]);
       setData(logs? logs:[])
     });
   },[]);
+
+  useEffect(()=>{
+    const newData = initData.filter((row)=> (moment(row.create_at).format("DD/MM/YYYY")==moment(date).format("DD/MM/YYYY")))
+    console.log(newData)
+    setData(newData? newData: initData)
+  },[date])
 
 
   return(
