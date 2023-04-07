@@ -27,6 +27,19 @@ pod install
 cd FE_RTPLMS
 npx expo start
 ```
+
+## Prerequisite for testing
+
+- backend service must be running.
+- testing data should be
+
+## Running Test
+
+```sh
+cd FE_RTPLMS
+npm run test
+```
+
 ## Can't run app in android emulator? Try this.
 -Method 1-
 - Delete ```node modules``` folder in your project.
