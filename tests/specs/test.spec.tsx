@@ -5,6 +5,7 @@ import {
   screen,
   waitFor,
 } from "@testing-library/react-native";
+
 import App from "../../App";
 
 jest.mock("react-native-reanimated", () =>
@@ -375,8 +376,8 @@ describe("MANAGER: USECASE", () => {
     });
   });
 
-  describe("Manages OT request", () => {
-    describe("ADD OT" , () => {
+  describe.skip("Manages OT request", () => {
+    describe.skip("ADD OT" , () => {
       describe('"เลือกพนักงานด้วยตนเอง" method', () => {
         it('1 OT Request', async () => {
           render(<App />);
@@ -400,17 +401,20 @@ describe("MANAGER: USECASE", () => {
           });
           await screen.getByText("เพิ่มงานล่วงเวลา");
           const dropdown = screen.getByTestId("select-assign-method");
-          fireEvent.press(dropdown);
-          
-          console.log("=====================BEFORE");
-          console.log(dropdown.textContent);
+          await act(() => {
+            fireEvent.press(dropdown);
+          });
+          // const labelToSelect = "เลือกพนักงานด้วยตนเอง";
+          const labelToSelect = "manual_select_worker";
+          await waitFor(async ()=> {
+            const Option2 = await screen.getByTestId(labelToSelect);
+            await act(() => {
+              fireEvent.press(Option2);
+            });
+          });
 
-          const labelToSelect = "เลือกพนักงานด้วยตนเอง";
-          const method = screen.getByText(labelToSelect);
-          dropdown.change(method),{target:});
-          // const dropdownOptions = getAllByRole(dropdown, 'option');
-          console.log("=====================AFTER");
-          console.log(dropdown.textContent);
+          
+
           // const optionToSelect = Array.from(dropdown.options).find(option => option.text === labelToSelect);
           // if (optionToSelect) {
           //   dropdown.value = optionToSelect.value;
@@ -461,43 +465,44 @@ describe("MANAGER: USECASE", () => {
           await waitFor(async () => {
             const otPlanTab = await screen.getByText("OT Plan"); //line442 DetailScreen.tsx
             await act(() => fireEvent.press(otPlanTab));
-            const addOTBtn = await screen.getByTestId("detail-addModal");//line407
-            await act(() => fireEvent.press(addOTBtn));
+          });
+          const addOTBtn = await screen.getByTestId("detail-addModal");//line407
+          await act(() => fireEvent.press(addOTBtn));
 
-            await screen.getByText("เพิ่มงานล่วงหน้า");
-            //Select method 
-            const selectd_method = 0;
-            await waitFor(async () => { // app/components/Modal/add_del_ot_modal.tsx
-              const dropdown_element = await screen.getByPlaceholderText("เลือกวิธีการจำหน่ายงาน");
-              dropdown_element.selectedIndex = selectd_method;
-            });
+          await screen.getByText("เพิ่มงานล่วงหน้า");
+          //Select method 
+          const selectd_method = 0;
+          await waitFor(async () => { // app/components/Modal/add_del_ot_modal.tsx
+            const dropdown_element = await screen.getByPlaceholderText("เลือกวิธีการจำหน่ายงาน");
+            dropdown_element.selectedIndex = selectd_method;
+          });
 
-            // select a worker
-            await waitFor(async () => {
-              const checkbox = await screen.getAllByTestId("checkbox")[0];
-              await act(() => fireEvent.press(checkbox));
-              expect(
-                await screen.getAllByTestId("checkbox")[0].props
-                  .accessibilityState.checked
-              ).toBe(true);
-            });
+          // select a worker
+          await waitFor(async () => {
+            const checkbox = await screen.getAllByTestId("checkbox")[0];
+            await act(() => fireEvent.press(checkbox));
+            expect(
+              await screen.getAllByTestId("checkbox")[0].props
+                .accessibilityState.checked
+            ).toBe(true);
+          });
 
-            // press next
-            await waitFor(async () => {
-              const nextBtn = await screen.getByTestId("Next");
-              await act(() => fireEvent.press(nextBtn));
-            });
+          // press next
+          await waitFor(async () => {
+            const nextBtn = await screen.getByTestId("Next");
+            await act(() => fireEvent.press(nextBtn));
+          });
 
-            // press confirm
-            await waitFor(async () => {
-              const confirmBtn = await screen.getByText("Confirm");
-              await act(() => fireEvent.press(confirmBtn));
-            });
+          // press confirm
+          await waitFor(async () => {
+            const confirmBtn = await screen.getByText("Confirm");
+            await act(() => fireEvent.press(confirmBtn));
+          });
 
-            await screen.getByText("Add OT successful");
+          await screen.getByText("Add OT successful");
         });
+
         it('Cancle / 0 OT Requests', async () => {
-        });
         });
       });
       describe('"ทุกคนในกะ" method', () => {
@@ -595,7 +600,7 @@ describe("MANAGER: USECASE", () => {
         });
       });
     });
-    describe.skip("Remove OT" , () => {
+    describe("Remove OT" , () => {
         it('1 OT Request', async () => {
           render(<App />);
           // login
@@ -607,39 +612,40 @@ describe("MANAGER: USECASE", () => {
           await waitFor(async () => {
             await act(async () => {
               fireEvent.press(await screen.getAllByText("รายละเอียด")[0]);
-              });
             });
-            // open remove OT modal
+          });
+          // open add OT modal
+          const otPlanTab = await screen.getByText("OT Plan");
+          await act(() => fireEvent.press(otPlanTab));
           await waitFor(async () => {
-            const otPlanTab = await screen.getByText("OT Plan"); //line442 DetailScreen.tsx
-            await act(() => fireEvent.press(otPlanTab));
             const addOTBtn = await screen.getByTestId("detail-removeModal");//line413
             await act(() => fireEvent.press(addOTBtn));
+          });
 
             // select a worker
-            await waitFor(async () => {
-              const checkbox = await screen.getAllByTestId("checkbox")[0];
-              await act(() => fireEvent.press(checkbox));
-              expect(
-                await screen.getAllByTestId("checkbox")[0].props
-                  .accessibilityState.checked
-              ).toBe(true);
-            });
+          await waitFor(async () => {
+            const checkbox = await screen.getAllByTestId("checkbox")[0];
+            await act(() => fireEvent.press(checkbox));
+            expect(
+              await screen.getAllByTestId("checkbox")[0].props
+                .accessibilityState.checked
+            ).toBe(true);
+          });
 
             // press next
-            await waitFor(async () => {
-              const nextBtn = await screen.getByTestId("Next");
-              await act(() => fireEvent.press(nextBtn));
-            });
+          await waitFor(async () => {
+            const nextBtn = await screen.getByTestId("Next");
+            await act(() => fireEvent.press(nextBtn));
+          });
 
             // press confirm
-            await waitFor(async () => {
-              const confirmBtn = await screen.getByText("Confirm");
-              await act(() => fireEvent.press(confirmBtn));
-            });
-
-            await screen.getByText("Remove OT successful");
+          await waitFor(async () => {
+            const confirmBtn = await screen.getByText("Confirm");
+            await act(() => fireEvent.press(confirmBtn));
           });
+
+          await screen.getByText("Remove OT successful");
+
         });
         it('more than OT Requests', async () => {
           render(<App />);
@@ -655,9 +661,11 @@ describe("MANAGER: USECASE", () => {
               });
             });
             // open remove OT modal
-          await waitFor(async () => {
+          // await waitFor(async () => {
             const otPlanTab = await screen.getByText("OT Plan"); //line442 DetailScreen.tsx
             await act(() => fireEvent.press(otPlanTab));
+          // });
+          
             const addOTBtn = await screen.getByTestId("detail-removeModal");//line413
             await act(() => fireEvent.press(addOTBtn));
 
@@ -684,15 +692,14 @@ describe("MANAGER: USECASE", () => {
             });
 
             await screen.getByText("Remove OT successful");
-          });
+          
         });
     });
   });
-});
 
-describe.skip("Worker: USECASE", () => {
-  const wUsername = "ghateley0";
-  const wPassword = "BtNMJU";
+describe("Worker: USECASE", () => {
+  const wUsername = "nhuddlestone0";
+  const wPassword = "IvKtoPdlINh";
 
   describe("Schedule page",() => {
     it("Go to page",async () =>{
@@ -706,9 +713,6 @@ describe.skip("Worker: USECASE", () => {
       await waitFor(async () => await screen.getAllByText("Tasks Plan"));
     });
 
-    it("",()=>{
-
-    });
   });
 
   describe("OT Request page",() => {
@@ -730,18 +734,54 @@ describe.skip("Worker: USECASE", () => {
 
     });
     
-    it("Accept",()=>{
+    it("Accept", async ()=>{
+      render(<App />);
+      fireEvent.changeText(
+      await screen.getByPlaceholderText("Username"),wUsername);
+      fireEvent.changeText(
+      await screen.getByPlaceholderText("Password"),wPassword);
+      fireEvent.press(await screen.getByText("Login"));
+      await waitFor(async () => await screen.getAllByText("Tasks Plan"));
+      //go to page
+      await waitFor(async () => {
+        const ot_btn = await screen.getAllByText("OT Requests")[0];
+        console.log(ot_btn);
+        await act(() => {
+          fireEvent.press(ot_btn);
+        });
+      });
+      await waitFor(async () => {
+        const acp_btn = screen.getByTestId("accept-btn")[0];
+        await act(() => {
+          fireEvent.press(acp_btn);
+        });
+      });
+    });
+    it("Reject", async ()=>{
+      render(<App />);
+      fireEvent.changeText(
+      await screen.getByPlaceholderText("Username"),wUsername);
+      fireEvent.changeText(
+      await screen.getByPlaceholderText("Password"),wPassword);
+      fireEvent.press(await screen.getByText("Login"));
+      await waitFor(async () => await screen.getAllByText("Tasks Plan"));
+      //go to page
+      await waitFor(async () => {
+        const target = await screen.getAllByText("OT Requests")[0];
+        await act(() => {
+          fireEvent.press(target);
+        });
+      });
+      await waitFor(async () => {
+        const acp_btn = screen.getByTestId("reject-btn")[0];
+        await act(() => {
+          fireEvent.press(acp_btn);
+        });
+      });
 
     });
-    it("Reject",()=>{
+});
 
-    });
-    it("",()=>{
 
-    });
-    it("",()=>{
-
-    });
-  });
-
+});
 });

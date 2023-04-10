@@ -183,6 +183,7 @@ function OTrequestScreen(props) {
                                         onPress={()=>{
                                             ot_respond_handler(data.shift_code,'ยอมรับ')
                                         }}
+                                        testID='accept-btn'
                                     ></Button>
                                     <Button
                                         icon={<Icon name='close-circle' type='material-community' size={25} color={colors.red}></Icon>}
@@ -195,6 +196,7 @@ function OTrequestScreen(props) {
                                         onPress={()=>{
                                             ot_respond_handler(data.shift_code,'ปฏิเสธ')
                                         }}
+                                        testID='reject-btn'
                                     ></Button>
                                 </View>}
                             </View>
