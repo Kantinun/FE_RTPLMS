@@ -22,6 +22,7 @@ function Add_del_ot_modal(props) {
 
   const [fetchData, setFetchData] = useState([])
   const [data, setData] = useState([])
+  const [OTDuration, setOTDuration] = useState<number>()
 
   
   useEffect(()=>{
@@ -227,7 +228,7 @@ function Add_del_ot_modal(props) {
     }
 
     const _renderConfirmPage = (data) => {
-      const checkedPerson = data.filter((obj)=> obj.isCheck)
+      const checkedPerson = selected_method!="assignEveryone"? data.filter((obj)=> obj.isCheck):data
       return(
           <Table borderStyle={{borderWidth: 2, borderColor: '#eee'}}>
                 <Row data={headerAdd} style={styles.head} textStyle={styles.text} />
@@ -236,7 +237,7 @@ function Add_del_ot_modal(props) {
                 <TableWrapper style={styles.row}>
                   <Cell data={rowData.name} textStyle={styles.text}/>
                   <Cell data={rowData.performance} textStyle={styles.text}/>
-                  <Cell data={rowData.hour? `${parseInt(rowData.hour)} ชม. ${((parseFloat(rowData.hour)-parseInt(rowData.hour))*60).toFixed(0)} นาที`: (value&&(btn_group_index==1))? value: '-'} textStyle={styles.text}/>
+                  <Cell data={rowData.hour? `${parseInt(rowData.hour)} ชม. ${((parseFloat(rowData.hour)-parseInt(rowData.hour))*60).toFixed(0)} นาที`: (value&&(btn_group_index==1))? value: OTDuration? `${Math.floor(OTDuration)} ชม. ${((OTDuration-Math.floor(OTDuration))*60).toFixed(0)} นาที`:'-'} textStyle={styles.text}/>
                 </TableWrapper>
                 ))
                 }
@@ -311,7 +312,11 @@ function Add_del_ot_modal(props) {
                           {position < 1?
                             <Button title='Next' 
                               containerStyle={styles.footer_btn}
-                              onPress={()=>{
+                              onPress={async()=>{
+                                if(props.mode=="add"){
+                                  const res = await props.handleClickNext({accountIds: selected_method=="assignEveryone"? data.map((row)=>row.account_id):data.filter((row)=>row.isCheck).map((row)=>row.account_id)})
+                                  setOTDuration(res.duration)
+                                }
                                 setPosition(position+1)
                             }}></Button> 
                           :

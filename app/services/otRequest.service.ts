@@ -30,6 +30,10 @@ interface CreateRequestProps{
     accountIds?: string[];
 }
 
+interface GetOTDurationProps{
+    accountIds: string[];
+}
+
 export const getOtRequest = async (accId: string) => {
     
     // Retrives TaskPlan
@@ -89,6 +93,20 @@ export const createRequest = async (requestProps: CreateRequestProps) => {
         body:JSON.stringify(requestProps),
         }
     const res = await fetch(`${env.API_BASE}:${env.API_PORT}/request/`, requestOptions);
+    const json = res.json()
+    return json
+}
+
+export const getOTDurationPerPerson = async (shift_code: string,reqeustProps: GetOTDurationProps)=>{
+    const requestOption = {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body:JSON.stringify(reqeustProps),
+    }
+    const res = await fetch(`${env.API_BASE}:${env.API_PORT}/request/getOTDurationPerPerson/${shift_code}`, requestOption);
     const json = res.json()
     return json
 }

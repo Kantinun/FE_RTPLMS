@@ -4,7 +4,7 @@ import DetailsDataTable from '../../components/DetailsDataTable';
 import MainContainer from '../../components/MainContainer';
 import MyDateTimePicker from '../../components/DateTimePicker';
 import { addWorker, DataForPlanAndOt, delWorker, getAccountInThisShift, getDataForPlanAndOt, getFreeWorkers, getShift_li, ModalAddData, getShiftPrediction } from '../../services/detail.service';
-import { deleteRequest, createRequest } from '../../services/otRequest.service';
+import { deleteRequest, createRequest, getOTDurationPerPerson } from '../../services/otRequest.service';
 import { colors } from '../../config/colors';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import Add_del_worker_modal from '../../components/Modal/add_del_worker_modal';
@@ -264,6 +264,11 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
     }
   }
 
+  const handleClickNextButton = async (account_id_li)=>{
+    const res = await getOTDurationPerPerson(currentShift.shiftCode,account_id_li).then((res)=>res)
+    return res
+  }
+
   const handleOTConfirm = (OTProps: OTConfirmProps) => {
       if(OTProps.mode=='add'){
         createRequest({
@@ -464,6 +469,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
         mode='add'
         data={OTData}
         handleConfirm={handleOTConfirm}
+        handleClickNext={handleClickNextButton}
       />
       <Add_del_ot_modal 
         visible={delOtVisible} 

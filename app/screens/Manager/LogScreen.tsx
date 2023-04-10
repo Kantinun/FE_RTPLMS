@@ -76,7 +76,6 @@ const LogContext = (props) => {
 
   useEffect(()=>{
     const newData = initData.filter((row)=> (moment(row.create_at).format("DD/MM/YYYY")==moment(date).format("DD/MM/YYYY")))
-    console.log(newData)
     setData(newData? newData: initData)
   },[date])
 
