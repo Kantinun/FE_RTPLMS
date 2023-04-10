@@ -102,7 +102,7 @@ function DetailsDataTable(props: any) {
                     ))
                     } */}
                     <Cell data={rowData.name} textStyle={styles.text}/>
-                    <Cell data={rowData.otDuration} textStyle={styles.text}/>
+                    <Cell data={`${parseInt(rowData.otDuration)} ชม. ${((parseFloat(rowData.otDuration)-parseInt(rowData.otDuration))*60).toFixed(0)} นาที`} textStyle={styles.text}/>
                     <Cell data={rowData.otStatus} textStyle={styles.text}/>
                 </TableWrapper>
                 ))

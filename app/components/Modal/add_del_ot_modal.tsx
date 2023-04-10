@@ -209,7 +209,7 @@ function Add_del_ot_modal(props) {
                     onPress={() => handleCheckboxClick(rowData.account_id)}
                   />}/> 
                   <Cell data={<Text style={{textAlign: 'center'}}>{rowData.name}</Text>}/>
-                  <Cell data={<Text style={{textAlign: 'center'}}>{rowData.hour}</Text>}/>
+                  <Cell data={<Text style={{textAlign: 'center'}}>{`${parseInt(rowData.hour)} ชม. ${((parseFloat(rowData.hour)-parseInt(rowData.hour))*60).toFixed(0)} นาที`}</Text>}/>
                 </TableWrapper>
                 ))
                 }
@@ -236,7 +236,7 @@ function Add_del_ot_modal(props) {
                 <TableWrapper style={styles.row}>
                   <Cell data={rowData.name} textStyle={styles.text}/>
                   <Cell data={rowData.performance} textStyle={styles.text}/>
-                  <Cell data={rowData.hour? rowData.hour: (value&&(btn_group_index==1))? value: '-'} textStyle={styles.text}/>
+                  <Cell data={rowData.hour? `${parseInt(rowData.hour)} ชม. ${((parseFloat(rowData.hour)-parseInt(rowData.hour))*60).toFixed(0)} นาที`: (value&&(btn_group_index==1))? value: '-'} textStyle={styles.text}/>
                 </TableWrapper>
                 ))
                 }

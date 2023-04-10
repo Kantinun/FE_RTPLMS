@@ -22,7 +22,7 @@ interface OTConfirmProps {
   mode: string;
   method: string;
   unit?: string;
-  quantity?: number;
+  quantity?: string;
   accountIds: string[];
 }
 
@@ -271,8 +271,8 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
           date: currentShift.shiftDate,
           method: OTProps.method,
           mngId: state.data.id,
-          unit: OTProps.unit,
-          quantity: OTProps.quantity,
+          unit: OTProps.unit==="1"? "hour":"person",
+          quantity: parseFloat(OTProps.quantity),
           accountIds: OTProps.method==="assignEveryone"? OTData.map((row)=>row.account_id):OTProps.accountIds
         }).then((res)=>{
           if (res.error){
