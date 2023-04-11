@@ -1,30 +1,49 @@
 import * as React from "react";
 import { departmentCardData } from "../../../assets/typings";
-import { FlatList, StyleSheet } from "react-native";
+import { Button, FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import DepartmentCard from "../../components/DepartmentCard";
 import MainContainer from "../../components/MainContainer";
 import { get_departmentDetails } from "../../services/dashboard.service";
-import { SearchBar } from "@rneui/themed";
+import { Icon, SearchBar } from "@rneui/themed";
 import { useState } from "react";
 import { Appcontext } from "../../../AppContext";
 import { io } from "socket.io-client";
 import env from "../../config/env";
 import { filterCurrentShiftFrom } from "../../lib/filterCurrentShift";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import BigText from "../../../assets/Texts/BigText";
+import { colors } from "../../config/colors";
+import { Dropdown } from "react-native-element-dropdown";
+import { FloatingPaginateBtn } from "../../components/FloatingPaginateBtn";
 
 const DashboardScreen = ({ navigation }: any) => {
   const { state } = React.useContext(Appcontext);
   const [searchText, setSearchText] = useState("");
   const [fetch_data, setFetch_data] = useState<Array<departmentCardData>>([]);
+  const [isLoading, setIsLoading] = useState(true); // for indicate loding data state
+  const [currentPage, setCurrentPage] = useState(1); // for pagination
+  const [limit, setLimit] = useState('5'); // for pagination
+  const [isFloatingBtnVisible, setIsFloatingBtnVisible] = useState(false); // for detect start scrolling flatlist
+  const [isEndReached, setIsEndReached] = useState(false); // for detect scrolled to bottom
   const [Data, setData] = React.useState(Array<departmentCardData>);
 
-  const department_details = get_departmentDetails(state.data.id);
+  // fetch department cards
+  const fetchDepartmentCard = async (limit='5', currentPage=1) => {
+    setIsLoading(true)
+    const new_deartment_detail = await get_departmentDetails(state.data.id);
+    
+    new_deartment_detail
+    ? setFetch_data(new_deartment_detail)
+    : { department: [], shifts: [] };
+    new_deartment_detail
+    ? setData(new_deartment_detail)
+    : { department: [], shifts: [] };
+
+    setIsLoading(false)
+  }
 
   React.useEffect(() => {
-    console.log("render dashboard")
-    department_details.then((res) => {
-      res ? setFetch_data(res) : { department: [], shifts: [] };
-      res ? setData(res) : { department: [], shifts: [] };
-    });
+    fetchDepartmentCard(limit, currentPage)
 
     // ===================
     // Web Socket
@@ -40,14 +59,7 @@ const DashboardScreen = ({ navigation }: any) => {
 
     // Update success product
     websocket.on(updateSuccessProductTopic, async (d: Object) => {
-      const new_deartment_detail = await get_departmentDetails(state.data.id);
-
-      new_deartment_detail
-        ? setFetch_data(new_deartment_detail)
-        : { department: [], shifts: [] };
-      new_deartment_detail
-        ? setData(new_deartment_detail)
-        : { department: [], shifts: [] };
+      await fetchDepartmentCard(limit, currentPage);
 
       console.log("success product updated");
     });
@@ -72,6 +84,10 @@ const DashboardScreen = ({ navigation }: any) => {
     // ===================
   }, []);
 
+  React.useEffect(() => {
+    fetchDepartmentCard(limit, currentPage);
+  }, [currentPage]);
+
   const handle_search = (text: string) => {
     setSearchText(text);
     let new_data = fetch_data.filter((row_data) =>
@@ -94,8 +110,42 @@ const DashboardScreen = ({ navigation }: any) => {
     );
   };
 
+  const renderPaginateNavigator = () => {
+    
+  }
+  const renderListHeader = () => {
+      const data = [
+        {label: '5', value: '5'},
+        {label: '10', value: '10'},
+        {label: '15', value: '15'},
+        {label: '20', value: '20'},
+        {label: '25', value: '25'},
+        {label: '30', value: '30'},
+        {label: '100', value: '100'},
+        {label: '200', value: '200'},
+        {label: 'ทั้งหมด', value: '*'},
+      ]
+      return (
+        <View style={styles.listHeaderContainer}>
+          <Dropdown 
+            style={styles.dropdown} 
+            labelField="label" 
+            valueField="value"
+            value={data[0].value.toString()}
+            placeholder={data[0].label}
+            data={data}
+            onChange={({value})=>{setLimit(value)}}
+          />
+          <FloatingPaginateBtn 
+            currentPage={currentPage} 
+            setCurrentPage={setCurrentPage}
+          />
+        </View>
+      );
+  }
+
   return (
-    <MainContainer>
+    <>
       <SearchBar
         placeholder="Search Here..."
         containerStyle={{ backgroundColor: "white", borderRadius: 15 }}
@@ -106,13 +156,38 @@ const DashboardScreen = ({ navigation }: any) => {
         onChangeText={(text) => {
           handle_search(text);
         }}
-      ></SearchBar>
-      <FlatList
-        style={{ width: "100%" }}
-        data={Data}
-        renderItem={renderDepartmentCard}
       />
-    </MainContainer>
+      <MainContainer style={styles.container}>
+          {/* <BigText>Loading</BigText> */}
+        {isLoading ?
+          <BigText>Loading</BigText>
+          :
+          <FlatList
+            style={styles.flatlist}
+            data={Data}
+            renderItem={renderDepartmentCard}
+            ListHeaderComponent={renderListHeader}
+            onEndReached={()=>{setIsEndReached(true)}}
+            onScrollBeginDrag={(e)=>{}}
+            onScroll={(event) => {
+              const scrollOffset = event.nativeEvent.contentOffset.y
+              if(scrollOffset >= 100){
+                setIsFloatingBtnVisible(true)
+              }else{
+                setIsFloatingBtnVisible(false)
+              }
+            }}
+          />
+        }
+        { isFloatingBtnVisible && 
+          <FloatingPaginateBtn
+            previousBtnOpacity={0.1}
+            currentPage={currentPage} 
+            setCurrentPage={setCurrentPage}
+          />
+        }
+      </MainContainer>
+    </>
   );
 };
 
@@ -124,6 +199,29 @@ const styles = StyleSheet.create({
   card_list: {
     justifyContent: "center",
   },
+  flatlist: {
+    width: "100%",
+  },
+  listHeaderContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 32,  
+    marginBottom: 5,  
+  },
+  dropdown: {
+    backgroundColor: colors.white,
+    width: 100,
+    borderWidth: 0.5,
+    borderColor: colors.primary,
+    borderRadius: 8,
+    paddingHorizontal: 8,
+  },
+  container: {
+    display: 'flex',
+    justifyContent: 'center',
+  },
+  
 });
 
 export default DashboardScreen;
