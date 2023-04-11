@@ -31,11 +31,7 @@ function DetailCarousel(props: any) {
         entered: parseInt(shift.checkin_member),
         member: parseInt(shift.all_member),
         idealPerformance: parseFloat(shift.ideal_performance),
-<<<<<<< HEAD
-        actualPerformance: parseFloat(shift.actual_performance)
-=======
         actualPerformance:parseFloat(shift.actual_performance)
->>>>>>> 95f08db (fix bug)
       };
       setCurrentShift(shiftFormated);
       console.log("success product updated");

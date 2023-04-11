@@ -743,13 +743,12 @@ describe("Worker: USECASE", () => {
       fireEvent.press(await screen.getByText("Login"));
       await waitFor(async () => await screen.getAllByText("Tasks Plan"));
       //go to page
-      await waitFor(async () => {
-        const ot_btn = await screen.getAllByText("OT Requests")[0];
-        console.log(ot_btn);
+      // await waitFor(async () => {
+        const ot_btn = await screen.getByText("OT Requests");
         await act(() => {
-          fireEvent.press(ot_btn);
+        fireEvent.press(ot_btn);
         });
-      });
+      // });
       await waitFor(async () => {
         const acp_btn = screen.getByTestId("accept-btn")[0];
         await act(() => {
@@ -773,9 +772,9 @@ describe("Worker: USECASE", () => {
         });
       });
       await waitFor(async () => {
-        const acp_btn = screen.getByTestId("reject-btn")[0];
+        const rjb_btn = screen.getByTestId("reject-btn")[0];
         await act(() => {
-          fireEvent.press(acp_btn);
+          fireEvent.press(rjb_btn);
         });
       });
 

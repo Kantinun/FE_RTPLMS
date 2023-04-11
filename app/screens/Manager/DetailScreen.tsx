@@ -3,13 +3,8 @@ import { ScrollView, StyleSheet, View} from 'react-native';
 import DetailsDataTable from '../../components/DetailsDataTable';
 import MainContainer from '../../components/MainContainer';
 import MyDateTimePicker from '../../components/DateTimePicker';
-<<<<<<< HEAD
-import { addWorker, DataForPlanAndOt, delWorker, getAccountInThisShift, getDataForPlanAndOt, getFreeWorkers, getShift_li, ModalAddData, getShiftPrediction } from '../../services/detail.service';
-import { deleteRequest, createRequest } from '../../services/otRequest.service';
-=======
 import { addWorker, DataForPlanAndOt, delWorker, getAccountInThisShift, getDataForPlanAndOt, getFreeWorkers, getShift_li, ModalAddData, getShiftPrediction, getShiftStatus } from '../../services/detail.service';
 import { deleteRequest, createRequest, getOTDurationPerPerson } from '../../services/otRequest.service';
->>>>>>> 95f08db (fix bug)
 import { colors } from '../../config/colors';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import Add_del_worker_modal from '../../components/Modal/add_del_worker_modal';
