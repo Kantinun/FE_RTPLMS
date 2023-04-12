@@ -23,12 +23,15 @@ const DashboardScreen = ({ navigation }: any) => {
   const [isLoading, setIsLoading] = useState(true); // for indicate loding data state
   const [currentPage, setCurrentPage] = useState(1); // for pagination
   const [limit, setLimit] = useState('5'); // for pagination
+
   const [isFloatingBtnVisible, setIsFloatingBtnVisible] = useState(false); // for detect start scrolling flatlist
-  const [isEndReached, setIsEndReached] = useState(false); // for detect scrolled to bottom
+  const [isDisablePrevBtn, setIsDisablePrevBtn] = useState(false); // for disable prev button
+  const [isDisableNextBtn, setIsDisableNextBtn] = useState(false); // for disable next button
   const [Data, setData] = React.useState(Array<departmentCardData>);
 
   // fetch department cards
   const fetchDepartmentCard = async (limit='5', currentPage=1) => {
+
     setIsLoading(true)
     const new_deartment_detail = await get_departmentDetails(state.data.id, limit, currentPage);
     
@@ -65,14 +68,7 @@ const DashboardScreen = ({ navigation }: any) => {
     });
     // Update worker's attendace
     websocket.on(updateAttendanceTopic, async (d: Object) => {
-      const new_deartment_detail = await get_departmentDetails(state.data.id);
-
-      new_deartment_detail
-        ? setFetch_data(new_deartment_detail)
-        : { department: [], shifts: [] };
-      new_deartment_detail
-        ? setData(new_deartment_detail)
-        : { department: [], shifts: [] };
+      await fetchDepartmentCard(limit, currentPage);
 
       console.log("attendance updated");
     });
@@ -84,8 +80,25 @@ const DashboardScreen = ({ navigation }: any) => {
     // ===================
   }, []);
 
+  // handle change page or display limit
   React.useEffect(() => {
-    fetchDepartmentCard(limit, currentPage);
+    if(currentPage == 1){
+      setIsDisablePrevBtn(true);
+    }else{
+      setIsDisablePrevBtn(false);
+    }
+    // check if this is the last page
+    Promise.resolve(get_departmentDetails(state.data.id, limit, currentPage + 1).then(async (res)=>{
+      if(res.length == 0){
+        setIsDisableNextBtn(true);
+      }else{
+        setIsDisableNextBtn(false);
+      }
+      await fetchDepartmentCard(limit, currentPage)
+    }));    
+
+    // hide floating BTNs
+    setIsFloatingBtnVisible(false);
   }, [currentPage, limit]);
 
   const handle_search = (text: string) => {
@@ -95,6 +108,7 @@ const DashboardScreen = ({ navigation }: any) => {
     );
     setData(new_data ? new_data : fetch_data);
   };
+
 
   const renderDepartmentCard = ({ item }: any) => {
     const current_shift = filterCurrentShiftFrom(item.shift);
@@ -137,6 +151,8 @@ const DashboardScreen = ({ navigation }: any) => {
             style={styles.paginate}
             currentPage={currentPage} 
             setCurrentPage={setCurrentPage}
+            isDisableNextBtn={isDisableNextBtn}
+            isDisablePrevBtn={isDisablePrevBtn}
           />
         </View>
       );
@@ -164,7 +180,6 @@ const DashboardScreen = ({ navigation }: any) => {
             data={Data}
             renderItem={renderDepartmentCard}
             ListHeaderComponent={renderListHeader}
-            onEndReached={()=>{setIsEndReached(true)}}
             onScrollBeginDrag={(e)=>{}}
             onScroll={(event) => {
               const scrollOffset = event.nativeEvent.contentOffset.y
@@ -176,12 +191,14 @@ const DashboardScreen = ({ navigation }: any) => {
             }}
           />
         }
-      { isFloatingBtnVisible && 
+      { (isFloatingBtnVisible && !(isDisablePrevBtn && isDisableNextBtn)) && 
         <FloatingPaginateBtn
           style={styles.floatingBtn}
           previousBtnOpacity={0.6}
           currentPage={currentPage} 
           setCurrentPage={setCurrentPage}
+          isDisableNextBtn={isDisableNextBtn}
+          isDisablePrevBtn={isDisablePrevBtn}
         />
       }
       </MainContainer>
@@ -223,6 +240,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     alignSelf: "flex-end",
+    
     width: "55%",
 },
   floatingBtn: {
