@@ -30,7 +30,7 @@ const DashboardScreen = ({ navigation }: any) => {
   // fetch department cards
   const fetchDepartmentCard = async (limit='5', currentPage=1) => {
     setIsLoading(true)
-    const new_deartment_detail = await get_departmentDetails(state.data.id);
+    const new_deartment_detail = await get_departmentDetails(state.data.id, limit, currentPage);
     
     new_deartment_detail
     ? setFetch_data(new_deartment_detail)
@@ -86,7 +86,7 @@ const DashboardScreen = ({ navigation }: any) => {
 
   React.useEffect(() => {
     fetchDepartmentCard(limit, currentPage);
-  }, [currentPage]);
+  }, [currentPage, limit]);
 
   const handle_search = (text: string) => {
     setSearchText(text);
@@ -110,9 +110,6 @@ const DashboardScreen = ({ navigation }: any) => {
     );
   };
 
-  const renderPaginateNavigator = () => {
-    
-  }
   const renderListHeader = () => {
       const data = [
         {label: '5', value: '5'},
@@ -131,12 +128,13 @@ const DashboardScreen = ({ navigation }: any) => {
             style={styles.dropdown} 
             labelField="label" 
             valueField="value"
-            value={data[0].value.toString()}
+            value={limit}
             placeholder={data[0].label}
             data={data}
             onChange={({value})=>{setLimit(value)}}
           />
           <FloatingPaginateBtn 
+            style={styles.paginate}
             currentPage={currentPage} 
             setCurrentPage={setCurrentPage}
           />
@@ -158,7 +156,6 @@ const DashboardScreen = ({ navigation }: any) => {
         }}
       />
       <MainContainer style={styles.container}>
-          {/* <BigText>Loading</BigText> */}
         {isLoading ?
           <BigText>Loading</BigText>
           :
@@ -171,7 +168,7 @@ const DashboardScreen = ({ navigation }: any) => {
             onScrollBeginDrag={(e)=>{}}
             onScroll={(event) => {
               const scrollOffset = event.nativeEvent.contentOffset.y
-              if(scrollOffset >= 100){
+              if(scrollOffset >= 50){
                 setIsFloatingBtnVisible(true)
               }else{
                 setIsFloatingBtnVisible(false)
@@ -179,13 +176,14 @@ const DashboardScreen = ({ navigation }: any) => {
             }}
           />
         }
-        { isFloatingBtnVisible && 
-          <FloatingPaginateBtn
-            previousBtnOpacity={0.1}
-            currentPage={currentPage} 
-            setCurrentPage={setCurrentPage}
-          />
-        }
+      { isFloatingBtnVisible && 
+        <FloatingPaginateBtn
+          style={styles.floatingBtn}
+          previousBtnOpacity={0.6}
+          currentPage={currentPage} 
+          setCurrentPage={setCurrentPage}
+        />
+      }
       </MainContainer>
     </>
   );
@@ -221,7 +219,21 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
   },
-  
+  paginate: {
+    display: "flex",
+    flexDirection: "row",
+    alignSelf: "flex-end",
+    width: "55%",
+},
+  floatingBtn: {
+  display: 'flex',
+  flexDirection: 'row',
+  alignSelf: 'flex-end',
+  position: "absolute",
+  bottom: 15,
+  right: 30,
+  zIndex: 999
+},
 });
 
 export default DashboardScreen;
