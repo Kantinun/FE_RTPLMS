@@ -5,32 +5,38 @@ import { colors } from "../config/colors";
 export const FloatingPaginateBtn = ({
   style={},
   previousBtnOpacity = 1,
+  isDisableNextBtn=false,
+  isDisablePrevBtn=false,
   currentPage,
   setCurrentPage,
 }) => {
   return (
     <View style={style}>
       <Pressable
-        style={{ ...styles.previousBtn, opacity: previousBtnOpacity }}
+        style={[{ ...styles.previousBtn, opacity: previousBtnOpacity }, (currentPage <= 1 || isDisablePrevBtn) && {borderColor: 'grey'}]}
         onPress={() => {
-          setCurrentPage(currentPage - 1);
+          if(currentPage > 1) setCurrentPage(currentPage - 1);
         }}
+        disabled={(currentPage < 0 || isDisablePrevBtn) ? true: false}
       >
-        <Text style={styles.previousText}>Previous</Text>
+        <Text style={[styles.previousText, (currentPage <= 1 || isDisablePrevBtn) && {color: 'grey'}]}>Previous</Text>
       </Pressable>
+      
       <Pressable
-        style={styles.nextBtn}
+        style={[styles.nextBtn, isDisableNextBtn && { borderColor: 'grey', backgroundColor: 'grey'}]}
         onPress={() => {
           setCurrentPage(currentPage + 1);
         }}
+        disabled={isDisableNextBtn}
       >
-        <Text style={styles.nextText}>
+        <Text style={[styles.nextText]}>
           Next
           <Icon
             name="arrow-right"
             size={15}
             type="simple-line-icon"
             color={colors.white}
+            backgroundColor={isDisableNextBtn ? 'grey' : colors.primaryDark}
             style={{ marginLeft: 5 }}
           />
         </Text>
