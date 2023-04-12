@@ -47,23 +47,34 @@ const DepartmentCard = (props: any) => {
   const navigation = useNavigation<NavigationProp<any>>();
   const screenName = props.detailScreenName;
 
+  const [currentShift, setCurrentShift] = React.useState(props.currentShift);
+
+  React.useEffect(()=>{
+    if(currentShift != props.currentShift){
+      setCurrentShift(props.currentShift);
+    }
+  },[props.currentShift]);
+  
   return (
     <CardView {...props}>
       <CardHeadeer style={{height: '20%', borderBottomWidth: 0.2}}>
         <RegularText>{props.department.title ? props.department.title : 'ชื่อแผนก'}</RegularText>
         <RegularText
-          style={{color: primary}}
+          style={[{color: primary}, !currentShift && {color: 'grey'}]}
           onPress={() => {
             navigation.navigate(screenName, {
               department: props.department,
               shift: props.currentShift
             })
           }}
-          testID="DepartmentCard.DetailLink">
+          testID="DepartmentCard.DetailLink"
+          disabled={!currentShift ? true : false}
+        >
           รายละเอียด
         </RegularText>
       </CardHeadeer>
-      <CardBody style={{height: '80%'}}>
+      { typeof currentShift != "undefined" ?
+        <CardBody style={{height: '80%'}}>
         <RegularText>
           กำลังการผลิต: <BigText>{props.currentShift.idealPerformance} </BigText>
           กก./ชม.
@@ -77,6 +88,11 @@ const DepartmentCard = (props: any) => {
           คน
         </RegularText>
       </CardBody>
+      :
+      <CardBody style={{height: '80%'}}>
+        <RegularText>No running shift</RegularText>
+      </CardBody>
+      }
     </CardView>
   );
 };
