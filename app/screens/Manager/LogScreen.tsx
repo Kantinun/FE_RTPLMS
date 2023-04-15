@@ -79,11 +79,17 @@ const LogContext = (props) => {
     setData(newData? newData: initData)
   },[date])
 
-
+  const handleChangeDate = async(date)=>{
+    setDate(date)
+    await getDataForLogScreen(props.state.data.id, moment(date).format('YYYY-MM-DD')).then((logs)=>{
+      setInitData(logs? logs:[]);
+      setData(logs? logs:[])
+    })
+  }
   return(
     <View style={{flex: 1}}>
       <View style={{marginTop:10, marginHorizontal: 5}}>
-        <MyDateTimePicker date={date} setDate={setDate}/>
+        <MyDateTimePicker date={date} setDate={handleChangeDate}/>
       </View>
       <View style={{height: '10%', marginVertical: 10}}>
         <ButtonGroup
