@@ -5,7 +5,7 @@
 
 const env = {
     API_BASE: 'http://localhost',
-    API_PORT: 80,
+    API_PORT: 3000,
 };
 
 export default env;

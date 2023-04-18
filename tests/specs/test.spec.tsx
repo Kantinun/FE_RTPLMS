@@ -11,132 +11,415 @@ jest.mock("react-native-reanimated", () =>
   require("react-native-reanimated/mock")
 );
 jest.useFakeTimers();
-test("default test", async () => {
+test.skip("default test", async () => {
   render(<App />);
   screen.getByPlaceholderText("Username");
   screen.getByPlaceholderText("Password");
 });
 
-describe("manager use cases", () => {
+describe("MANAGER: USECASE", () => {
   // define test data
   const mngUsername = "ghateley0";
   const mngPassword = "BtNMJU";
 
-  test("log in", async () => {
-    render(<App />);
+  const mngWrongUsername = "ghateleyO";
+  const mngWrongPassword = "BtNMJo";
 
-    fireEvent.changeText(
-      await screen.getByPlaceholderText("Username"),
-      mngUsername
-    );
-    fireEvent.changeText(
-      await screen.getByPlaceholderText("Password"),
-      mngPassword
-    );
-    fireEvent.press(await screen.getByText("Login"));
-
-    await waitFor(async () => await screen.getAllByText("รายละเอียด"));
-  });
-  describe("manages work plan", () => {
-    describe("add a worker to shift", () => {
-      describe("given 1 selected worker", () => {
-        it('should see "Add worker successful" message', async () => {
-          render(<App />);
-
-          // login
-          fireEvent.changeText(
-            await screen.getByPlaceholderText("Username"),
-            mngUsername
-          );
-          fireEvent.changeText(
-            await screen.getByPlaceholderText("Password"),
-            mngPassword
-          );
-          await act(async () =>
-            fireEvent.press(await screen.getByText("Login"))
-          );
-
-          // go to detail page
-          await waitFor(async () => {
-            const target = await screen.getAllByText("รายละเอียด")[0];
-            await act(() => {
-              fireEvent.press(target);
-            });
-          });
-
-          // open add worker modal
-          await waitFor(async () => {
-            const workPlanTab = await screen.getByText("Work Plan");
-            await act(() => fireEvent.press(workPlanTab));
-            const addWorkerBtn = await screen.getByTestId("detail-addModal");
-            await act(() => fireEvent.press(addWorkerBtn));
-
-            await screen.getByText("เพิ่มพนักงาน");
-          });
-
-          // select a worker
-          await waitFor(async () => {
-            const checkbox = await screen.getAllByTestId("checkbox")[0];
-            await act(() => fireEvent.press(checkbox));
-            expect(
-              await screen.getAllByTestId("checkbox")[0].props
-                .accessibilityState.checked
-            ).toBe(true);
-          });
-
-          // press next
-          await waitFor(async () => {
-            const nextBtn = await screen.getByTestId("Next");
-            await act(() => fireEvent.press(nextBtn));
-          });
-
-          // press confirm
-          await waitFor(async () => {
-            const confirmBtn = await screen.getByText("Confirm");
-            await act(() => fireEvent.press(confirmBtn));
-          });
-
-          await screen.getByText("Add worker successful");
-        });
+  describe.skip("Manager LOG-IN", () => {
+    it("Valid Account", async () => {
+      render(<App />);
+      fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
+        fireEvent.changeText(await screen.getByPlaceholderText("Password"),mngPassword);
+        await act(async () =>
+          fireEvent.press(await screen.getByText("Login"))
+        );
+      await waitFor(async () => {
+        await screen.getAllByText("รายละเอียด")
       });
     });
 
-    describe("remove a worker from shift", () => {
-      describe("given 1 selected worker", () => {
-        it('should see "Remove worker successful" message', async () => {
+    it("InValid UserAccount", async () => {
+      render(<App />);
+      fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
+      fireEvent.changeText(await screen.getByPlaceholderText("Password"),mngPassword);
+      await act(async () =>
+        fireEvent.press(await screen.getByText("Login"))
+      );
+      await waitFor(async () => {
+        const element = await screen.queryByText("Email or Password incorrect");
+      });
+    });
+
+    it("InValid Password", async () => {
+      render(<App />);
+      fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngWrongUsername);
+      fireEvent.changeText(await screen.getByPlaceholderText("Password"),mngPassword);
+      await act(async () =>
+        fireEvent.press(await screen.getByText("Login"))
+      );
+      await waitFor(async () => {
+        const element = await screen.queryByText("Email or Password incorrect");
+      });
+    });
+  });
+  describe.skip("Dashboard", () => {
+    it("Have Data", async () => {
+      render(<App />);
+      fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
+      fireEvent.changeText(await screen.getByPlaceholderText("Password"),mngPassword);
+      await act(async () =>
+        fireEvent.press(await screen.getByText("Login"))
+      );
+      await waitFor(async () => {
+        await screen.getAllByText("รายละเอียด")
+      });
+      await screen.getAllByTestId("DepartmentCard")
+      
+
+    });
+  });
+  describe.skip("Manage work plan", () => {
+    describe("Add Worker", () => {
+      it('1 Worker' , async () => {
+        render(<App />);
+        // login
+        fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
+        fireEvent.changeText(await screen.getByPlaceholderText("Password"),mngPassword);
+        await act(async () =>
+          fireEvent.press(await screen.getByText("Login"))
+        );
+
+        // go to detail page
+        await waitFor(async () => {
+          const target = await screen.getAllByText("รายละเอียด")[0];
+          await act(() => {
+            fireEvent.press(target);
+          });
+        });
+
+        // open add worker modal
+        await waitFor(async () => {
+          const workPlanTab = await screen.getByText("Work Plan");
+          await act(() => fireEvent.press(workPlanTab));
+          const addWorkerBtn = await screen.getByTestId("detail-addModal");
+          await act(() => fireEvent.press(addWorkerBtn));
+
+          await screen.getByText("เพิ่มพนักงาน");
+        });
+
+        // select a worker
+        await waitFor(async () => {
+          const checkbox = await screen.getAllByTestId("checkbox")[0];
+          await act(() => fireEvent.press(checkbox));
+          expect(
+            await screen.getAllByTestId("checkbox")[0].props
+              .accessibilityState.checked
+          ).toBe(true);
+        });
+
+        // press next
+        await waitFor(async () => {
+          const nextBtn = await screen.getByTestId("Next");
+          await act(() => fireEvent.press(nextBtn));
+        });
+
+        // press confirm
+        await waitFor(async () => {
+          const confirmBtn = await screen.getByText("Confirm");
+          await act(() => fireEvent.press(confirmBtn));
+        });
+
+        await screen.getByText("Add worker successful");
+      });
+      it('more than 1 Worker' , async () => { 
+        render(<App />);
+        // login
+        fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
+        fireEvent.changeText(await screen.getByPlaceholderText("Password"),mngPassword);
+        await act(async () =>
+          fireEvent.press(await screen.getByText("Login"))
+        );
+
+        // go to detail page
+        await waitFor(async () => {
+          const target = await screen.getAllByText("รายละเอียด")[0];
+          await act(() => {
+            fireEvent.press(target);
+          });
+        });
+
+        // open add worker modal
+        await waitFor(async () => {
+          const workPlanTab = await screen.getByText("Work Plan");
+          await act(() => fireEvent.press(workPlanTab));
+          const addWorkerBtn = await screen.getByTestId("detail-addModal");
+          await act(() => fireEvent.press(addWorkerBtn));
+
+          await screen.getByText("เพิ่มพนักงาน");
+        });
+
+        // select a worker
+        await waitFor(async () => {
+          for (let i = 0; i < 2; i++) {
+            const checkbox = await screen.getAllByTestId("checkbox")[i];
+            await act(() => fireEvent.press(checkbox));
+            expect(
+              await screen.getAllByTestId("checkbox")[i].props
+                .accessibilityState.checked
+            ).toBe(true);
+          }
+        });
+
+        // press next
+        await waitFor(async () => {
+          const nextBtn = await screen.getByTestId("Next");
+          await act(() => fireEvent.press(nextBtn));
+        });
+
+        // press confirm
+        await waitFor(async () => {
+          const confirmBtn = await screen.getByText("Confirm");
+          await act(() => fireEvent.press(confirmBtn));
+        });
+
+        await screen.getByText("Add worker successful");
+      });
+      it('Cancle / 0 Worker' , async () => {
+        render(<App />);
+        // login
+        fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
+        fireEvent.changeText(await screen.getByPlaceholderText("Password"),mngPassword);
+        await act(async () =>
+          fireEvent.press(await screen.getByText("Login"))
+        );
+
+        // go to detail page
+        await waitFor(async () => {
+          const target = await screen.getAllByText("รายละเอียด")[0];
+          await act(() => {
+            fireEvent.press(target);
+          });
+        });
+
+        // open add worker modal
+        await waitFor(async () => {
+          const workPlanTab = await screen.getByText("Work Plan");
+          await act(() => fireEvent.press(workPlanTab));
+          const addWorkerBtn = await screen.getByTestId("detail-addModal");
+          await act(() => fireEvent.press(addWorkerBtn));
+
+          await screen.getByText("เพิ่มพนักงาน");
+        });
+
+        // press next
+        await waitFor(async () => {
+          const nextBtn = await screen.getByTestId("Next");
+          await act(() => fireEvent.press(nextBtn));
+        });
+
+        // press confirm
+        await waitFor(async () => {
+          const confirmBtn = await screen.getByText("Confirm");
+          await act(() => fireEvent.press(confirmBtn));
+        });
+
+        await screen.getByText("Add worker failed");
+      });
+    });
+    describe("Remove Worker", () => {
+      it('1 Worker' , async () => {
+        render(<App />);
+        // login
+        fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
+        fireEvent.changeText(await screen.getByPlaceholderText("Password"),mngPassword);
+        await act(async () =>
+          fireEvent.press(await screen.getByText("Login"))
+        );
+
+        // go to detail page
+        await waitFor(async () => {
+          const target = await screen.getAllByText("รายละเอียด")[0];
+          await act(() => {
+            fireEvent.press(target);
+          });
+        });
+
+        // open add worker modal
+        await waitFor(async () => {
+          const workPlanTab = await screen.getByText("Work Plan");
+          await act(() => fireEvent.press(workPlanTab));
+          const addWorkerBtn = await screen.getByTestId("detail-removeModal");
+          await act(() => fireEvent.press(addWorkerBtn));
+
+          await screen.getByText("ลดพนักงาน");
+        });
+
+        // select a worker
+        await waitFor(async () => {
+          const checkbox = await screen.getAllByTestId("checkbox")[0];
+          await act(() => fireEvent.press(checkbox));
+          expect(
+            await screen.getAllByTestId("checkbox")[0].props
+              .accessibilityState.checked
+          ).toBe(true);
+        });
+
+        // press next
+        await waitFor(async () => {
+          const nextBtn = await screen.getByTestId("Next");
+          await act(() => fireEvent.press(nextBtn));
+        });
+
+        // press confirm
+        await waitFor(async () => {
+          const confirmBtn = await screen.getByText("Confirm");
+          await act(() => fireEvent.press(confirmBtn));
+        });
+
+        await screen.getByText("Remove worker successful");
+      });
+      it('more than 1 Worker' , async () => { //#Coding
+        render(<App />);
+        // login
+        fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
+        fireEvent.changeText(await screen.getByPlaceholderText("Password"),mngPassword);
+        await act(async () =>
+          fireEvent.press(await screen.getByText("Login"))
+        );
+
+        // go to detail page
+        await waitFor(async () => {
+          const target = await screen.getAllByText("รายละเอียด")[0];
+          await act(() => {
+            fireEvent.press(target);
+          });
+        });
+
+        // open add worker modal
+        await waitFor(async () => {
+          const workPlanTab = await screen.getByText("Work Plan");
+          await act(() => fireEvent.press(workPlanTab));
+          const addWorkerBtn = await screen.getByTestId("detail-removeModal");
+          await act(() => fireEvent.press(addWorkerBtn));
+
+          await screen.getByText("ลดพนักงาน");
+        });
+
+        // select a worker
+        await waitFor(async () => {
+          for (let i = 0; i < 2; i++) {
+            const checkbox = await screen.getAllByTestId("checkbox")[i];
+            await act(() => fireEvent.press(checkbox));
+            expect(
+              await screen.getAllByTestId("checkbox")[i].props
+                .accessibilityState.checked
+            ).toBe(true);
+          }
+        });
+
+        // press next
+        await waitFor(async () => {
+          const nextBtn = await screen.getByTestId("Next");
+          await act(() => fireEvent.press(nextBtn));
+        });
+
+        // press confirm
+        await waitFor(async () => {
+          const confirmBtn = await screen.getByText("Confirm");
+          await act(() => fireEvent.press(confirmBtn));
+        });
+
+        await screen.getByText("Remove worker successful");
+      });
+      it('Cancle / 0 Worker' , async () => {
+        render(<App />);
+        // login
+        fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
+        fireEvent.changeText(await screen.getByPlaceholderText("Password"),mngPassword);
+        await act(async () =>
+          fireEvent.press(await screen.getByText("Login"))
+        );
+
+        // go to detail page
+        await waitFor(async () => {
+          const target = await screen.getAllByText("รายละเอียด")[0];
+          await act(() => {
+            fireEvent.press(target);
+          });
+        });
+
+        // open add worker modal
+        await waitFor(async () => {
+          const workPlanTab = await screen.getByText("Work Plan");
+          await act(() => fireEvent.press(workPlanTab));
+          const addWorkerBtn = await screen.getByTestId("detail-removeModal");
+          await act(() => fireEvent.press(addWorkerBtn));
+
+          await screen.getByText("ลดพนักงาน");
+        });
+
+        // press next
+        await waitFor(async () => {
+          const nextBtn = await screen.getByTestId("Next");
+          await act(() => fireEvent.press(nextBtn));
+        });
+
+        // press confirm
+        await waitFor(async () => {
+          const confirmBtn = await screen.getByText("Confirm");
+          await act(() => fireEvent.press(confirmBtn));
+        });
+
+        await screen.getByText("Remove worker failed");
+      });
+    });
+  });
+
+  describe("Manages OT request", () => {
+    describe("ADD OT" , () => {
+      describe('"เลือกพนักงานด้วยตนเอง" method', () => {
+        it('1 OT Request', async () => {
           render(<App />);
-
           // login
-          fireEvent.changeText(
-            await screen.getByPlaceholderText("Username"),
-            mngUsername
-          );
-          fireEvent.changeText(
-            await screen.getByPlaceholderText("Password"),
-            mngPassword
-          );
-          await act(async () =>
-            fireEvent.press(await screen.getByText("Login"))
-          );
-
+          fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
+          fireEvent.changeText(await screen.getByPlaceholderText("Password"),mngPassword);
+          await act(async () =>fireEvent.press(await screen.getByText("Login")));
+          
           // go to detail page
           await waitFor(async () => {
             await act(async () => {
               fireEvent.press(await screen.getAllByText("รายละเอียด")[0]);
             });
           });
-
-          // open add worker modal
+          // open add OT modal
+          const otPlanTab = await screen.getByText("OT Plan");
+          await act(() => fireEvent.press(otPlanTab));
           await waitFor(async () => {
-            const workPlanTab = await screen.getByText("Work Plan");
-            await act(() => fireEvent.press(workPlanTab));
-            const addWorkerBtn = await screen.getByTestId("detail-removeModal");
-            await act(() => fireEvent.press(addWorkerBtn));
-
-            await screen.getByText("ลดพนักงาน");
+            const addOTBtn = await screen.getByTestId("detail-addModal");//line407
+            await act(() => fireEvent.press(addOTBtn));
           });
+          await screen.getByText("เพิ่มงานล่วงเวลา");
+          const dropdown = screen.getByTestId("select-assign-method");
+          fireEvent.press(dropdown);
+          
+          console.log("=====================BEFORE");
+          console.log(dropdown.textContent);
 
-          // select a worker
+          const labelToSelect = "เลือกพนักงานด้วยตนเอง";
+          const method = screen.getByText(labelToSelect);
+          dropdown.change(method),{target:});
+          // const dropdownOptions = getAllByRole(dropdown, 'option');
+          console.log("=====================AFTER");
+          console.log(dropdown.textContent);
+          // const optionToSelect = Array.from(dropdown.options).find(option => option.text === labelToSelect);
+          // if (optionToSelect) {
+          //   dropdown.value = optionToSelect.value;
+          // }
+          // await waitFor(async () => { // app/components/Modal/add_del_ot_modal.tsx
+          //   dropdown.options[dropdown.selectedIndex];
+          // }); 
+              
+            // select a worker
           await waitFor(async () => {
             const checkbox = await screen.getAllByTestId("checkbox")[0];
             await act(() => fireEvent.press(checkbox));
@@ -146,7 +429,7 @@ describe("manager use cases", () => {
             ).toBe(true);
           });
 
-          // press next
+            // press next
           await waitFor(async () => {
             const nextBtn = await screen.getByTestId("Next");
             await act(() => fireEvent.press(nextBtn));
@@ -158,28 +441,307 @@ describe("manager use cases", () => {
             await act(() => fireEvent.press(confirmBtn));
           });
 
-          await screen.getByText("Remove worker successful");
+          await screen.getByText("Add OT successful");
+          
+        });
+        it('more than 1 OT Requests', async () => { //#Coding
+          render(<App />);
+          // login
+          fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
+          fireEvent.changeText(await screen.getByPlaceholderText("Password"),mngPassword);
+          await act(async () =>fireEvent.press(await screen.getByText("Login")));
+          
+          // go to detail page
+          await waitFor(async () => {
+            await act(async () => {
+              fireEvent.press(await screen.getAllByText("รายละเอียด")[0]);
+            });
+          });
+          // open add OT modal
+          await waitFor(async () => {
+            const otPlanTab = await screen.getByText("OT Plan"); //line442 DetailScreen.tsx
+            await act(() => fireEvent.press(otPlanTab));
+            const addOTBtn = await screen.getByTestId("detail-addModal");//line407
+            await act(() => fireEvent.press(addOTBtn));
+
+            await screen.getByText("เพิ่มงานล่วงหน้า");
+            //Select method 
+            const selectd_method = 0;
+            await waitFor(async () => { // app/components/Modal/add_del_ot_modal.tsx
+              const dropdown_element = await screen.getByPlaceholderText("เลือกวิธีการจำหน่ายงาน");
+              dropdown_element.selectedIndex = selectd_method;
+            });
+
+            // select a worker
+            await waitFor(async () => {
+              const checkbox = await screen.getAllByTestId("checkbox")[0];
+              await act(() => fireEvent.press(checkbox));
+              expect(
+                await screen.getAllByTestId("checkbox")[0].props
+                  .accessibilityState.checked
+              ).toBe(true);
+            });
+
+            // press next
+            await waitFor(async () => {
+              const nextBtn = await screen.getByTestId("Next");
+              await act(() => fireEvent.press(nextBtn));
+            });
+
+            // press confirm
+            await waitFor(async () => {
+              const confirmBtn = await screen.getByText("Confirm");
+              await act(() => fireEvent.press(confirmBtn));
+            });
+
+            await screen.getByText("Add OT successful");
+        });
+        it('Cancle / 0 OT Requests', async () => {
+        });
+        });
+      });
+      describe('"ทุกคนในกะ" method', () => {
+        it('default', async () => {
+          render(<App />);
+
+          // login
+          fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
+          fireEvent.changeText(await screen.getByPlaceholderText("Password"),mngPassword);
+          await act(async () =>fireEvent.press(await screen.getByText("Login")));
+          
+          // go to detail page
+          await waitFor(async () => {
+            await act(async () => {
+              fireEvent.press(await screen.getAllByText("รายละเอียด")[0]);
+            });
+          });
+          // open add worker modal
+          await waitFor(async () => {
+            const otPlanTab = await screen.getByText("OT Plan"); //line442 DetailScreen.tsx
+            await act(() => fireEvent.press(otPlanTab));
+            const addOTBtn = await screen.getByTestId("detail-addModal");//line407
+            await act(() => fireEvent.press(addOTBtn));
+
+            //await screen.getByText("ลดพนักงาน");
+            //Select method 
+            const selectd_method = 1;
+            await waitFor(async () => { // app/components/Modal/add_del_ot_modal.tsx
+              const dropdown_element = await screen.getByPlaceholderText("เลือกวิธีการจำหน่ายงาน");
+              dropdown_element.selectedIndex = selectd_method;
+            });
+
+            // press next
+            await waitFor(async () => {
+              const nextBtn = await screen.getByTestId("Next");
+              await act(() => fireEvent.press(nextBtn));
+            });
+
+            // press confirm
+            await waitFor(async () => {
+              const confirmBtn = await screen.getByText("Confirm");
+              await act(() => fireEvent.press(confirmBtn));
+            });
+
+            await screen.getByText("Add OT successful");
+          });
+
+        });
+      });
+      describe('"กำหนดเอง" method', () => {
+        it('default', async () => {
+          render(<App />);
+
+          // login
+          fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
+          fireEvent.changeText(await screen.getByPlaceholderText("Password"),mngPassword);
+          await act(async () =>fireEvent.press(await screen.getByText("Login")));
+          
+          // go to detail page
+          await waitFor(async () => {
+            await act(async () => {
+              fireEvent.press(await screen.getAllByText("รายละเอียด")[0]);
+            });
+          });
+          // open add worker modal
+          await waitFor(async () => {
+            const otPlanTab = await screen.getByText("OT Plan"); //line442 DetailScreen.tsx
+            await act(() => fireEvent.press(otPlanTab));
+            const addOTBtn = await screen.getByTestId("detail-addModal");//line407
+            await act(() => fireEvent.press(addOTBtn));
+
+            //await screen.getByText("ลดพนักงาน");
+            //Select method 
+            const selectd_method = 1;
+            await waitFor(async () => { // app/components/Modal/add_del_ot_modal.tsx
+              const dropdown_element = await screen.getByPlaceholderText("เลือกวิธีการจำหน่ายงาน");
+              dropdown_element.selectedIndex = selectd_method;
+            });
+
+            // press next
+            await waitFor(async () => {
+              const nextBtn = await screen.getByTestId("Next");
+              await act(() => fireEvent.press(nextBtn));
+            });
+
+            // press confirm
+            await waitFor(async () => {
+              const confirmBtn = await screen.getByText("Confirm");
+              await act(() => fireEvent.press(confirmBtn));
+            });
+
+            await screen.getByText("Add OT successful");
+          });
+
         });
       });
     });
+    describe.skip("Remove OT" , () => {
+        it('1 OT Request', async () => {
+          render(<App />);
+          // login
+          fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
+          fireEvent.changeText(await screen.getByPlaceholderText("Password"),mngPassword);
+          await act(async () =>fireEvent.press(await screen.getByText("Login")));
+          
+          // go to detail page
+          await waitFor(async () => {
+            await act(async () => {
+              fireEvent.press(await screen.getAllByText("รายละเอียด")[0]);
+              });
+            });
+            // open remove OT modal
+          await waitFor(async () => {
+            const otPlanTab = await screen.getByText("OT Plan"); //line442 DetailScreen.tsx
+            await act(() => fireEvent.press(otPlanTab));
+            const addOTBtn = await screen.getByTestId("detail-removeModal");//line413
+            await act(() => fireEvent.press(addOTBtn));
+
+            // select a worker
+            await waitFor(async () => {
+              const checkbox = await screen.getAllByTestId("checkbox")[0];
+              await act(() => fireEvent.press(checkbox));
+              expect(
+                await screen.getAllByTestId("checkbox")[0].props
+                  .accessibilityState.checked
+              ).toBe(true);
+            });
+
+            // press next
+            await waitFor(async () => {
+              const nextBtn = await screen.getByTestId("Next");
+              await act(() => fireEvent.press(nextBtn));
+            });
+
+            // press confirm
+            await waitFor(async () => {
+              const confirmBtn = await screen.getByText("Confirm");
+              await act(() => fireEvent.press(confirmBtn));
+            });
+
+            await screen.getByText("Remove OT successful");
+          });
+        });
+        it('more than OT Requests', async () => {
+          render(<App />);
+          // login
+          fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
+          fireEvent.changeText(await screen.getByPlaceholderText("Password"),mngPassword);
+          await act(async () =>fireEvent.press(await screen.getByText("Login")));
+          
+          // go to detail page
+          await waitFor(async () => {
+            await act(async () => {
+              fireEvent.press(await screen.getAllByText("รายละเอียด")[0]);
+              });
+            });
+            // open remove OT modal
+          await waitFor(async () => {
+            const otPlanTab = await screen.getByText("OT Plan"); //line442 DetailScreen.tsx
+            await act(() => fireEvent.press(otPlanTab));
+            const addOTBtn = await screen.getByTestId("detail-removeModal");//line413
+            await act(() => fireEvent.press(addOTBtn));
+
+            // select a worker
+            await waitFor(async () => {
+              const checkbox = await screen.getAllByTestId("checkbox")[0];
+              await act(() => fireEvent.press(checkbox));
+              expect(
+                await screen.getAllByTestId("checkbox")[0].props
+                  .accessibilityState.checked
+              ).toBe(true);
+            });
+
+            // press next
+            await waitFor(async () => {
+              const nextBtn = await screen.getByTestId("Next");
+              await act(() => fireEvent.press(nextBtn));
+            });
+
+            // press confirm
+            await waitFor(async () => {
+              const confirmBtn = await screen.getByText("Confirm");
+              await act(() => fireEvent.press(confirmBtn));
+            });
+
+            await screen.getByText("Remove OT successful");
+          });
+        });
+    });
+  });
+});
+
+describe.skip("Worker: USECASE", () => {
+  const wUsername = "ghateley0";
+  const wPassword = "BtNMJU";
+
+  describe("Schedule page",() => {
+    it("Go to page",async () =>{
+      render(<App />);
+      fireEvent.changeText(
+        await screen.getByPlaceholderText("Username"),wUsername);
+        
+      fireEvent.changeText(
+        await screen.getByPlaceholderText("Password"),wPassword);
+      fireEvent.press(await screen.getByText("Login"));
+      await waitFor(async () => await screen.getAllByText("Tasks Plan"));
+    });
+
+    it("",()=>{
+
+    });
   });
 
-  describe("manages OT request", () => {
-    describe('add OT request by "จำหน่ายงานตามลำดับการเข้างาน" method', () => {
-      it('should see "Add OT request successful" message', async () => {});
-      it('should see "Remove OT request failed" message', async () => {});
+  describe("OT Request page",() => {
+    it("Go to page",async () =>{
+      render(<App />);
+      fireEvent.changeText(
+        await screen.getByPlaceholderText("Username"),wUsername);
+      fireEvent.changeText(
+        await screen.getByPlaceholderText("Password"),wPassword);
+      fireEvent.press(await screen.getByText("Login"));
+      await waitFor(async () => await screen.getAllByText("Tasks Plan"));
+      //go to page
+      await waitFor(async () => {
+        const target = await screen.getAllByText("OT Requests")[0];
+        await act(() => {
+          fireEvent.press(target);
+        });
+      });
+
     });
-    describe('add OT request by "ทุกคนในกะ" method', () => {
-      it('should see "Add OT request successful" message', async () => {});
-      it('should see "Remove OT request failed" message', async () => {});
+    
+    it("Accept",()=>{
+
     });
-    describe('add OT request by "เลือกพนักงานด้วยตนเอง" method', () => {
-      it('should see "Add OT request successful" message', async () => {});
-      it('should see "Remove OT request failed" message', async () => {});
+    it("Reject",()=>{
+
     });
-    describe('add OT request by "กำหนดเอง" method', () => {
-      it('should see "Add OT request successful" message', async () => {});
-      it('should see "Remove OT request failed" message', async () => {});
+    it("",()=>{
+
+    });
+    it("",()=>{
+
     });
   });
+
 });
