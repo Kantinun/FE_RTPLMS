@@ -65,7 +65,11 @@ const DepartmentCard = (props: any) => {
       </CardHeadeer>
       <CardBody style={{height: '80%'}}>
         <RegularText>
+<<<<<<< HEAD
           กำลังการผลิต: <BigText>{props.currentShift?.actualPerformance.toFixed(2) || '--'} </BigText>
+=======
+          กำลังการผลิต: <BigText>{props.currentShift.actualPerformance.toFixed(2)} </BigText>
+>>>>>>> 95f08db (fix bug)
           กก./ชม.
         </RegularText>
         <RegularText>

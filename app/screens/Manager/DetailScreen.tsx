@@ -3,8 +3,13 @@ import { ScrollView, StyleSheet, View} from 'react-native';
 import DetailsDataTable from '../../components/DetailsDataTable';
 import MainContainer from '../../components/MainContainer';
 import MyDateTimePicker from '../../components/DateTimePicker';
+<<<<<<< HEAD
 import { addWorker, DataForPlanAndOt, delWorker, getAccountInThisShift, getDataForPlanAndOt, getFreeWorkers, getShift_li, ModalAddData, getShiftPrediction } from '../../services/detail.service';
 import { deleteRequest, createRequest } from '../../services/otRequest.service';
+=======
+import { addWorker, DataForPlanAndOt, delWorker, getAccountInThisShift, getDataForPlanAndOt, getFreeWorkers, getShift_li, ModalAddData, getShiftPrediction, getShiftStatus } from '../../services/detail.service';
+import { deleteRequest, createRequest, getOTDurationPerPerson } from '../../services/otRequest.service';
+>>>>>>> 95f08db (fix bug)
 import { colors } from '../../config/colors';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import Add_del_worker_modal from '../../components/Modal/add_del_worker_modal';
@@ -98,7 +103,6 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
   useEffect(()=>{
     get_shift_li.then((res)=> {
       setShift_li(res)
-      //res is 2 dimention array then we use pop() to redimention to 1
       let tmp_li = []
       res.map((ele) => {
         tmp_li.push({
@@ -212,6 +216,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
         }else{
           setFetchData(tmp)
           setDataForPlanAndOt(tmp);
+          
           let toast = Toast.show('Add worker successful', {
               duration: Toast.durations.SHORT,
               position: Toast.positions.TOP,

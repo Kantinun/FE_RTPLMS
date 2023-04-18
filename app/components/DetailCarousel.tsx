@@ -23,7 +23,7 @@ function DetailCarousel(props: any) {
       }
       const shiftFormated = {
         shiftCode: String(shift.shift_code),
-        shiftDate: String(shift.shift_date),
+        shiftDate: String(shift.date),
         shiftTime: String(shift.shift_time),
         success_product_in_shiftTime: parseFloat(shift.success_product_in_shift_time),
         success_product_in_OTTime: parseFloat(shift.success_product_in_OT_time),
@@ -31,7 +31,11 @@ function DetailCarousel(props: any) {
         entered: parseInt(shift.checkin_member),
         member: parseInt(shift.all_member),
         idealPerformance: parseFloat(shift.ideal_performance),
+<<<<<<< HEAD
         actualPerformance: parseFloat(shift.actual_performance)
+=======
+        actualPerformance:parseFloat(shift.actual_performance)
+>>>>>>> 95f08db (fix bug)
       };
       setCurrentShift(shiftFormated);
       console.log("success product updated");

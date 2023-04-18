@@ -20,6 +20,7 @@ const DashboardScreen = ({ navigation }: any) => {
   const department_details = get_departmentDetails(state.data.id);
 
   React.useEffect(() => {
+    console.log("render dashboard")
     department_details.then((res) => {
       res ? setFetch_data(res) : { department: [], shifts: [] };
       res ? setData(res) : { department: [], shifts: [] };
