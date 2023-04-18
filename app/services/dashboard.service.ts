@@ -5,8 +5,7 @@ export const get_departmentDetails = async (mngId: string, limit: string, curren
   if(currentPage < 0){
     currentPage = 1;
   }
-  
-  const res = await fetch(`${env.API_BASE}:${env.API_PORT}/dashboard/${mngId}?limit="${limit}"&currentPage=${currentPage}`);
+  const res = await fetch(`${env.API_BASE}:${env.API_PORT}/dashboard/${mngId}?limit=${limit}&currentPage=${currentPage}`);
   const json = await res.json();
   return(dataHandler(json));
 };
