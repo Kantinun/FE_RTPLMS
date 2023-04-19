@@ -11,7 +11,7 @@ import { RootSiblingParent } from 'react-native-root-siblings';
 import MyLoginScreen from './app/screens/LoginScreen';
 import { Appcontext } from './AppContext';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import {LogBox} from '@types/react-native';
+import {LogBox} from 'react-native';
 
 // Ignore log notification by message:
 LogBox.ignoreLogs(['Warning: ...']);
