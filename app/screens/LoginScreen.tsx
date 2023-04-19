@@ -13,8 +13,8 @@ function MyLoginScreen(props) {
         <LoginScreen
         logoImageSource={require("../../assets/favicon.png")}
         logoImageStyle={{
-            width: 100,
-            height: 100,
+            width: 200,
+            height: 200,
             marginTop: 30,
             marginBottom: 17,                  
         }}
