@@ -78,7 +78,7 @@ function Add_del_ot_modal(props) {
       const options = [
         { label: 'เลือกพนักงานด้วยตนเอง', value: 'manual_select_worker' },
         { label: 'ทุกคนในกะ', value: 'assignEveryone' },
-        { label: 'จำหน่ายงานตามลำดับการเข้างาน', value: 'assignByCheckin' },
+        // { label: 'จำหน่ายงานตามลำดับการเข้างาน', value: 'assignByCheckin' },
         { label: 'กำหนดเอง', value: 'manual' },
       ]  
       return(
