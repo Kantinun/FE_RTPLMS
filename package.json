@@ -46,7 +46,7 @@
   "devDependencies": {
     "@babel/core": "^7.12.9",
     "@types/react": "~18.0.14",
-    "@types/react-native": "~0.70.6",
+    "@types/react-native": "^0.71.6",
     "@types/react-native-datepicker": "^1.7.1",
     "@types/react-native-modern-datepicker": "^1.0.1",
     "@types/react-native-snap-carousel": "^3.8.5",
