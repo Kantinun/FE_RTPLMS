@@ -72,7 +72,7 @@ const DashboardScreen = ({ navigation }: any) => {
 
       console.log("attendance updated");
     });
-
+    console.log("**************************************",fetch_data);
     return () => {
       websocket.close();
     };
