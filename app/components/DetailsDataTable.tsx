@@ -13,7 +13,7 @@ function DetailsDataTable(props: any) {
     const [dataPlan, setDataPlan] = useState([]);
     const [dataOt, setDataOt] = useState(props.dataOt);
     const workPlanTableHead = ['Name', 'In - Out', 'Status'];
-    const otPlanTableHead = ["Name", "Number of Hour", "Status"];
+    const otPlanTableHead = ["Name", "Hours", "Status"];
     const { state } = React.useContext(Appcontext);
     
     useEffect(()=>{
@@ -102,7 +102,7 @@ function DetailsDataTable(props: any) {
                     ))
                     } */}
                     <Cell data={rowData.name} textStyle={styles.text}/>
-                    <Cell data={rowData.otDuration} textStyle={styles.text}/>
+                    <Cell data={`${rowData.otDuration} ชม.`} textStyle={styles.text}/>
                     <Cell data={rowData.otStatus} textStyle={styles.text}/>
                 </TableWrapper>
                 ))

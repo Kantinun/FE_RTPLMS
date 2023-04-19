@@ -22,7 +22,7 @@ interface OTConfirmProps {
   mode: string;
   method: string;
   unit?: string;
-  quantity?: number;
+  quantity?: string;
   accountIds: string[];
 }
 
@@ -265,6 +265,11 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
     }
   }
 
+  const handleClickNextButton = async (account_id_li)=>{
+    const res = await getOTDurationPerPerson(currentShift.shiftCode,account_id_li).then((res)=>res)
+    return res
+  }
+
   const handleOTConfirm = (OTProps: OTConfirmProps) => {
       if(OTProps.mode=='add'){
         createRequest({
@@ -272,8 +277,8 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
           date: currentShift.shiftDate,
           method: OTProps.method,
           mngId: state.data.id,
-          unit: OTProps.unit,
-          quantity: OTProps.quantity,
+          unit: OTProps.unit==="1"? "hour":"person",
+          quantity: parseFloat(OTProps.quantity),
           accountIds: OTProps.method==="assignEveryone"? OTData.map((row)=>row.account_id):OTProps.accountIds
         }).then((res)=>{
           if (res.error){
@@ -466,6 +471,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
         mode='add'
         data={OTData}
         handleConfirm={handleOTConfirm}
+        handleClickNext={handleClickNextButton}
       />
       <Add_del_ot_modal 
         visible={delOtVisible} 

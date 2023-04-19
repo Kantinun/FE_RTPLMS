@@ -46,6 +46,7 @@ const DashboardScreen = ({ navigation }: any) => {
   }
 
   React.useEffect(() => {
+    console.log("render dashboard")
     fetchDepartmentCard(limit, currentPage)
 
     // ===================

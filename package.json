@@ -9,6 +9,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@react-native-community/datetimepicker": "6.5.2",
     "@react-navigation/bottom-tabs": "^6.5.3",
     "@react-navigation/native": "^6.1.1",
     "@react-navigation/native-stack": "^6.9.7",
@@ -23,7 +24,7 @@
     "react-native": "0.71.4",
     "react-native-calendars": "^1.1293.0",
     "react-native-element-dropdown": "^2.5.3",
-    "react-native-gesture-handler": "^2.8.0",
+    "react-native-gesture-handler": "~2.8.0",
     "react-native-login-screen": "^4.2.0",
     "react-native-modal": "^13.0.1",
     "react-native-modal-datetime-picker": "^14.0.1",

@@ -138,9 +138,7 @@ function TaskPlanScreen(props: unknown) {
             renderEmptyDate={renderEmptyDate}
             rowHasChanged={rowHasChanged}
             showClosingKnob={true}
-            onDayPress={(day)=>{
-                console.log(day.dateString)
-                
+            onDayPress={(day)=>{                
             }}
             style={{
                 borderRadius: 20
