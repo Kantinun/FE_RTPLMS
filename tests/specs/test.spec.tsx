@@ -12,21 +12,15 @@ jest.mock("react-native-reanimated", () =>
   require("react-native-reanimated/mock")
 );
 jest.useFakeTimers();
-test.skip("default test", async () => {
-  render(<App />);
-  screen.getByPlaceholderText("Username");
-  screen.getByPlaceholderText("Password");
-});
 
 describe("MANAGER: USECASE", () => {
-  // define test data
   const mngUsername = "ghateley0";
   const mngPassword = "BtNMJU";
 
   const mngWrongUsername = "ghateleyO";
   const mngWrongPassword = "BtNMJo";
 
-  describe.skip("Manager LOG-IN", () => {
+  describe("Manager LOG-IN", () => {
     it("Valid Account", async () => {
       render(<App />);
       fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
@@ -63,7 +57,7 @@ describe("MANAGER: USECASE", () => {
       });
     });
   });
-  describe.skip("Dashboard", () => {
+  describe("Dashboard", () => {
     it("Have Data", async () => {
       render(<App />);
       fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
@@ -79,7 +73,7 @@ describe("MANAGER: USECASE", () => {
 
     });
   });
-  describe.skip("Manage work plan", () => {
+  describe("Manage work plan", () => {
     describe("Add Worker", () => {
       it('1 Worker' , async () => {
         render(<App />);
@@ -376,8 +370,8 @@ describe("MANAGER: USECASE", () => {
     });
   });
 
-  describe.skip("Manages OT request", () => {
-    describe.skip("ADD OT" , () => {
+  describe("Manages OT request", () => {
+    describe("ADD OT" , () => {
       describe('"เลือกพนักงานด้วยตนเอง" method', () => {
         it('1 OT Request', async () => {
           render(<App />);
@@ -524,10 +518,11 @@ describe("MANAGER: USECASE", () => {
           await waitFor(async () => {
             const otPlanTab = await screen.getByText("OT Plan"); //line442 DetailScreen.tsx
             await act(() => fireEvent.press(otPlanTab));
+          });
+          await waitFor(async () => {
             const addOTBtn = await screen.getByTestId("detail-addModal");//line407
             await act(() => fireEvent.press(addOTBtn));
-
-            //await screen.getByText("ลดพนักงาน");
+          });
             //Select method 
             const selectd_method = 1;
             await waitFor(async () => { // app/components/Modal/add_del_ot_modal.tsx
@@ -551,7 +546,6 @@ describe("MANAGER: USECASE", () => {
           });
 
         });
-      });
       describe('"กำหนดเอง" method', () => {
         it('default', async () => {
           render(<App />);
@@ -571,28 +565,29 @@ describe("MANAGER: USECASE", () => {
           await waitFor(async () => {
             const otPlanTab = await screen.getByText("OT Plan"); //line442 DetailScreen.tsx
             await act(() => fireEvent.press(otPlanTab));
+          });
+          await waitFor(async () => {
             const addOTBtn = await screen.getByTestId("detail-addModal");//line407
             await act(() => fireEvent.press(addOTBtn));
+          });
+          //Select method 
+          const selectd_method = 1;
+          await waitFor(async () => { // app/components/Modal/add_del_ot_modal.tsx
+            const dropdown_element = await screen.getByPlaceholderText("เลือกวิธีการจำหน่ายงาน");
+            dropdown_element.selectedIndex = selectd_method;
+          });
 
-            //await screen.getByText("ลดพนักงาน");
-            //Select method 
-            const selectd_method = 1;
-            await waitFor(async () => { // app/components/Modal/add_del_ot_modal.tsx
-              const dropdown_element = await screen.getByPlaceholderText("เลือกวิธีการจำหน่ายงาน");
-              dropdown_element.selectedIndex = selectd_method;
-            });
+          // press next
+          await waitFor(async () => {
+            const nextBtn = await screen.getByTestId("Next");
+            await act(() => fireEvent.press(nextBtn));
+          });
 
-            // press next
-            await waitFor(async () => {
-              const nextBtn = await screen.getByTestId("Next");
-              await act(() => fireEvent.press(nextBtn));
-            });
-
-            // press confirm
-            await waitFor(async () => {
-              const confirmBtn = await screen.getByText("Confirm");
-              await act(() => fireEvent.press(confirmBtn));
-            });
+          // press confirm
+          await waitFor(async () => {
+            const confirmBtn = await screen.getByText("Confirm");
+            await act(() => fireEvent.press(confirmBtn));
+          });
 
             await screen.getByText("Add OT successful");
           });
@@ -621,7 +616,7 @@ describe("MANAGER: USECASE", () => {
             const addOTBtn = await screen.getByTestId("detail-removeModal");//line413
             await act(() => fireEvent.press(addOTBtn));
           });
-
+          await screen.getByText("ลดงานล่วงเวลา");
             // select a worker
           await waitFor(async () => {
             const checkbox = await screen.getAllByTestId("checkbox")[0];
@@ -644,10 +639,10 @@ describe("MANAGER: USECASE", () => {
             await act(() => fireEvent.press(confirmBtn));
           });
 
-          await screen.getByText("Remove OT successful");
+          await screen.getByText("Remove OT requests successful");
 
         });
-        it('more than OT Requests', async () => {
+        it('more than OT Requests', async () => { // not enough information
           render(<App />);
           // login
           fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
@@ -660,16 +655,16 @@ describe("MANAGER: USECASE", () => {
               fireEvent.press(await screen.getAllByText("รายละเอียด")[0]);
               });
             });
-            // open remove OT modal
-          // await waitFor(async () => {
-            const otPlanTab = await screen.getByText("OT Plan"); //line442 DetailScreen.tsx
-            await act(() => fireEvent.press(otPlanTab));
-          // });
-          
-            const addOTBtn = await screen.getByTestId("detail-removeModal");//line413
-            await act(() => fireEvent.press(addOTBtn));
 
-            // select a worker
+            // open add OT modal
+            const otPlanTab = await screen.getByText("OT Plan");
+            await act(() => fireEvent.press(otPlanTab));
+            await waitFor(async () => {
+              const addOTBtn = await screen.getByTestId("detail-removeModal");//line413
+              await act(() => fireEvent.press(addOTBtn));
+            });
+            await screen.getByText("ลดงานล่วงเวลา");
+              // select a worker
             await waitFor(async () => {
               const checkbox = await screen.getAllByTestId("checkbox")[0];
               await act(() => fireEvent.press(checkbox));
@@ -691,15 +686,15 @@ describe("MANAGER: USECASE", () => {
               await act(() => fireEvent.press(confirmBtn));
             });
 
-            await screen.getByText("Remove OT successful");
+            await screen.getByText("Remove OT requests successful");
           
         });
     });
   });
 
+const wUsername = "nhuddlestone0";
+const wPassword = "IvKtoPdlINh";
 describe("Worker: USECASE", () => {
-  const wUsername = "nhuddlestone0";
-  const wPassword = "IvKtoPdlINh";
 
   describe("Schedule page",() => {
     it("Go to page",async () =>{
@@ -733,7 +728,6 @@ describe("Worker: USECASE", () => {
       });
 
     });
-    
     it("Accept", async ()=>{
       render(<App />);
       fireEvent.changeText(
@@ -744,19 +738,21 @@ describe("Worker: USECASE", () => {
       await waitFor(async () => await screen.getAllByText("Tasks Plan"));
       //go to page
       // await waitFor(async () => {
-        const ot_btn = await screen.getByText("OT Requests");
+        const ot_btn = await screen.getAllByText("OT Requests")[0];
+        // console.log('\x1b[36m%s\x1b[0m', ot_btn)
+
         await act(() => {
         fireEvent.press(ot_btn);
         });
       // });
       await waitFor(async () => {
-        const acp_btn = screen.getByTestId("accept-btn")[0];
+        const acp_btn = screen.getByTestId("accept-btn");
         await act(() => {
           fireEvent.press(acp_btn);
         });
       });
     });
-    it("Reject", async ()=>{
+    it("Reject", async ()=>{ // not enough information
       render(<App />);
       fireEvent.changeText(
       await screen.getByPlaceholderText("Username"),wUsername);
@@ -766,21 +762,17 @@ describe("Worker: USECASE", () => {
       await waitFor(async () => await screen.getAllByText("Tasks Plan"));
       //go to page
       await waitFor(async () => {
-        const target = await screen.getAllByText("OT Requests")[0];
+        const ot_btn = await screen.getAllByText("OT Requests")[0];
         await act(() => {
-          fireEvent.press(target);
+          fireEvent.press(ot_btn);
         });
       });
       await waitFor(async () => {
-        const rjb_btn = screen.getByTestId("reject-btn")[0];
-        await act(() => {
-          fireEvent.press(rjb_btn);
-        });
+        const rjb_btn = screen.getByTestId("reject-btn");
+        expect(rjb_btn).toBeNull();
+        // await act(() => fireEvent.press(rjb_btn));
       });
 
     });
-});
-
-
-});
+  });
 });

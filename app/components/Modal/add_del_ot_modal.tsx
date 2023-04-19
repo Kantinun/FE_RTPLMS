@@ -209,6 +209,7 @@ function Add_del_ot_modal(props) {
                     center
                     checked={rowData.isCheck}
                     onPress={() => handleCheckboxClick(rowData.account_id)}
+                    testID='checkbox'
                   />}/> 
                   <Cell data={<Text style={{textAlign: 'center'}}>{rowData.name}</Text>}/>
                   <Cell data={<Text style={{textAlign: 'center'}}>{rowData.hour}</Text>}/>
@@ -315,7 +316,9 @@ function Add_del_ot_modal(props) {
                               containerStyle={styles.footer_btn}
                               onPress={()=>{
                                 setPosition(position+1)
-                            }}></Button> 
+                            }}
+                            testID='Next'
+                            ></Button> 
                           :
                             <Button title='Confirm' 
                               containerStyle={styles.footer_btn}
@@ -328,7 +331,9 @@ function Add_del_ot_modal(props) {
                                   quantity: value,
                                   accountIds: data.filter(acc=>acc.isCheck).map(acc=>acc.account_id)
                                 })
-                            }}></Button> 
+                            }}
+                            testID='Confirm'
+                            ></Button> 
                           }
                         </View>
                     </View>
