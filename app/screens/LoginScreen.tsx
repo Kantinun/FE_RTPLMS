@@ -24,7 +24,7 @@ function MyLoginScreen(props) {
             if (res.error){
                 let toast = Toast.show('Email or Password incorrect', {
                     duration: Toast.durations.SHORT,
-                    position: Toast.positions.TOP,
+                    position: 50,
                     backgroundColor: 'red',
                     shadow: true,
                     animation: true,

@@ -200,7 +200,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
         if (res.error){
           let toast = Toast.show('Add worker failed', {
               duration: Toast.durations.SHORT,
-              position: Toast.positions.TOP,
+              position: 50,
               backgroundColor: 'red',
               shadow: true,
               animation: true,
@@ -213,7 +213,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
           
           let toast = Toast.show('Add worker successful', {
               duration: Toast.durations.SHORT,
-              position: Toast.positions.TOP,
+              position: 50,
               backgroundColor: 'green',
               shadow: true,
               animation: true,
@@ -237,7 +237,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
       if (res.error){
         let toast = Toast.show('Remove worker failed', {
             duration: Toast.durations.SHORT,
-            position: Toast.positions.TOP,
+            position: 50,
             backgroundColor: 'red',
             shadow: true,
             animation: true,
@@ -249,7 +249,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
         setDataForPlanAndOt(tmp);
         let toast = Toast.show('Remove worker successful', {
             duration: Toast.durations.SHORT,
-            position: Toast.positions.TOP,
+            position: 50,
             backgroundColor: 'green',
             shadow: true,
             animation: true,
@@ -283,7 +283,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
           if (res.error){
             let toast = Toast.show(`Add OT requests failed : ${res.message}`, {
                 duration: Toast.durations.SHORT,
-                position: Toast.positions.TOP,
+                position: 50,
                 backgroundColor: 'red',
                 shadow: true,
                 animation: true,
@@ -300,7 +300,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
 
             let toast = Toast.show('Add OT requests successful', {
                 duration: Toast.durations.SHORT,
-                position: Toast.positions.TOP,
+                position: 50,
                 backgroundColor: 'green',
                 shadow: true,
                 animation: true,
@@ -320,7 +320,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
           if (res.error){
             let toast = Toast.show('Remove OT requests failed', {
                 duration: Toast.durations.SHORT,
-                position: Toast.positions.TOP,
+                position: 50,
                 backgroundColor: 'red',
                 shadow: true,
                 animation: true,
@@ -332,7 +332,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
             setDataForPlanAndOt(tmp)
             let toast = Toast.show('Remove OT requests successful', {
                 duration: Toast.durations.SHORT,
-                position: Toast.positions.TOP,
+                position: 50,
                 backgroundColor: 'green',
                 shadow: true,
                 animation: true,

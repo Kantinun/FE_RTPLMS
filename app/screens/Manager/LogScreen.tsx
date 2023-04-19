@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {Appcontext} from '../../../AppContext'
 import { ButtonGroup, Icon } from '@rneui/themed';
@@ -10,6 +10,7 @@ import moment from 'moment';
 import { Dialog } from '@rneui/themed';
 import { getDataForLogScreen, Log } from '../../services/log.service';
 import { Action, State } from '../../../App';
+import BigText from '../../../assets/Texts/BigText';
 
 const Stack = createNativeStackNavigator();
 
@@ -60,6 +61,7 @@ const LogContext = (props) => {
   const [data, setData] = useState<Log[]>([])
   const [filtersIndexes, setFiltersIndexes] = useState([])
   const [date,setDate]=useState(new Date())
+  const [isLoading, setIsLoading] = useState(true);
   const btn = [<Acction_btn textColor={colors.primaryDark} iconName='account-multiple-plus' iconType='material-community' labelText='เพิ่ม'/>,
   <Acction_btn textColor={colors.primaryDark} iconName='account-multiple-minus' iconType='material-community' labelText='ลบ'/>,
   <Acction_btn textColor={colors.primaryDark} iconName='clock-plus' iconType='material-community' labelText='เพิ่ม OT'/>,
@@ -68,28 +70,38 @@ const LogContext = (props) => {
 ]
   const fetch_data: Promise<any> = getDataForLogScreen(props.state.data.id, moment(date).format('YYYY-MM-DD') );
   useEffect(()=>{
+    setIsLoading(true);
     fetch_data.then((logs: Log[]) => {
       setInitData(logs? logs:[]);
       setData(logs? logs:[])
+      setIsLoading(false);
     });
   },[]);
 
   useEffect(()=>{
-    const newData = initData.filter((row)=> (moment(row.create_at).format("DD/MM/YYYY")==moment(date).format("DD/MM/YYYY")))
-    setData(newData? newData: initData)
+    setIsLoading(true);
+    getDataForLogScreen(props.state.data.id, moment(date).format('YYYY-MM-DD')).then((logs)=>{
+      setInitData(logs? logs:[]);
+      setData(logs? logs:[])
+      console.log(logs, logs.length)
+      setIsLoading(false);
+    })
   },[date])
 
   const handleChangeDate = async(date)=>{
+    setIsLoading(true);
     setDate(date)
     await getDataForLogScreen(props.state.data.id, moment(date).format('YYYY-MM-DD')).then((logs)=>{
       setInitData(logs? logs:[]);
       setData(logs? logs:[])
+      console.log(logs, logs.length)
     })
+    setIsLoading(false);
   }
   return(
     <View style={{flex: 1}}>
       <View style={{marginTop:10, marginHorizontal: 5}}>
-        <MyDateTimePicker date={date} setDate={handleChangeDate}/>
+        <MyDateTimePicker date={date} setDate={setDate}/>
       </View>
       <View style={{height: '10%', marginVertical: 10}}>
         <ButtonGroup
@@ -137,39 +149,47 @@ const LogContext = (props) => {
         />
       </View>
       <View style={{marginTop: 10, marginHorizontal: 5, height: '85%'}}>
-        <Table>
           <Row data={['Date', 'Action', 'Department']}
           style={{backgroundColor: colors.primaryDark, height:40, borderTopEndRadius: 20, borderTopStartRadius: 20}} 
           textStyle={{textAlign: 'center', color:'white'}}
           ></Row>
-          <ScrollView style={{height: '80%'}}>
+          <View style={{display:'flex', justifyContent: 'center',height:'80%'}}>
             <>
-            {/* {console.log(data)} */}
             {
-              data.map((rowData,index)=>{
-              return <TouchableOpacity 
-                onPress={()=>{
-                  setDialog_visible(true)
-                  setRowSelected(parseInt(rowData.log_id))
-                }}>
-              <TableWrapper key={index} style={{flexDirection:'row',borderWidth:1, borderColor:'#aaaa', backgroundColor:'#fffb',}}>
-                <Cell data={moment(rowData.create_at).format("D-MMM-YYYY")} 
-                textStyle={{color:'#111a', textAlign: 'center', fontSize:15, marginVertical:10}}></Cell>
+              (!isLoading)? (data.error)? 
+              (<BigText>No log on {moment(date).format('DD/MM/YYYY')}</BigText>)
+              :
+              <FlatList
+                data={data}
+                keyExtractor={item => item.log_id.toString()}
+                renderItem={({ item }) => (
+                  <TouchableOpacity 
+                  onPress={()=>{
+                    setDialog_visible(true)
+                    setRowSelected(parseInt(item.log_id))
+                  }}>
+                  <TableWrapper key={item.log_id} style={{flexDirection:'row',borderWidth:1, borderColor:'#aaaa', backgroundColor:'#fffb',width:'100%'}}>
+                    <Cell data={moment(item.create_at).format("D-MMM-YYYY")} 
+                    textStyle={{color:'#111a', textAlign: 'center', fontSize:15, marginVertical:10}}></Cell>
 
-                <Cell data={rowData.action} 
-                textStyle={{color:'#111a', textAlign: 'center', fontSize:15, marginVertical:10}}></Cell>
+                    <Cell data={item.action} 
+                    textStyle={{color:'#111a', textAlign: 'center', fontSize:15, marginVertical:10}}></Cell>
 
-                <Cell data={rowData.details.department_name} 
-                textStyle={{color:'#111a', textAlign: 'center', fontSize:15, marginVertical:10}}></Cell>
-              </TableWrapper>
-              </TouchableOpacity>
-              })
+                    <Cell data={item.details.department_name} 
+                    textStyle={{color:'#111a', textAlign: 'center', fontSize:15, marginVertical:10}}></Cell>
+                  </TableWrapper>
+                  </TouchableOpacity>
+                )}
+                />
+              :
+              <BigText style={{}}>Loading</BigText>
             }</>
-          </ScrollView>
-        </Table>
+          </View>
       </View>
-      <_render_details visible={dialog_visible} setVisible={setDialog_visible} data={data.filter(data => parseInt(data.log_id)==rowSelected)} />
-    </View>
+      {!data.error &&
+      <_render_details visible={dialog_visible} setVisible={setDialog_visible} data={data?.filter(data => parseInt(data?.log_id)==rowSelected) || []} />
+      }
+      </View>
   )
 }
 function LogScreen(props:any) {
