@@ -109,7 +109,7 @@ function TaskPlanScreen(props: unknown) {
             style={[styles.item, { height: 80}]}
             // onPress={() => Alert.alert(reservation.name)}
         >
-            <Text style={{ fontSize, color }}>{!reservation.OTHour? `เวลาเข้างาน  ${reservation.checkin? reservation.checkin:''} - ${reservation.checkout? reservation.checkout:''} น. ( ${reservation.status? reservation.status:'ยังไม่เข้างาน'} )`:`จำนวนชั่วโมง OT  ${reservation.OTHour? reservation.OTHour:''}  ชม. ( ${reservation.reqStatus? reservation.reqStatus:'-'} )`}</Text>
+            <Text style={{ fontSize, color }}>{!reservation.OTHour? `เวลาเข้างาน  ${reservation.checkin? moment(reservation.checkin,'HH:mm:ss').format("HH:mm"):''} - ${reservation.checkout? moment(reservation.checkout,'HH:mm:ss').format("HH:mm"):''} น. ( ${reservation.status? reservation.status:'ยังไม่เข้างาน'} )`:`จำนวนชั่วโมง OT  ${reservation.OTHour? reservation.OTHour:''}  ชม. ( ${reservation.reqStatus? reservation.reqStatus:'-'} )`}</Text>
             <Text style={{ fontSize, color }}>{`เวลางาน  ${reservation.OTHour? `${moment(reservation.shiftTime,'HH:mm:ss').add(8,'hours').format('HH:mm')}-${moment(reservation.shiftTime,'HH:mm:ss').add(8+parseFloat(reservation.OTHour),'hours').format("HH:mm")}`: `${moment(reservation.shiftTime,'HH:mm:ss').format('HH:mm')}-${moment(reservation.shiftTime,'HH:mm:ss').add(8,'hours').format('HH:mm')}`}  น.`}</Text>
             <Text style={{ fontSize, color }}>{`แผนก  ${reservation.department? reservation.department: '-'}`}</Text>
         </TouchableOpacity>
