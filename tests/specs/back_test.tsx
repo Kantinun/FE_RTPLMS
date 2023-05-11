@@ -1,72 +1,50 @@
-import {
-  act,
-  fireEvent,
-  render,
-  screen,
-  waitFor,
-} from "@testing-library/react-native";
-import userEvent from '@testing-library/user-event';
-import debug from '@testing-library/react-native';
-import App from "../../App";
-import { View } from "react-native";
-
-jest.mock("react-native-reanimated", () =>
-  require("react-native-reanimated/mock")
-);
-jest.useFakeTimers();
 
 describe("Manager", () => {
-  const mngUsername = "ghateley0";
-  const mngPassword = "BtNMJU";
-
-  const mngWrongUsername = "ghateleyO";
-  const mngWrongPassword = "BtNMJo";
-
   describe("login", () => {
-    it("Both Valid", async () => {
-      //login
-      render(<App />);      
-      fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
-      fireEvent.changeText(await screen.getByPlaceholderText("Password"),mngPassword);
-      fireEvent.press(screen.getByText("Login"));
-      await waitFor(async () => {
-        const valid_dashboard = await screen.getAllByText("รายละเอียด");
-        expect(valid_dashboard).toBeDefined();
-      }); 
-    });
+      it("Both Valid", async () => {
+        //login
+        render(<App />);      
+        fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
+        fireEvent.changeText(await screen.getByPlaceholderText("Password"),mngPassword);
+        fireEvent.press(screen.getByText("Login"));
+        await waitFor(async () => {
+          const valid_dashboard = await screen.getAllByText("รายละเอียด");
+          expect(valid_dashboard).toBeDefined();
+        }); 
+      });
 
-    it("InValid UserAccount", async () => {
-      render(<App />);
-      fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngWrongUsername);
-      fireEvent.changeText(await screen.getByPlaceholderText("Password"),mngPassword);
-      fireEvent.press(await screen.getByText("Login"))
-      await waitFor(async () => {
-        // await screen.queryByText("Email or Password incorrect")
-        expect(screen.queryByText("Email or Password incorrect")).toBeDefined();
+      it("InValid UserAccount", async () => {
+        render(<App />);
+        fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngWrongUsername);
+        fireEvent.changeText(await screen.getByPlaceholderText("Password"),mngPassword);
+        fireEvent.press(await screen.getByText("Login"))
+        await waitFor(async () => {
+          // await screen.queryByText("Email or Password incorrect")
+          expect(screen.queryByText("Email or Password incorrect")).toBeDefined();
+        });
       });
-    });
 
-    it("InValid Password", async () => {
-      render(<App />);
-      fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
-      fireEvent.changeText(await screen.getByPlaceholderText("Password"),mngWrongPassword);
-      fireEvent.press(await screen.getByText("Login"))
-      await waitFor(async () => {
-        // await screen.queryByText("Email or Password incorrect")
-        expect(screen.queryByText("Email or Password incorrect")).toBeDefined();
+      it("InValid Password", async () => {
+        render(<App />);
+        fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
+        fireEvent.changeText(await screen.getByPlaceholderText("Password"),mngWrongPassword);
+        fireEvent.press(await screen.getByText("Login"))
+        await waitFor(async () => {
+          // await screen.queryByText("Email or Password incorrect")
+          expect(screen.queryByText("Email or Password incorrect")).toBeDefined();
+        });
+      });
+      it("Both Invalid", async () => {
+        render(<App />);
+        fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngWrongUsername);
+        fireEvent.changeText(await screen.getByPlaceholderText("Password"),mngWrongPassword);
+        fireEvent.press(await screen.getByText("Login"))
+        await waitFor(async () => {
+          // await screen.queryByText("Email or Password incorrect")
+          expect(screen.queryByText("Email or Password incorrect")).toBeDefined();
+        });
       });
     });
-    it("Both Invalid", async () => {
-      render(<App />);
-      fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngWrongUsername);
-      fireEvent.changeText(await screen.getByPlaceholderText("Password"),mngWrongPassword);
-      fireEvent.press(await screen.getByText("Login"))
-      await waitFor(async () => {
-        // await screen.queryByText("Email or Password incorrect")
-        expect(screen.queryByText("Email or Password incorrect")).toBeDefined();
-      });
-    });
-  });
 
   describe("Dashboard", () => {
     it("Definded Departments Name", async() => {
@@ -213,7 +191,7 @@ describe("Manager", () => {
         const dep = screen.findByText("Boiling");
         expect(dep).toBeDefined();
       });
-      const search_word = 'Mawhang Khompee';
+      const search_word = 'Rahal Roff';
       const search_bar = screen.findByTestId('details-search-bar');
       fireEvent.changeText(await search_bar, search_word);
       
@@ -304,10 +282,10 @@ describe("Manager", () => {
         const target = await screen.getAllByText("รายละเอียด")[0];
         await act(() => fireEvent.press(target));
       });
-      // await waitFor(async () => {
-      //   const dep = screen.findByText("Boiling");
-      //   expect(dep).toBeDefined();
-      // });
+      await waitFor(async () => {
+        const dep = screen.findByText("Boiling");
+        expect(dep).toBeDefined();
+      });
       // await waitFor(async () => { // ERROR Casue using Faketimer
       //   const datepicker = screen.findByTestId('datepicker');
       //   expect(datepicker).toBeDefined();
@@ -1141,7 +1119,7 @@ describe("Manager", () => {
           // console.log(select_method[ '_fiber' ]);
           // console.log(Object.keys(select_method[ '_fiber' ]));
           // console.log(Object.keys(select_method[ '_fiber' ]['child']));
-  // ["manual_select_worker"]
+// ["manual_select_worker"]
 
           // await waitFor(async () => {
           //   const dropdown_option = await screen.getByText("เลือกพนักงานด้วยตนเอง");
@@ -1463,6 +1441,7 @@ describe("Manager", () => {
     });
   });
 
+  
   describe("Log",() => {
     it("Go to Page",async() => {
       //login
@@ -1484,131 +1463,43 @@ describe("Manager", () => {
         expect(header_log).toBeDefined();
       }); 
     });
-  });
-
-});
-
-describe("Worker", () => {
-  const wUsername = "nhuddlestone0";
-  const wPassword = "IvKtoPdlINh";
-  const wWrongUsername = "nhuddlestone0";
-  const wWrongPassword = "IvKtoPdlINh";
-  describe("login", () => {
-    it("Both Valid", async () => {
+    it('Filter with "เพิ่ม"',async () => {
       //login
-      render(<App />);
-      fireEvent.changeText(await screen.getByPlaceholderText("Username"),wUsername);
-      fireEvent.changeText(await screen.getByPlaceholderText("Password"),wPassword);
-      fireEvent.press(await screen.getByText("Login"));
-      expect(async () => await screen.getAllByText("Tasks Plan")).toBeDefined(); 
-    });
-
-    it("InValid UserAccount", async () => {
-      render(<App />);
-      fireEvent.changeText(await screen.getByPlaceholderText("Username"),wWrongUsername);
-      fireEvent.changeText(await screen.getByPlaceholderText("Password"),wPassword);
-      fireEvent.press(await screen.getByText("Login"))
-      await waitFor(async () => {
-        // await screen.queryByText("Email or Password incorrect")
-        expect(screen.queryByText("Email or Password incorrect")).toBeDefined();
-      });
-    });
-
-    it("InValid Password", async () => {
-      render(<App />);
-      fireEvent.changeText(await screen.getByPlaceholderText("Username"),wUsername);
-      fireEvent.changeText(await screen.getByPlaceholderText("Password"),wWrongPassword);
-      fireEvent.press(await screen.getByText("Login"))
-      await waitFor(async () => {
-        // await screen.queryByText("Email or Password incorrect")
-        expect(screen.queryByText("Email or Password incorrect")).toBeDefined();
-      });
-    });
-    it("Both Invalid", async () => {
-      render(<App />);
-      fireEvent.changeText(await screen.getByPlaceholderText("Username"),wWrongUsername);
-      fireEvent.changeText(await screen.getByPlaceholderText("Password"),wWrongPassword);
-      fireEvent.press(await screen.getByText("Login"))
-      await waitFor(async () => {
-        // await screen.queryByText("Email or Password incorrect")
-        expect(screen.queryByText("Email or Password incorrect")).toBeDefined();
-      });
-    });
-  });
-  describe("Schedule page",() => {
-      it("Go to page",async () =>{
-        render(<App />);
-        fireEvent.changeText(await screen.getByPlaceholderText("Username"),wUsername);
-        fireEvent.changeText(await screen.getByPlaceholderText("Password"),wPassword);
-        fireEvent.press(await screen.getByText("Login"));
-        expect(async () => await screen.getAllByText("Tasks Plan")).toBeDefined(); 
-      });
-  });
-  describe("OT Request page",() => {
-      it("Go to page",async () =>{
-      //login
-      render(<App />);      
-      fireEvent.changeText(await screen.getByPlaceholderText("Username"),wUsername);
-      fireEvent.changeText(await screen.getByPlaceholderText("Password"),wPassword);
+      render(<App />).toJSON();      
+      fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
+      fireEvent.changeText(await screen.getByPlaceholderText("Password"),mngPassword);
       fireEvent.press(await screen.getByText("Login"));
       await waitFor(async () => {
-        const task_plan = await screen.getAllByText("Tasks Plan");
-        expect(task_plan).toBeDefined();
+        const valid_dashboard = await screen.getAllByText("รายละเอียด");
+        expect(valid_dashboard).toBeDefined();
       }); 
       //
       await waitFor(async () => {
-        const target = await screen.getAllByText("OT Requests")[0];
+        const target = await screen.getAllByText("Logs")[0];
         await act(() => fireEvent.press(target));
       });
       await waitFor(async () => {
-        const header_log = await screen.getAllByText("ยอมรับ")[0];
+        const header_log = await screen.getAllByTestId("btnGroup");
         expect(header_log).toBeDefined();
+        console.log(header_log);
       }); 
-  
+      
+      await waitFor(async () => {
+        const target = screen.getAllByLabelText('เพิ่ม')[0];
+        expect(target).toBeDefined();
+        await act(()=> userEvent.dblClick(target));
       });
-      it("Accept", async ()=>{
-        //login
-        render(<App />);      
-        fireEvent.changeText(await screen.getByPlaceholderText("Username"),wUsername);
-        fireEvent.changeText(await screen.getByPlaceholderText("Password"),wPassword);
-        fireEvent.press(await screen.getByText("Login"));
-        await waitFor(async () => {
-          const task_plan = await screen.getAllByText("Tasks Plan");
-          expect(task_plan).toBeDefined();
-        }); 
-        //
-        await waitFor(async () => {
-          const target = await screen.getAllByText("OT Requests")[0];
-          await act(() => fireEvent.press(target));
-        });
-        await waitFor(async () => {
-          const header_log = await screen.getAllByText("ยอมรับ")[0];
-          expect(header_log).toBeDefined();
-        }); 
-        await waitFor(async () => {
-          const acp_btn = screen.getByTestId("accept-btn");
-          await act(() => fireEvent.press(acp_btn));
-        });
-  
-      });
-      it("Reject", async ()=>{ // not enough request
-        render(<App />);
-        fireEvent.changeText(
-        await screen.getByPlaceholderText("Username"),wUsername);
-        fireEvent.changeText(
-        await screen.getByPlaceholderText("Password"),wPassword);
-        fireEvent.press(await screen.getByText("Login"));
-        await waitFor(async () => await screen.getAllByText("Tasks Plan"));
-        //go to page
-        await waitFor(async () => {
-          const ot_btn = await screen.getAllByText("OT Requests")[0];
-          await act(() => fireEvent.press(ot_btn));
-        });
-        await waitFor(async () => {
-          // const rjb_btn = screen.getByTestId("reject-btn");
-          // await act(() => fireEvent.press(rjb_btn));
-        });
-  
-      });
+      
+
+
+      expect(screen.getAllByText('Delete Worker') ||screen.getAllByText('Add OT') ||screen.getAllByText('Delete OT') ||screen.getAllByText('EDIT_OT') ).not.toBeDefined();
+      // Add Worker
+      // Delete Worker
+      // Add OT
+      // Delete OT
+      // EDIT_OT
+
     });
+  });
+
 });

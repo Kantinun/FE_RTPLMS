@@ -146,6 +146,7 @@ const Add_del_worker_modal = (props: any) => {
                       >
                       <View style={{backgroundColor: 'white', width: '100%', borderRadius: 20, paddingTop: 10, flex: 1}}>
                         <SearchBar
+                          testID='add-worker-search-bar'
                           placeholder='Search Here...'
                           containerStyle={{backgroundColor: 'white', borderTopStartRadius: 20, borderTopEndRadius:20, borderTopWidth: 0, borderBottomWidth: 0}}
                           inputContainerStyle={{backgroundColor: '#eeee'}}
@@ -174,7 +175,9 @@ const Add_del_worker_modal = (props: any) => {
                             containerStyle={styles.footer_btn}
                             onPress={()=>{
                               setPosition(position-1)
-                          }}></Button>
+                          }}
+                          testID='Previous'
+                          ></Button>
                           {position < 1?
                             <Button title='Next' 
                               containerStyle={styles.footer_btn}

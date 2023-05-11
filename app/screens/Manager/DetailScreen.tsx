@@ -350,8 +350,9 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
   return (
     <MainContainer>
       <View style={{marginVertical: 5, alignItems: 'center', flexDirection: 'row',justifyContent: 'center'}}>
-        <MyDateTimePicker date={date} setDate={handleChangeDate} />
+        <MyDateTimePicker date={date} setDate={handleChangeDate} testID='datepicker'/>
         <Dropdown
+          testID='select-shift'
           style={[styles.dropdown,styles.raise]}
           placeholder="Select shift"
           placeholderStyle={styles.placeholderStyle}
@@ -394,6 +395,7 @@ const DetailScreen:React.FunctionComponent<Props> = ({route}: any) => {
 
         <View style={{flexDirection: 'row',justifyContent: 'center', alignItems:'center', backgroundColor: 'white', borderTopLeftRadius:20, borderTopRightRadius:20}}>
               <SearchBar
+                testID='details-search-bar'
                 placeholder='Search Here...'
                 onChangeText={updateSearch}
                 value={searchText}

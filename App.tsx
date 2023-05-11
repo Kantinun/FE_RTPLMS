@@ -94,7 +94,8 @@ const App = () => {
               tabBarIcon: () => (
                 <Icon name='history' type='material-icon'></Icon>
                 )
-              }}  
+              }}
+             
           />
           <Tab.Screen 
             name="Dashboard" component={MainpageManager} 

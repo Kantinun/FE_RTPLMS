@@ -91,7 +91,7 @@ const LogContext = (props) => {
       <View style={{marginTop:10, marginHorizontal: 5}}>
         <MyDateTimePicker date={date} setDate={handleChangeDate}/>
       </View>
-      <View style={{height: '10%', marginVertical: 10}}>
+      <View style={{height: '10%', marginVertical: 10}} testID = "btnGroup">
         <ButtonGroup
           buttons={btn}
           containerStyle={{height:'100%', backgroundColor: 'transparent', borderColor:'transparent', borderRadius: 20}}
@@ -144,7 +144,6 @@ const LogContext = (props) => {
           ></Row>
           <ScrollView style={{height: '80%'}}>
             <>
-            {/* {console.log(data)} */}
             {
               data.map((rowData,index)=>{
               return <TouchableOpacity 

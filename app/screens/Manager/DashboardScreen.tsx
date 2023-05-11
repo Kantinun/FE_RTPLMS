@@ -171,6 +171,7 @@ const DashboardScreen = ({ navigation }: any) => {
         onChangeText={(text) => {
           handle_search(text);
         }}
+        testID="dep-search-bar"
       />
       <MainContainer style={styles.container}>
         {isLoading ?

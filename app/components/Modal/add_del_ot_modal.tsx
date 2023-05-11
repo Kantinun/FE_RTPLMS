@@ -78,7 +78,7 @@ function Add_del_ot_modal(props) {
       const options = [
         { label: 'เลือกพนักงานด้วยตนเอง', value: 'manual_select_worker' },
         { label: 'ทุกคนในกะ', value: 'assignEveryone' },
-        { label: 'จำหน่ายงานตามลำดับการเข้างาน', value: 'assignByCheckin' },
+        // { label: 'จำหน่ายงานตามลำดับการเข้างาน', value: 'assignByCheckin' },
         { label: 'กำหนดเอง', value: 'manual' },
       ]  
       return(
@@ -108,6 +108,7 @@ function Add_del_ot_modal(props) {
               renderLeftIcon={() => (
                 <Icon style={styles.icon} color="black" name="user-plus" size={15} />
               )}
+              data-testid="dropdown"
               testID='select-assign-method'
             />
           </View>
