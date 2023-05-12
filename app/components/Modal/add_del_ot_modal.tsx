@@ -114,7 +114,7 @@ function Add_del_ot_modal(props) {
           </View>
           { (selected_method == 'assignByCheckin'||selected_method==='manual') &&
           (<View style={{flexDirection: 'row', alignItems: 'center', marginHorizontal: 10, justifyContent: 'space-between', borderRadius: 10}}>
-            <Text style={{fontSize: 15}}>จำนวน : </Text>
+            <Text style={{fontSize: 15}} testID = "value-of-manual-method">จำนวน : </Text>
             <Input
               containerStyle={{flex: 1,}}
               inputContainerStyle={{borderWidth:1, padding: 5, borderRadius: 10, borderColor: (selected_method==='manual_select_worker'||selected_method==='assignEveryone')? '#aaa':colors.primary, alignSelf: 'center', marginTop: 20}}
