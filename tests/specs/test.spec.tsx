@@ -15,11 +15,6 @@ jest.mock("react-native-reanimated", () =>
 jest.useRealTimers();   
 
 describe("Manager", () => {
-  const mngUsername = "ghateley0";
-  const mngPassword = "BtNMJU";
-
-  const mngWrongUsername = "ghateleyO";
-  const mngWrongPassword = "BtNMJo";
 
   describe("Login", () => {
     it("With Correct Data", async () => {
@@ -651,7 +646,7 @@ describe("Manager", () => {
           await act(() => fireEvent.press(confirmBtn));
         });
 
-        await screen.getByText("Add worker successful");
+        await waitFor(async ()=> screen.getByText("Add worker successful"));
       });
       it('more than 1 Worker' , async () => { 
         //login
@@ -703,7 +698,7 @@ describe("Manager", () => {
           await act(() => fireEvent.press(confirmBtn));
         });
 
-        await screen.getByText("Add worker successful");
+        await waitFor(async ()=> screen.getByText("Add worker successful"));
       });
       it('Add and Previous Pages', async () => {
         //login
@@ -763,7 +758,7 @@ describe("Manager", () => {
           await act(() => fireEvent.press(confirmBtn));
         });
 
-        await screen.getByText("Add worker successful");
+        await waitFor(async ()=> screen.getByText("Add worker successful"));
       });
       it('Cancle / 0 Worker' , async () => {
         //login
@@ -803,7 +798,7 @@ describe("Manager", () => {
           await act(() => fireEvent.press(confirmBtn));
         });
 
-        await screen.getByText("Add worker failed");
+        await waitFor(async ()=> screen.getByText("Add worker failed"));
       });
       it('Seach Worker', async () => {
         //login
@@ -859,12 +854,11 @@ describe("Manager", () => {
           await act(() => fireEvent.press(confirmBtn));
         });
 
-        await screen.getByText("Add worker successful");
+        await waitFor(async ()=> screen.getByText("Add worker successful"));
       });
     });
     describe("Remove Worker", () => {
       it('1 Worker' , async () => {
-        //login
         render(<App />);      
         fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
         fireEvent.changeText(await screen.getByPlaceholderText("Password"),mngPassword);
@@ -889,14 +883,16 @@ describe("Manager", () => {
           expect(await screen.getByText("ลดพนักงาน")).toBeDefined();
         });
 
-        // select a worker
-        await waitFor(async () => {
-          const checkbox = await screen.getAllByTestId("checkbox")[0];
-          await act(() => fireEvent.press(checkbox));
-          expect(
-            await screen.getAllByTestId("checkbox")[0].props
-              .accessibilityState.checked
-          ).toBe(true);
+         // select a worker
+         await waitFor(async () => {
+          for (let i = 0; i < 1; i++) {
+            const checkbox = await waitFor(async () => screen.getAllByTestId("checkbox_test")[i]);
+            await act(() => fireEvent.press(checkbox));
+            expect(
+              await screen.getAllByTestId("checkbox_test")[i].props
+                .accessibilityState.checked
+            ).toBe(true);
+          }
         });
 
         // press next
@@ -911,9 +907,9 @@ describe("Manager", () => {
           await act(() => fireEvent.press(confirmBtn));
         });
 
-        await screen.getByText("Remove worker successful");
+        await waitFor(async () => screen.getByText("Remove worker successful"));
       });
-      it('more than 1 Worker' , async () => { //#Coding
+      it('more than 1 Worker' , async () => { 
         //login
         render(<App />);      
         fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
@@ -942,10 +938,10 @@ describe("Manager", () => {
         // select a worker
         await waitFor(async () => {
           for (let i = 0; i < 2; i++) {
-            const checkbox = await screen.getAllByTestId("checkbox")[i];
+            const checkbox = await screen.getAllByTestId("checkbox_test")[i];
             await act(() => fireEvent.press(checkbox));
             expect(
-              await screen.getAllByTestId("checkbox")[i].props
+              await screen.getAllByTestId("checkbox_test")[i].props
                 .accessibilityState.checked
             ).toBe(true);
           }
@@ -963,7 +959,7 @@ describe("Manager", () => {
           await act(() => fireEvent.press(confirmBtn));
         });
 
-        await screen.getByText("Remove worker successful");
+        await waitFor(async () => screen.getByText("Remove worker successful"));
       });
       it('Add and Previous Pages', async () => {
         //login
@@ -993,10 +989,10 @@ describe("Manager", () => {
 
         // select a worker
         await waitFor(async () => {
-          const checkbox = await screen.getAllByTestId("checkbox")[0];
+          const checkbox = await screen.getAllByTestId("checkbox_test")[0];
           await act(() => fireEvent.press(checkbox));
           expect(
-            await screen.getAllByTestId("checkbox")[0].props
+            await screen.getAllByTestId("checkbox_test")[0].props
               .accessibilityState.checked
           ).toBe(true);
         });
@@ -1023,7 +1019,7 @@ describe("Manager", () => {
           await act(() => fireEvent.press(confirmBtn));
         });
 
-        await screen.getByText("Remove worker successful");
+        await waitFor(async () => screen.getByText("Remove worker successful"));
       });
       it('Cancle / 0 Worker' , async () => {
         //login
@@ -1063,7 +1059,7 @@ describe("Manager", () => {
           await act(() => fireEvent.press(confirmBtn));
         });
 
-        await screen.getByText("Remove worker failed");
+        await waitFor(async () => screen.getByText("Remove worker failed"));
       });
       it('Seach Worker', async () => {
         //login
@@ -1099,10 +1095,10 @@ describe("Manager", () => {
         });
         // select a worker
         await waitFor(async () => {
-          const checkbox = await screen.getAllByTestId("checkbox")[0];
+          const checkbox = await screen.getAllByTestId("checkbox_test")[0];
           await act(() => fireEvent.press(checkbox));
           expect(
-            await screen.getAllByTestId("checkbox")[0].props
+            await screen.getAllByTestId("checkbox_test")[0].props
               .accessibilityState.checked
           ).toBe(true);
         });
@@ -1119,9 +1115,10 @@ describe("Manager", () => {
           await act(() => fireEvent.press(confirmBtn));
         });
 
-        await screen.getByText("Add worker successful");
+        await waitFor(async () => screen.getByText("Add worker successful"));
       });
     });
+
   });
 
   describe("Manages OT request", () => {
@@ -1463,7 +1460,7 @@ describe("Manager", () => {
               await act(() => fireEvent.press(confirmBtn));
             });
 
-            await screen.getByText("Remove OT requests successful");
+            await waitFor(async () => screen.getByText("Remove OT requests successful"));
           
         });
         it('Cancle / 0 OT Request',async() => {

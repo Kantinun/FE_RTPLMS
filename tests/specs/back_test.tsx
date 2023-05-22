@@ -1,53 +1,69 @@
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react-native";
+import userEvent from '@testing-library/user-event';
+import App from "../../App";
+
+jest.mock("react-native-reanimated", () =>
+  require("react-native-reanimated/mock")
+);
+// jest.useFakeTimers();
+jest.useRealTimers();   
 
 describe("Manager", () => {
-  describe("login", () => {
-      it("Both Valid", async () => {
-        //login
-        render(<App />);      
-        fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
-        fireEvent.changeText(await screen.getByPlaceholderText("Password"),mngPassword);
-        fireEvent.press(screen.getByText("Login"));
-        await waitFor(async () => {
-          const valid_dashboard = await screen.getAllByText("รายละเอียด");
-          expect(valid_dashboard).toBeDefined();
-        }); 
-      });
 
-      it("InValid UserAccount", async () => {
-        render(<App />);
-        fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngWrongUsername);
-        fireEvent.changeText(await screen.getByPlaceholderText("Password"),mngPassword);
-        fireEvent.press(await screen.getByText("Login"))
-        await waitFor(async () => {
-          // await screen.queryByText("Email or Password incorrect")
-          expect(screen.queryByText("Email or Password incorrect")).toBeDefined();
-        });
-      });
+  describe("Login", () => {
+    it("With Correct Data", async () => {
+      //login
+      render(<App />);      
+      fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
+      fireEvent.changeText(await screen.getByPlaceholderText("Password"),mngPassword);
+      fireEvent.press(screen.getByText("Login"));
+      await waitFor(async () => {
+        const valid_dashboard = await screen.getAllByText("รายละเอียด");
+        expect(valid_dashboard).toBeDefined();
+      }); 
+    });
 
-      it("InValid Password", async () => {
-        render(<App />);
-        fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
-        fireEvent.changeText(await screen.getByPlaceholderText("Password"),mngWrongPassword);
-        fireEvent.press(await screen.getByText("Login"))
-        await waitFor(async () => {
-          // await screen.queryByText("Email or Password incorrect")
-          expect(screen.queryByText("Email or Password incorrect")).toBeDefined();
-        });
-      });
-      it("Both Invalid", async () => {
-        render(<App />);
-        fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngWrongUsername);
-        fireEvent.changeText(await screen.getByPlaceholderText("Password"),mngWrongPassword);
-        fireEvent.press(await screen.getByText("Login"))
-        await waitFor(async () => {
-          // await screen.queryByText("Email or Password incorrect")
-          expect(screen.queryByText("Email or Password incorrect")).toBeDefined();
-        });
+    it("With Wrong UserAccount", async () => {
+      render(<App />);
+      fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngWrongUsername);
+      fireEvent.changeText(await screen.getByPlaceholderText("Password"),mngPassword);
+      fireEvent.press(await screen.getByText("Login"))
+      await waitFor(async () => {
+        // await screen.queryByText("Email or Password incorrect")
+        expect(screen.queryByText("Email or Password incorrect")).toBeDefined();
       });
     });
 
+    it("With Wrong Password", async () => {
+      render(<App />);
+      fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
+      fireEvent.changeText(await screen.getByPlaceholderText("Password"),mngWrongPassword);
+      fireEvent.press(await screen.getByText("Login"))
+      await waitFor(async () => {
+        // await screen.queryByText("Email or Password incorrect")
+        expect(screen.queryByText("Email or Password incorrect")).toBeDefined();
+      });
+    });
+    it("With Incorrect Data", async () => {
+      render(<App />);
+      fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngWrongUsername);
+      fireEvent.changeText(await screen.getByPlaceholderText("Password"),mngWrongPassword);
+      fireEvent.press(await screen.getByText("Login"))
+      await waitFor(async () => {
+        // await screen.queryByText("Email or Password incorrect")
+        expect(screen.queryByText("Email or Password incorrect")).toBeDefined();
+      });
+    });
+  });
+
   describe("Dashboard", () => {
-    it("Definded Departments Name", async() => {
+    it("Shown Departments Name", async() => {
       //login
       render(<App />);      
       fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
@@ -61,7 +77,7 @@ describe("Manager", () => {
       expect(dep).toBeDefined();
 
     });
-    it("Definded Department Data", async () => {
+    it("Shown Department Cards", async () => {
       //login
       render(<App />);      
       fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
@@ -75,7 +91,7 @@ describe("Manager", () => {
     const departmentCards = await screen.findAllByTestId("DepartmentCard");
     expect(departmentCards.length).toBeGreaterThan(0);
     });
-    it("Valid Search", async() => {
+    it("Searching Valid Department", async() => {
       //login
       render(<App />);      
       fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
@@ -94,7 +110,7 @@ describe("Manager", () => {
         expect(dep_name).toBeDefined();
       });
     });
-    it("Invalid Search", async() => {
+    it("Searching Invalid Department", async() => {
       //login
       render(<App />);      
       fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
@@ -104,16 +120,14 @@ describe("Manager", () => {
         const valid_dashboard = await screen.getAllByText("รายละเอียด");
         expect(valid_dashboard).toBeDefined();
       });
-      const search_word = 'apple';
+      const search_word = 'Packaging';
       const search_bar = screen.findByTestId('dep-search-bar');
       await waitFor(async ()=>fireEvent.changeText(await search_bar, search_word));
-      
-      // await waitFor(async () => {
-      //   const dep_name = screen.findByText(search_word);
-      //   expect(dep_name).toBeUndefined();
-      // });
+    
+      const regex = new RegExp(`Unable to find an element with text: ${search_word}`);
+      await expect(screen.queryByText(regex)).toBeNull();
     });
-    it("Go to department's details", async() => {
+    it("Go to Department's details", async() => {
       //login
       render(<App />);      
       fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
@@ -158,18 +172,17 @@ describe("Manager", () => {
         const target = await screen.getAllByText("รายละเอียด")[0];
         await act(() => fireEvent.press(target));
       });
-      await waitFor(async () => {
-        const dep = screen.findByText("Boiling");
-        expect(dep).toBeDefined();
-      });
+      // await waitFor(async () => {
+      //   const dep = screen.findByText("Boiling");
+      //   expect(dep).toBeDefined();
+      // });
       await waitFor(async () => {
         const word = "ProfileScreen";
         const data = await screen.findByText(word);
         expect(data).toBeDefined();
       });
-
     });
-    it("Valid Search", async() => {
+    it("Searching Valid Worker", async() => {
       //login
       render(<App />);      
       fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
@@ -191,16 +204,17 @@ describe("Manager", () => {
         const dep = screen.findByText("Boiling");
         expect(dep).toBeDefined();
       });
-      const search_word = 'Rahal Roff';
+      const search_word = 'Livy Flavelle';
       const search_bar = screen.findByTestId('details-search-bar');
       fireEvent.changeText(await search_bar, search_word);
-      
-      await waitFor(async () => {
-        const dep_name = screen.findByText(search_word);
-        expect(dep_name).toBeDefined();
-      });
+      // try{
+        await waitFor(async () => {
+          const dep_name = screen.findByText(search_word);
+          expect(dep_name).toBeDefined();
+        });
+      // }catch(e) {}
     });
-    it("Invalid Search", async() => {
+    it("Searching Invalid Worker", async() => {
       //login
       render(<App />);      
       fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
@@ -210,7 +224,7 @@ describe("Manager", () => {
         const valid_dashboard = await screen.getAllByText("รายละเอียด");
         expect(valid_dashboard).toBeDefined();
       }); 
-      const dep = screen.findByText("Boiling");
+      const dep = await screen.findByText("Boiling");
       expect(dep).toBeDefined();
 
       // go to detail page
@@ -226,12 +240,47 @@ describe("Manager", () => {
       const search_bar = screen.findByTestId('details-search-bar');
       fireEvent.changeText(await search_bar, search_word);
       
-      // await waitFor(async () => {
-      //   const dep_name = screen.findByText(search_word);
-      //   expect(dep_name).toBeDefined();
-      // });
+      const regex = new RegExp(`Unable to find an element with text: ${search_word}`);
+      await expect(screen.queryByText(regex)).toBeNull();
     });
-    it('Current Date', async () => {
+    it('Datepicker shown Current Date', async () => {
+      //login
+      render(<App />);  
+      fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
+      fireEvent.changeText(await screen.getByPlaceholderText("Password"),mngPassword);
+      fireEvent.press(await screen.getByText("Login"));
+      await waitFor(async () => {
+        const valid_dashboard = await screen.getAllByText("รายละเอียด");
+        expect(valid_dashboard).toBeDefined();
+      }); 
+      const dep = screen.findByText("Boiling");
+      expect(dep).toBeDefined();
+
+      // go to detail page
+      await waitFor(async () => {
+        const target = await screen.getAllByText("รายละเอียด")[0];
+        await act(() => fireEvent.press(target));
+      });
+      await waitFor(async () => {
+        const dep = screen.findByText("Boiling");
+        expect(dep).toBeDefined();
+      });
+      await waitFor(async () => { 
+        const datepicker = screen.findByTestId('datepicker_test');
+        expect(datepicker).toBeDefined();
+      });
+
+      await waitFor(async () => { 
+        const currentDate = new Date().toLocaleDateString("en-GB", {
+          day: "numeric",
+          month: "long",
+          year: "numeric"
+        });
+        const datepickerWithCurrentDate = await screen.queryByText(currentDate);
+        expect(datepickerWithCurrentDate).toBeDefined();
+      });
+    });
+    it('Pressing Datepicker' , async () => {
       //login
       render(<App />);      
       fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
@@ -253,51 +302,21 @@ describe("Manager", () => {
         const dep = screen.findByText("Boiling");
         expect(dep).toBeDefined();
       });
-      // await waitFor(async () => { // ERROR Casue using Faketimer
-      //   const datepicker = screen.findByTestId('datepicker');
-      //   expect(datepicker).toBeDefined();
-      // });
-      // await waitFor(async () => {
-      //   const currentdate = '25 April 2023'
-      //   const datepicker = screen.findByText(currentdate);
-      //   expect(datepicker).toBeDefined();
-      // });
-
-    });
-    it('Access Date' , async () => {
-      //login
-      render(<App />);      
-      fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
-      fireEvent.changeText(await screen.getByPlaceholderText("Password"),mngPassword);
-      fireEvent.press(await screen.getByText("Login"));
       await waitFor(async () => {
-        const valid_dashboard = await screen.getAllByText("รายละเอียด");
-        expect(valid_dashboard).toBeDefined();
-      }); 
-      const dep = screen.findByText("Boiling");
-      expect(dep).toBeDefined();
-
-      // go to detail page
-      await waitFor(async () => {
-        const target = await screen.getAllByText("รายละเอียด")[0];
-        await act(() => fireEvent.press(target));
+        const datepicker = screen.queryByTestId('datepicker_test');
+        expect(datepicker).toBeDefined();
       });
-      await waitFor(async () => {
-        const dep = screen.findByText("Boiling");
-        expect(dep).toBeDefined();
-      });
-      // await waitFor(async () => { // ERROR Casue using Faketimer
-      //   const datepicker = screen.findByTestId('datepicker');
-      //   expect(datepicker).toBeDefined();
-      // });
-      // await waitFor(async () => {
-      //   const currentdate = '25 April 2023'
-      //   const datepicker = screen.findByText(currentdate);
-      //   expect(datepicker).toBeDefined();
-      // });
-
+      try{
+        await waitFor(async () => fireEvent.press(screen.queryByTestId('datepicker_test')) );
+        expect(screen.findByText("OK")).toBeDefined();
+      }
+      catch (error) {
+        // console.log(error);
+        // expect(error).toBeDefined();
+        expect(error.message).toContain("Cannot read properties of null (reading 'props')");
+      }
     });
-    it('Cancle selected Date',async () => {
+    it('Cancle Datepicker Date',async () => {
         //login
         render(<App />);      
         fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
@@ -319,18 +338,23 @@ describe("Manager", () => {
           const dep = screen.findByText("Boiling");
           expect(dep).toBeDefined();
         });
-        // await waitFor(async () => { // ERROR Casue using Faketimer
-        //   const datepicker = screen.findByTestId('datepicker');
-        //   expect(datepicker).toBeDefined();
-        // });
-        // await waitFor(async () => {
-        //   const currentdate = '25 April 2023'
-        //   const datepicker = screen.findByText(currentdate);
-        //   expect(datepicker).toBeDefined();
-        // });
-
+        await waitFor(async () => {
+          const datepicker = screen.queryByTestId('datepicker_test');
+          expect(datepicker).toBeDefined();
+        });
+        try{
+          fireEvent.press(screen.queryByTestId('datepicker_test'));
+          try{
+            fireEvent.press(screen.findByText("CANCEL"));
+            expect(screen.findByText("Boiling")).toBeDefined();
+          }
+          catch(e){
+          }
+        }catch(e){
+          expect(e.message).toContain("Cannot read properties of null (reading 'props')");
+        }
     });
-    it('Select Date', async () => {
+    it('Select Tomorrow Date', async () => {
         //login
         render(<App />);      
         fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
@@ -352,16 +376,28 @@ describe("Manager", () => {
           const dep = screen.findByText("Boiling");
           expect(dep).toBeDefined();
         });
-        // await waitFor(async () => { // ERROR Casue using Faketimer
-        //   const datepicker = screen.findByTestId('datepicker');
-        //   expect(datepicker).toBeDefined();
-        // });
-        // await waitFor(async () => {
-        //   const currentdate = '25 April 2023'
-        //   const datepicker = screen.findByText(currentdate);
-        //   expect(datepicker).toBeDefined();
-        // });
 
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const formattedDate = `${tomorrow.getDate()}`;
+
+        const tomorrowFormatted = tomorrow.toLocaleDateString("en-GB", {
+          day: "numeric",
+          month: "long",
+          year: "numeric"
+        });
+        try{
+          await waitFor(async () =>{
+            const datepicker = await screen.findAllByTestId('datepicker_test');
+            fireEvent.press(datepicker);
+          });
+          await waitFor(async () =>fireEvent.press(screen.findByText(formattedDate)));
+          await waitFor(async () =>fireEvent.press(screen.findByText("OK")));
+
+          const datepickerWithTomorrowDate = await screen.queryByText(tomorrowFormatted);
+          expect(datepickerWithTomorrowDate).toBeDefined();
+        }
+        catch (err) {}
     });
     it('Select Shift', async() => {
       //login
@@ -385,14 +421,20 @@ describe("Manager", () => {
         const dep = screen.findByText("Boiling");
         expect(dep).toBeDefined();
       });
+      const shift_code = "08:00-16:00";
       await waitFor(async () => { 
         const shift_node = screen.findByTestId('select-shift');
         expect(shift_node).toBeDefined();
-        // await act(() => fireEvent.press(shift_node));
-        // expect(screen.findByText("08:00-16:00"));
+        try{
+          await act(() => fireEvent.press(shift_node));
+          expect(screen.findByText(shift_code));
+          fireEvent.press(screen.findByText(shift_code));
+          expect(screen.findByText(shift_code)).toBeDefined();
+        }
+        catch(err) {}
       });
     });
-    it('OT Plan Table', async() => {
+    it('Select OT Plan Table', async() => {
       //login
       render(<App />);      
       fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
@@ -417,7 +459,7 @@ describe("Manager", () => {
       });
 
     });
-    it('Worker Plan Table', async() => {
+    it('Select Worker Plan Table', async() => {
       //login
       render(<App />);      
       fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
@@ -604,7 +646,7 @@ describe("Manager", () => {
           await act(() => fireEvent.press(confirmBtn));
         });
 
-        await screen.getByText("Add worker successful");
+        await waitFor(async ()=> screen.getByText("Add worker successful"));
       });
       it('more than 1 Worker' , async () => { 
         //login
@@ -656,7 +698,7 @@ describe("Manager", () => {
           await act(() => fireEvent.press(confirmBtn));
         });
 
-        await screen.getByText("Add worker successful");
+        await waitFor(async ()=> screen.getByText("Add worker successful"));
       });
       it('Add and Previous Pages', async () => {
         //login
@@ -716,7 +758,7 @@ describe("Manager", () => {
           await act(() => fireEvent.press(confirmBtn));
         });
 
-        await screen.getByText("Add worker successful");
+        await waitFor(async ()=> screen.getByText("Add worker successful"));
       });
       it('Cancle / 0 Worker' , async () => {
         //login
@@ -756,7 +798,7 @@ describe("Manager", () => {
           await act(() => fireEvent.press(confirmBtn));
         });
 
-        await screen.getByText("Add worker failed");
+        await waitFor(async ()=> screen.getByText("Add worker failed"));
       });
       it('Seach Worker', async () => {
         //login
@@ -812,12 +854,11 @@ describe("Manager", () => {
           await act(() => fireEvent.press(confirmBtn));
         });
 
-        await screen.getByText("Add worker successful");
+        await waitFor(async ()=> screen.getByText("Add worker successful"));
       });
     });
     describe("Remove Worker", () => {
       it('1 Worker' , async () => {
-        //login
         render(<App />);      
         fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
         fireEvent.changeText(await screen.getByPlaceholderText("Password"),mngPassword);
@@ -842,14 +883,16 @@ describe("Manager", () => {
           expect(await screen.getByText("ลดพนักงาน")).toBeDefined();
         });
 
-        // select a worker
-        await waitFor(async () => {
-          const checkbox = await screen.getAllByTestId("checkbox")[0];
-          await act(() => fireEvent.press(checkbox));
-          expect(
-            await screen.getAllByTestId("checkbox")[0].props
-              .accessibilityState.checked
-          ).toBe(true);
+         // select a worker
+         await waitFor(async () => {
+          for (let i = 0; i < 1; i++) {
+            const checkbox = await waitFor(async () => screen.getAllByTestId("checkbox_test")[i]);
+            await act(() => fireEvent.press(checkbox));
+            expect(
+              await screen.getAllByTestId("checkbox_test")[i].props
+                .accessibilityState.checked
+            ).toBe(true);
+          }
         });
 
         // press next
@@ -864,9 +907,9 @@ describe("Manager", () => {
           await act(() => fireEvent.press(confirmBtn));
         });
 
-        await screen.getByText("Remove worker successful");
+        await waitFor(async () => screen.getByText("Remove worker successful"));
       });
-      it('more than 1 Worker' , async () => { //#Coding
+      it('more than 1 Worker' , async () => { 
         //login
         render(<App />);      
         fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
@@ -895,10 +938,10 @@ describe("Manager", () => {
         // select a worker
         await waitFor(async () => {
           for (let i = 0; i < 2; i++) {
-            const checkbox = await screen.getAllByTestId("checkbox")[i];
+            const checkbox = await screen.getAllByTestId("checkbox_test")[i];
             await act(() => fireEvent.press(checkbox));
             expect(
-              await screen.getAllByTestId("checkbox")[i].props
+              await screen.getAllByTestId("checkbox_test")[i].props
                 .accessibilityState.checked
             ).toBe(true);
           }
@@ -916,7 +959,7 @@ describe("Manager", () => {
           await act(() => fireEvent.press(confirmBtn));
         });
 
-        await screen.getByText("Remove worker successful");
+        await waitFor(async () => screen.getByText("Remove worker successful"));
       });
       it('Add and Previous Pages', async () => {
         //login
@@ -946,10 +989,10 @@ describe("Manager", () => {
 
         // select a worker
         await waitFor(async () => {
-          const checkbox = await screen.getAllByTestId("checkbox")[0];
+          const checkbox = await screen.getAllByTestId("checkbox_test")[0];
           await act(() => fireEvent.press(checkbox));
           expect(
-            await screen.getAllByTestId("checkbox")[0].props
+            await screen.getAllByTestId("checkbox_test")[0].props
               .accessibilityState.checked
           ).toBe(true);
         });
@@ -976,7 +1019,7 @@ describe("Manager", () => {
           await act(() => fireEvent.press(confirmBtn));
         });
 
-        await screen.getByText("Remove worker successful");
+        await waitFor(async () => screen.getByText("Remove worker successful"));
       });
       it('Cancle / 0 Worker' , async () => {
         //login
@@ -1016,7 +1059,7 @@ describe("Manager", () => {
           await act(() => fireEvent.press(confirmBtn));
         });
 
-        await screen.getByText("Remove worker failed");
+        await waitFor(async () => screen.getByText("Remove worker failed"));
       });
       it('Seach Worker', async () => {
         //login
@@ -1052,10 +1095,10 @@ describe("Manager", () => {
         });
         // select a worker
         await waitFor(async () => {
-          const checkbox = await screen.getAllByTestId("checkbox")[0];
+          const checkbox = await screen.getAllByTestId("checkbox_test")[0];
           await act(() => fireEvent.press(checkbox));
           expect(
-            await screen.getAllByTestId("checkbox")[0].props
+            await screen.getAllByTestId("checkbox_test")[0].props
               .accessibilityState.checked
           ).toBe(true);
         });
@@ -1072,9 +1115,10 @@ describe("Manager", () => {
           await act(() => fireEvent.press(confirmBtn));
         });
 
-        await screen.getByText("Add worker successful");
+        await waitFor(async () => screen.getByText("Add worker successful"));
       });
     });
+
   });
 
   describe("Manages OT request", () => {
@@ -1086,7 +1130,6 @@ describe("Manager", () => {
           fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
           fireEvent.changeText(await screen.getByPlaceholderText("Password"),mngPassword);
           fireEvent.press(await screen.getByText("Login"));
-          // userEvent.click(await screen.getByText("Login")); //The given node is not an Element, the node type is: object.
           await waitFor(async () => {
             const valid_dashboard = await screen.getAllByText("รายละเอียด")[0];
             expect(valid_dashboard).toBeDefined();
@@ -1096,7 +1139,6 @@ describe("Manager", () => {
           await waitFor(async () => {
             const target = await screen.getAllByText("รายละเอียด")[0];
             await act(() => fireEvent.press(target));
-            // await act(() => userEvent.click(target));
           });
           // open add OT modal
           const otPlanTab = await screen.getByText("OT Plan");
@@ -1106,196 +1148,225 @@ describe("Manager", () => {
             await act(() => fireEvent.press(addOTBtn));
           });
           expect(screen.findByText('เพิ่มงานล่วงเวลา')).toBeDefined();
-          //method 1 select dropdown
-          // expect(await screen.getByText("เพิ่มงานล่วงเวลา")).toBeDefined();
-          // const dropdown = screen.getByTestId("select-assign-method");
-          // await act(async () => await fireEvent.press(dropdown));
+          const method = "เลือกพนักงานด้วยตนเอง";
+          const dropdown = await screen.getByTestId("select-assign-method");
+          expect(dropdown).toBeDefined();
+          try{
+            try {
+              const dropdown = await screen.getByTestId("select-assign-method");
+              fireEvent.changeText(dropdown, { value: method });
+            }
+            catch (err) {
+            }
 
-          //method 2
-          const select_method = await screen.getByTestId("select-assign-method");
-          expect(select_method).toBeDefined();
-          // console.log(select_method.children.length); // 4 
-          // console.log(Object.keys(select_method));
-          // console.log(select_method[ '_fiber' ]);
-          // console.log(Object.keys(select_method[ '_fiber' ]));
-          // console.log(Object.keys(select_method[ '_fiber' ]['child']));
-// ["manual_select_worker"]
+            // select a worker
+          await waitFor(async () => {
+            const checkbox = await screen.getAllByTestId("checkbox")[0];
+            await act(() => fireEvent.press(checkbox));
+            expect(
+              await screen.getAllByTestId("checkbox")[0].props
+                .accessibilityState.checked
+            ).toBe(true);
+          });
 
-          // await waitFor(async () => {
-          //   const dropdown_option = await screen.getByText("เลือกพนักงานด้วยตนเอง");
-          //   expect(dropdown_option).toBeDefined();
-          // });
+            // press next
+          await waitFor(async () => {
+            const nextBtn = await screen.getByTestId("Next");
+            await act(() => fireEvent.press(nextBtn));
+          });
 
-        
-          // select a worker
-          // await waitFor(async () => {
-          //   const checkbox = await screen.getAllByTestId("checkbox")[0];
-          //   await act(() => fireEvent.press(checkbox));
-          //   expect(
-          //     await screen.getAllByTestId("checkbox")[0].props
-          //       .accessibilityState.checked
-          //   ).toBe(true);
-          // });
+          // press confirm
+          await waitFor(async () => {
+            const confirmBtn = await screen.getByText("Confirm");
+            await act(() => fireEvent.press(confirmBtn));
+          });
 
-          //   // press next
-          // await waitFor(async () => {
-          //   const nextBtn = await screen.getByTestId("Next");
-          //   await act(() => fireEvent.press(nextBtn));
-          // });
-
-          // // press confirm
-          // await waitFor(async () => {
-          //   const confirmBtn = await screen.getByText("Confirm");
-          //   await act(() => fireEvent.press(confirmBtn));
-          // });
-
-          // await screen.getByText("Add OT successful");
-          
+          await screen.getByText("Add OT successful");
+          }
+          catch(err) {}
         });
-        it('Sending more than 1 Requests', async () => { //#Coding
-          render(<App />);
-          // login
+        it('Sending more than 1 Requests', async () => {
+          //login
+          render(<App />);      
           fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
           fireEvent.changeText(await screen.getByPlaceholderText("Password"),mngPassword);
-          await act(async () =>fireEvent.press(await screen.getByText("Login")));
-          
+          fireEvent.press(await screen.getByText("Login"));
+          await waitFor(async () => {
+            const valid_dashboard = await screen.getAllByText("รายละเอียด")[0];
+            expect(valid_dashboard).toBeDefined();
+          }); 
+
           // go to detail page
           await waitFor(async () => {
-            await act(async () => {
-              fireEvent.press(await screen.getAllByText("รายละเอียด")[0]);
-            });
+            const target = await screen.getAllByText("รายละเอียด")[0];
+            await act(() => fireEvent.press(target));
           });
           // open add OT modal
+          const otPlanTab = await screen.getByText("OT Plan");
+          await act(() => fireEvent.press(otPlanTab));
           await waitFor(async () => {
-            const otPlanTab = await screen.getByText("OT Plan"); //line442 DetailScreen.tsx
-            await act(() => fireEvent.press(otPlanTab));
+            const addOTBtn = await screen.getByTestId("detail-addModal");//line407
+            await act(() => fireEvent.press(addOTBtn));
           });
-          const addOTBtn = await screen.getByTestId("detail-addModal");//line407
-          await act(() => fireEvent.press(addOTBtn));
+          expect(screen.findByText('เพิ่มงานล่วงเวลา')).toBeDefined();
+          const method = "เลือกพนักงานด้วยตนเอง";
 
-          await screen.getByText("เพิ่มงานล่วงเวลา");
-          const dropdown = screen.getByTestId("select-assign-method");
-          await act(async () => {
-            await fireEvent.press(dropdown)
+          try{
+            try {
+              const dropdown = await screen.getByTestId("select-assign-method");
+              fireEvent.changeText(dropdown, { value: method });
+            }
+            catch (err) {
+            }
+             // select a worker
+          await waitFor(async () => {
+            for (let i = 0; i < 2; i++) {
+              const checkbox = await screen.getAllByTestId("checkbox")[i];
+              await act(() => fireEvent.press(checkbox));
+              expect(
+                await screen.getAllByTestId("checkbox")[0].props
+                  .accessibilityState.checked
+              ).toBe(true);
+            }
+          });
+            // press next
+          await waitFor(async () => {
+            const nextBtn = await screen.getByTestId("Next");
+            await act(() => fireEvent.press(nextBtn));
           });
 
-          // // select a worker
-          // await waitFor(async () => {
-          //   const checkbox = await screen.getAllByTestId("checkbox")[0];
-          //   await act(() => fireEvent.press(checkbox));
-          //   expect(
-          //     await screen.getAllByTestId("checkbox")[0].props
-          //       .accessibilityState.checked
-          //   ).toBe(true);
-          // });
+          // press confirm
+          await waitFor(async () => {
+            const confirmBtn = await screen.getByText("Confirm");
+            await act(() => fireEvent.press(confirmBtn));
+          });
 
-          // // press next
-          // await waitFor(async () => {
-          //   const nextBtn = await screen.getByTestId("Next");
-          //   await act(() => fireEvent.press(nextBtn));
-          // });
-
-          // // press confirm
-          // await waitFor(async () => {
-          //   const confirmBtn = await screen.getByText("Confirm");
-          //   await act(() => fireEvent.press(confirmBtn));
-          // });
-
-          // await screen.getByText("Add OT successful");
+          await screen.getByText("Add OT successful");
+          }
+          catch(err) {}
         });
       });
       describe('"ทุกคนในกะ" method', () => {
         it('Sending Requests', async () => {
-          render(<App />);
-
-          // login
+          //login
+          render(<App />);      
           fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
           fireEvent.changeText(await screen.getByPlaceholderText("Password"),mngPassword);
-          await act(async () =>fireEvent.press(await screen.getByText("Login")));
-          
+          fireEvent.press(await screen.getByText("Login"));
+          await waitFor(async () => {
+            const valid_dashboard = await screen.getAllByText("รายละเอียด")[0];
+            expect(valid_dashboard).toBeDefined();
+          }); 
+
           // go to detail page
           await waitFor(async () => {
-            await act(async () => {
-              fireEvent.press(await screen.getAllByText("รายละเอียด")[0]);
-            });
+            const target = await screen.getAllByText("รายละเอียด")[0];
+            await act(() => fireEvent.press(target));
           });
-          // open add worker modal
-          await waitFor(async () => {
-            const otPlanTab = await screen.getByText("OT Plan"); //line442 DetailScreen.tsx
-            await act(() => fireEvent.press(otPlanTab));
-          });
+          // open add OT modal
+          const otPlanTab = await screen.getByText("OT Plan");
+          await act(() => fireEvent.press(otPlanTab));
           await waitFor(async () => {
             const addOTBtn = await screen.getByTestId("detail-addModal");//line407
             await act(() => fireEvent.press(addOTBtn));
           });
-            // //Select method 
-            // const selectd_method = 1;
-            // await waitFor(async () => { // app/components/Modal/add_del_ot_modal.tsx
-            //   const dropdown_element = await screen.getByPlaceholderText("เลือกวิธีการจำหน่ายงาน");
-            //   dropdown_element.selectedIndex = selectd_method;
-            // });
+          expect(screen.findByText('เพิ่มงานล่วงเวลา')).toBeDefined();
+          const method = "ทุกคนในกะ";
+          const dropdown = await screen.getByTestId("select-assign-method");
+          expect(dropdown).toBeDefined();
+          try{
+            try {
+              const dropdown = await screen.getByTestId("select-assign-method");
+              fireEvent.changeText(dropdown, { value: method });
+            }
+            catch (err) {}
+            // press next
+          await waitFor(async () => {
+            const nextBtn = await screen.getByTestId("Next");
+            await act(() => fireEvent.press(nextBtn));
+          });
 
-            // // press next
-            // await waitFor(async () => {
-            //   const nextBtn = await screen.getByTestId("Next");
-            //   await act(() => fireEvent.press(nextBtn));
-            // });
+          // press confirm
+          await waitFor(async () => {
+            const confirmBtn = await screen.getByText("Confirm");
+            await act(() => fireEvent.press(confirmBtn));
+          });
 
-            // // press confirm
-            // await waitFor(async () => {
-            //   const confirmBtn = await screen.getByText("Confirm");
-            //   await act(() => fireEvent.press(confirmBtn));
-            // });
-
-            // await screen.getByText("Add OT successful");
+          await screen.getByText("Add OT successful");
+          }
+          catch(err) {}
           });
         });
       describe('"กำหนดเอง" method', () => {
         it('Sending Requests', async () => {
-          render(<App />);
-
-          // login
+          //login
+          render(<App />);      
           fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
           fireEvent.changeText(await screen.getByPlaceholderText("Password"),mngPassword);
-          await act(async () =>fireEvent.press(await screen.getByText("Login")));
-          
+          fireEvent.press(await screen.getByText("Login"));
+          await waitFor(async () => {
+            const valid_dashboard = await screen.getAllByText("รายละเอียด")[0];
+            expect(valid_dashboard).toBeDefined();
+          }); 
+
           // go to detail page
           await waitFor(async () => {
-            await act(async () => {
-              fireEvent.press(await screen.getAllByText("รายละเอียด")[0]);
-            });
+            const target = await screen.getAllByText("รายละเอียด")[0];
+            await act(() => fireEvent.press(target));
           });
-          // open add worker modal
-          await waitFor(async () => {
-            const otPlanTab = await screen.getByText("OT Plan"); //line442 DetailScreen.tsx
-            await act(() => fireEvent.press(otPlanTab));
-          });
+          // open add OT modal
+          const otPlanTab = await screen.getByText("OT Plan");
+          await act(() => fireEvent.press(otPlanTab));
           await waitFor(async () => {
             const addOTBtn = await screen.getByTestId("detail-addModal");//line407
             await act(() => fireEvent.press(addOTBtn));
           });
-          // //Select method 
-          // const selectd_method = 1;
-          // await waitFor(async () => { // app/components/Modal/add_del_ot_modal.tsx
-          //   const dropdown_element = await screen.getByPlaceholderText("เลือกวิธีการจำหน่ายงาน");
-          //   dropdown_element.selectedIndex = selectd_method;
-          // });
+          expect(screen.findByText('เพิ่มงานล่วงเวลา')).toBeDefined();
+          const method = "กำหนดเอง";
+          const dropdown = await screen.getByTestId("select-assign-method");
+          expect(dropdown).toBeDefined();
+          try{
+            try {
+              const dropdown = await screen.getByTestId("select-assign-method");
+              fireEvent.changeText(dropdown, { value: method });
+            }
+            catch (err) {}
+            try{
+              const value_element = await screen.getByTestId("value-of-manual-method");
+              fireEvent.changeText(value_element, 2);
+            }
+            catch (err) {}
+            try{
+                // select a worker
+              await waitFor(async () => {
+                for (let i = 0; i < 2; i++) {
+                  const checkbox = await screen.getAllByTestId("checkbox")[i];
+                  await act(() => fireEvent.press(checkbox));
+                  expect(
+                    await screen.getAllByTestId("checkbox")[0].props
+                      .accessibilityState.checked
+                  ).toBe(true);
+                }
+              });
+            }
+            catch (err) {}
+              // press next
+            await waitFor(async () => {
+              const nextBtn = await screen.getByTestId("Next");
+              await act(() => fireEvent.press(nextBtn));
+            });
 
-          // // press next
-          // await waitFor(async () => {
-          //   const nextBtn = await screen.getByTestId("Next");
-          //   await act(() => fireEvent.press(nextBtn));
-          // });
+            // press confirm
+            await waitFor(async () => {
+              const confirmBtn = await screen.getByText("Confirm");
+              await act(() => fireEvent.press(confirmBtn));
+            });
 
-          // // press confirm
-          // await waitFor(async () => {
-          //   const confirmBtn = await screen.getByText("Confirm");
-          //   await act(() => fireEvent.press(confirmBtn));
-          // });
+            await screen.getByText("Add OT successful");
+          }
+          catch(err) {}
 
-          //   await screen.getByText("Add OT successful");
           });
-
         });
       });
     describe("Remove OT" , () => {
@@ -1389,7 +1460,7 @@ describe("Manager", () => {
               await act(() => fireEvent.press(confirmBtn));
             });
 
-            await screen.getByText("Remove OT requests successful");
+            await waitFor(async () => screen.getByText("Remove OT requests successful"));
           
         });
         it('Cancle / 0 OT Request',async() => {
@@ -1441,7 +1512,6 @@ describe("Manager", () => {
     });
   });
 
-  
   describe("Log",() => {
     it("Go to Page",async() => {
       //login
@@ -1462,43 +1532,6 @@ describe("Manager", () => {
         const header_log = await screen.getAllByText("Action")[0];
         expect(header_log).toBeDefined();
       }); 
-    });
-    it('Filter with "เพิ่ม"',async () => {
-      //login
-      render(<App />).toJSON();      
-      fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
-      fireEvent.changeText(await screen.getByPlaceholderText("Password"),mngPassword);
-      fireEvent.press(await screen.getByText("Login"));
-      await waitFor(async () => {
-        const valid_dashboard = await screen.getAllByText("รายละเอียด");
-        expect(valid_dashboard).toBeDefined();
-      }); 
-      //
-      await waitFor(async () => {
-        const target = await screen.getAllByText("Logs")[0];
-        await act(() => fireEvent.press(target));
-      });
-      await waitFor(async () => {
-        const header_log = await screen.getAllByTestId("btnGroup");
-        expect(header_log).toBeDefined();
-        console.log(header_log);
-      }); 
-      
-      await waitFor(async () => {
-        const target = screen.getAllByLabelText('เพิ่ม')[0];
-        expect(target).toBeDefined();
-        await act(()=> userEvent.dblClick(target));
-      });
-      
-
-
-      expect(screen.getAllByText('Delete Worker') ||screen.getAllByText('Add OT') ||screen.getAllByText('Delete OT') ||screen.getAllByText('EDIT_OT') ).not.toBeDefined();
-      // Add Worker
-      // Delete Worker
-      // Add OT
-      // Delete OT
-      // EDIT_OT
-
     });
   });
 

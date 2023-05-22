@@ -75,7 +75,7 @@ const Add_del_worker_modal = (props: any) => {
               center
               checked={item.isChecked}
               onPress={() => handleCheckboxClick(item.account_id)}
-              testID='checkbox'
+              testID='checkbox_test'
             />}/> 
             <Cell data={<Text style={{textAlign: 'center'}}>{item.name}</Text>}/>
             <Cell data={<Text style={{textAlign: 'center'}}>{item.performance}</Text>}/>
