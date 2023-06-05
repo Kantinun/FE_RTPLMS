@@ -73,14 +73,23 @@ function Add_del_ot_modal(props) {
       let newData = fetchData.filter((ele)=>ele.name.toLowerCase().includes(text.toLowerCase()))
       setData(newData? newData: fetchData)
     }
-
+    
     const _renderAddForm = () => {
       const options = [
-        { label: 'เลือกพนักงานด้วยตนเอง', value: 'manual_select_worker' },
-        { label: 'ทุกคนในกะ', value: 'assignEveryone' },
-        // { label: 'จำหน่ายงานตามลำดับการเข้างาน', value: 'assignByCheckin' },
-        { label: 'กำหนดเอง', value: 'manual' },
-      ]  
+        { label: 'เลือกพนักงานด้วยตนเอง', value: 'manual_select_worker' , itemTestIDField:''},
+        { label: 'ทุกคนในกะ', value: 'assignEveryone' ,itemTestIDField:''},
+        { label: 'กำหนดเอง', value: 'manual' , itemTestIDField:''},
+      ]
+
+      const [initialPress, setInitialPress] = React.useState(false);
+
+      const handleDropdownPress = (item) => {
+        if (item.value === 'manual') {
+          setBtn_group_index(1);
+        }
+        setSelected_method(item.value);
+      };
+
       return(
         <View style={{alignItems: 'center'}}>
           <View style={{width: '100%'}}>
@@ -97,19 +106,14 @@ function Add_del_ot_modal(props) {
               labelField="label"
               valueField="value"
               placeholder="เลือกวิธีการจำหน่ายงาน"
+              accessibilityLabel='select-assign-worker'
               value={selected_method}
               dropdownPosition='bottom'
-              onChange={item => {
-                if(item.value=='manual'){
-                  setBtn_group_index(1)
-                }
-                setSelected_method(item.value);
-              }}
-              renderLeftIcon={() => (
-                <Icon style={styles.icon} color="black" name="user-plus" size={15} />
-              )}
-              data-testid="dropdown"
+              onChange={handleDropdownPress}
+              onFocus ={() => console.log('dropdown focused')}
+              renderLeftIcon={() => (<Icon style={styles.icon} color="black" name="user-plus" size={15} />)}
               testID='select-assign-method'
+              // data-testid ='select-assign-method'
             />
           </View>
           { (selected_method == 'assignByCheckin'||selected_method==='manual') &&

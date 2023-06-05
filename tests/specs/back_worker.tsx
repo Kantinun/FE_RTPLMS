@@ -20,7 +20,6 @@ describe("Worker", () => {
   const wPassword = "IvKtoPdlINh";
   const wWrongUsername = "nhuddlestone0";
   const wWrongPassword = "IvKtoPdlINh";
-
   describe("login", () => {
     it("Both Valid", async () => {
       //login
@@ -63,7 +62,6 @@ describe("Worker", () => {
       });
     });
   });
-
   describe("Schedule page",() => {
       it("Go to page",async () =>{
         render(<App />);
@@ -141,4 +139,5 @@ describe("Worker", () => {
       });
     });
 });
+
 

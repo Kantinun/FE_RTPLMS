@@ -15,6 +15,10 @@ jest.mock("react-native-reanimated", () =>
 jest.useRealTimers();   
 
 describe("Manager", () => {
+  const mngUsername = "ghateley0";
+  const mngPassword = "BtNMJU";
+  const mngWrongUsername = "ghteley0";
+  const mngWrongPassword = "btNMJU";
 
   describe("Login", () => {
     it("With Correct Data", async () => {
@@ -172,10 +176,10 @@ describe("Manager", () => {
         const target = await screen.getAllByText("รายละเอียด")[0];
         await act(() => fireEvent.press(target));
       });
-      // await waitFor(async () => {
-      //   const dep = screen.findByText("Boiling");
-      //   expect(dep).toBeDefined();
-      // });
+      await waitFor(async () => {
+        const dep = screen.findByText("Boiling");
+        expect(dep).toBeDefined();
+      });
       await waitFor(async () => {
         const word = "ProfileScreen";
         const data = await screen.findByText(word);
@@ -513,7 +517,7 @@ describe("Manager", () => {
         await act(() => fireEvent.press(workPlanTab));
         const addWorkerBtn = await screen.getByTestId("detail-addModal");
         await act(() => fireEvent.press(addWorkerBtn));
-        expect(await screen.getByText("เพิ่มพนักงาน")).toBeDefined();
+        expect(await waitFor(async ()=> screen.getByText("เพิ่มพนักงาน"))).toBeDefined();
       });
     });
     it('Go to Remove worker page', async () => {
@@ -539,7 +543,7 @@ describe("Manager", () => {
         await act(() => fireEvent.press(workPlanTab));
         const addWorkerBtn = await screen.getByTestId("detail-removeModal");
         await act(() => fireEvent.press(addWorkerBtn));
-        expect(await screen.getByText("ลดพนักงาน")).toBeDefined();
+        expect(await waitFor(async ()=> screen.getByText("ลดพนักงาน"))).toBeDefined();
       });
     });
     it('Go to Add OT Request page', async () => {
@@ -566,7 +570,7 @@ describe("Manager", () => {
         const addOTBtn = await screen.getByTestId("detail-addModal");//line407
         await act(() => fireEvent.press(addOTBtn));
       });
-      expect(screen.findByText('เพิ่มงานล่วงเวลา')).toBeDefined();
+      expect(await waitFor(async ()=> screen.findByText('เพิ่มงานล่วงเวลา'))).toBeDefined();
     });
     it('Go to Remove OT Reques page', async() =>{
       //login
@@ -592,7 +596,7 @@ describe("Manager", () => {
         const addOTBtn = await screen.getByTestId("detail-removeModal");//line407
         await act(() => fireEvent.press(addOTBtn));
       });
-      expect(screen.getByText("ลดงานล่วงเวลา")).toBeDefined();
+      expect(await waitFor(async ()=> screen.getByText("ลดงานล่วงเวลา"))).toBeDefined();
     });
   });
 
@@ -800,7 +804,7 @@ describe("Manager", () => {
 
         await waitFor(async ()=> screen.getByText("Add worker failed"));
       });
-      it('Seach Worker', async () => {
+      it('Search Worker', async () => {
         //login
         render(<App />);      
         fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
@@ -1061,7 +1065,7 @@ describe("Manager", () => {
 
         await waitFor(async () => screen.getByText("Remove worker failed"));
       });
-      it('Seach Worker', async () => {
+      it('Serach Worker', async () => {
         //login
         render(<App />);      
         fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
