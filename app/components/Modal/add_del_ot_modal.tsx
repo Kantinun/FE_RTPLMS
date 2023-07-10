@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View} from 'react-native';
+import { StyleSheet, Text, View, Pressable} from 'react-native';
 import Modal from "react-native-modal";
 import StepIndicator from 'react-native-step-indicator';
 import Swiper from 'react-native-swiper';
 import { ButtonGroup } from '@rneui/themed'
 import { colors } from '../../config/colors';
 import { Input } from '@rneui/themed';
-import { Dropdown } from 'react-native-element-dropdown';
+
+// import { Dropdown } from 'react-native-element-dropdown';
+import { Menu, MenuItem, MenuDivider } from 'react-native-material-menu';
+
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { Table, Row, TableWrapper, Cell } from 'react-native-table-component';
 import {CheckBox,Button,SearchBar} from '@rneui/themed'
@@ -24,7 +27,11 @@ function Add_del_ot_modal(props) {
   const [data, setData] = useState([])
   const [OTDuration, setOTDuration] = useState<number>()
 
-  
+  const [visible, setVisible] = useState(false);
+
+  const hideMenu = () => setVisible(false);
+  const showMenu = () => setVisible(true);
+
   useEffect(()=>{
     setFetchData(props.data)
     setData(props.data)
@@ -84,17 +91,18 @@ function Add_del_ot_modal(props) {
       const [initialPress, setInitialPress] = React.useState(false);
 
       const handleDropdownPress = (item) => {
-        if (item.value === 'manual') {
+        if (item === 'manual') {
           setBtn_group_index(1);
         }
-        setSelected_method(item.value);
+        setSelected_method(item);
+        hideMenu()
       };
 
       return(
         <View style={{alignItems: 'center'}}>
           <View style={{width: '100%'}}>
             <Text style={styles.label}>วิธีจำหน่ายงาน</Text>
-            <Dropdown
+            {/* <Dropdown
               style={styles.dropdown}
               placeholderStyle={styles.placeholderStyle}
               selectedTextStyle={styles.selectedTextStyle}
@@ -114,7 +122,27 @@ function Add_del_ot_modal(props) {
               renderLeftIcon={() => (<Icon style={styles.icon} color="black" name="user-plus" size={15} />)}
               testID='select-assign-method'
               // data-testid ='select-assign-method'
-            />
+            /> */}
+            <Menu
+              visible={visible}
+              anchor={
+                  <Pressable 
+                  onPress={showMenu}
+                  style={styles.dropdown}
+                  >
+                    <View style={{display: "flex", flexDirection: 'row', marginTop: 10, justifyContent:'center'}}>
+                      <Icon style={styles.icon} color="black" name="user-plus" size={15} />
+                      <Text>{ selected_method? options.find((row)=>row.value===selected_method)?.label: "เลือกวิธีการจำหน่ายงาน" }</Text>
+                    </View>
+                  </Pressable >
+              }
+              onRequestClose={hideMenu}
+            >
+              <MenuItem onPress={()=>{handleDropdownPress('manual_select_worker')}}>เลือกพนักงานด้วยตนเอง</MenuItem>
+              <MenuItem onPress={()=>{handleDropdownPress('assignEveryone')}}>ทุกคนในกะ</MenuItem>
+              <MenuDivider />
+              <MenuItem onPress={()=>{handleDropdownPress('manual')}}>กำหนดเอง</MenuItem>
+            </Menu>
           </View>
           { (selected_method == 'assignByCheckin'||selected_method==='manual') &&
           (<View style={{flexDirection: 'row', alignItems: 'center', marginHorizontal: 10, justifyContent: 'space-between', borderRadius: 10}}>
@@ -359,7 +387,7 @@ const styles = StyleSheet.create({
     },
     dropdown: {
       margin: 16,
-      height: 50,
+      height: 40,
       borderWidth: 1,
       borderRadius: 8,
       borderColor: '#aaaa',

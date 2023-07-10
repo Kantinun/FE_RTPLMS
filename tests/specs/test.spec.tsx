@@ -3,15 +3,18 @@ import {
   fireEvent,
   render,
   screen,
-  waitFor,
+  waitFor
 } from "@testing-library/react-native";
 import App from "../../App";
+import { FlatList } from "react-native-gesture-handler";
+import { Children } from "react";
 
 jest.mock("react-native-reanimated", () =>
   require("react-native-reanimated/mock")
 );
 // jest.useFakeTimers();
 jest.useRealTimers();   
+
 
 describe("Manager", () => {
   const mngUsername = "ghateley0";
@@ -1030,11 +1033,8 @@ describe("Manager", () => {
         expect(dep).toBeDefined(); 
 
         // go to detail page
-        await waitFor(async () => {
-          const target = await screen.getAllByText("รายละเอียด")[0];
-          // await act(() => fireEvent.press(target));
-          fireEvent.press(target);
-        });
+        const target = await screen.getAllByText("รายละเอียด")[0];
+        fireEvent.press(target);
         await waitFor(async () => {
           const dep = screen.findByText("Boiling");
           expect(dep).toBeDefined();
@@ -1068,6 +1068,7 @@ describe("Manager", () => {
             },
           });
         });
+        
         screen.debug();
         // console.log(await dropdown.props.children[0][1]);
         // console.log(screen.findByText(method_label));
@@ -1101,7 +1102,6 @@ describe("Manager", () => {
         // go to detail page
         await waitFor(async () => {
           const target = await screen.getAllByText("รายละเอียด")[0];
-          // await act(() => fireEvent.press(target));
           fireEvent.press(target);
         });
         await waitFor(async () => {
@@ -1118,35 +1118,29 @@ describe("Manager", () => {
         });
         expect(screen.findByText('เพิ่มงานล่วงเวลา')).toBeDefined();
 
-        //selecting method 
-        const method_label = "เลือกพนักงานด้วยตนเอง";
-        const method_value = "manual_select_worker";
-        const dropdown = await screen.getByTestId("select-assign-method");
-        expect(dropdown).toBeDefined();
-        // try{
-          // try {
-            // const dropdown = await screen.getByTestId("select-assign-method");
-            // method1 
-            // const select = await dropdown.secondChild;
+        // select dropdown
+        await waitFor(async () => {
+          const dropdown = await screen.getByText(/Show menu/i)
+          // const dropdown = await screen.getByText('เลือกวิธีการจำหน่ายงาน')
+          expect(dropdown).toBeDefined();
+          await act(() => fireEvent.press(dropdown));
+        });
+        // screen.debug()
+        // expect(screen.findByText('เลือกพนักงานด้วยตนเอง')).toBeDefined();
+        await waitFor(()=>{
+          expect(screen.findByText(/Menu item 1/i)).toBeDefined();
+        })
 
-            // console.log(await dropdown.props.children[0][1]);
-            // await act(() => {fireEvent.changeText(dropdown, {
-            //     target: {
-            //       value: method_value 
-            //     },
-            //   });
-            // });
-            
-            // method2
-            await waitFor(async () => {
-              const dropdown = await screen.getByTestId("select-assign-method")
-              await act(() => fireEvent.press(dropdown));
-            });
-            
-          // }
-          // catch (err) {
-          //   console.log(err);
-          // }
+          // select method
+        // const method_label = "เลือกพนักงานด้วยตนเอง";
+        const test1 = /Menu item 1/i;
+        await waitFor(async () => {
+          // const method = await screen.getByText(method_label);
+          
+          const method = await screen.getByText(test1);
+          await act(() => fireEvent.press(method));
+        });
+        expect(screen.getByText(/Abrahan Pauling/i))
 
           // select a worker
         await waitFor(async () => {
@@ -1171,8 +1165,7 @@ describe("Manager", () => {
         });
 
         await screen.getByText("Add OT successful");
-        // }
-        // catch(err) {}
+
       });
       it('Add Multiple OT Request -> "เลือกพนักงานด้วยตนเอง" method', async () => {
         //login
@@ -1317,20 +1310,28 @@ describe("Manager", () => {
       });
       it('Add OT Request -> ทุกคนในกะ" method', async () => {
         //login
-        render(<App />);      
+        render(<App />);
         fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
         fireEvent.changeText(await screen.getByPlaceholderText("Password"),mngPassword);
         fireEvent.press(await screen.getByText("Login"));
         await waitFor(async () => {
-          const valid_dashboard = await screen.getAllByText("รายละเอียด")[0];
+          const valid_dashboard = await screen.getAllByText("รายละเอียด");
           expect(valid_dashboard).toBeDefined();
         }); 
+        const dep = screen.findByText("Boiling");
+        expect(dep).toBeDefined(); 
 
         // go to detail page
         await waitFor(async () => {
           const target = await screen.getAllByText("รายละเอียด")[0];
-          await act(() => fireEvent.press(target));
+          // await act(() => fireEvent.press(target));
+          fireEvent.press(target);
         });
+        await waitFor(async () => {
+          const dep = screen.findByText("Boiling");
+          expect(dep).toBeDefined();
+        });
+
         // open add OT modal
         const otPlanTab = await screen.getByText("OT Plan");
         await act(() => fireEvent.press(otPlanTab));
@@ -1339,15 +1340,29 @@ describe("Manager", () => {
           await act(() => fireEvent.press(addOTBtn));
         });
         expect(screen.findByText('เพิ่มงานล่วงเวลา')).toBeDefined();
-        const method = "ทุกคนในกะ";
-        const dropdown = await screen.getByTestId("select-assign-method");
-        expect(dropdown).toBeDefined();
-        try{
-          try {
-            const dropdown = await screen.getByTestId("select-assign-method");
-            fireEvent.changeText(dropdown, { value: method });
-          }
-          catch (err) {}
+      
+        // const dropdown = await screen.getByTestId("select-assign-method");
+        // expect(dropdown).toBeDefined();
+        // try{
+        //   try {
+        //     const dropdown = await screen.getByTestId("select-assign-method");
+        //     fireEvent.changeText(dropdown, { value: method });
+        //   }
+        //   catch (err) {}
+
+          // select dropdown
+          await waitFor(async () => {
+            const dropdown = await screen.getByText('เลือกวิธีการจำหน่ายงาน')
+            await act(() => fireEvent.press(dropdown));
+          });
+          // select method
+          const method_label = "ทุกคนในกะ";
+          await waitFor(async () => {
+            const method = await screen.getByText(method_label);
+            expect(method).toBeDefined();
+            await act(() => fireEvent.press(method));
+          });
+
           // press next
         await waitFor(async () => {
           const nextBtn = await screen.getByTestId("Next");
@@ -1361,36 +1376,43 @@ describe("Manager", () => {
         });
 
         await screen.getByText("Add OT successful");
-        }
-        catch(err) {}
+        // }
+        // catch(err) {}
       });
       it('Add OT Request -> กำหนดเอง" method', async () => {
-        //login
-        render(<App />);      
-        fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
-        fireEvent.changeText(await screen.getByPlaceholderText("Password"),mngPassword);
-        fireEvent.press(await screen.getByText("Login"));
-        await waitFor(async () => {
-          const valid_dashboard = await screen.getAllByText("รายละเอียด")[0];
-          expect(valid_dashboard).toBeDefined();
-        }); 
+          //login
+          render(<App />);
+          fireEvent.changeText(await screen.getByPlaceholderText("Username"),mngUsername);
+          fireEvent.changeText(await screen.getByPlaceholderText("Password"),mngPassword);
+          fireEvent.press(await screen.getByText("Login"));
+          await waitFor(async () => {
+            const valid_dashboard = await screen.getAllByText("รายละเอียด");
+            expect(valid_dashboard).toBeDefined();
+          }); 
+          const dep = screen.findByText("Boiling");
+          expect(dep).toBeDefined(); 
+  
+          // go to detail page
+          await waitFor(async () => {
+            const target = await screen.getAllByText("รายละเอียด")[0];
+            // await act(() => fireEvent.press(target));
+            fireEvent.press(target);
+          });
+          await waitFor(async () => {
+            const dep = screen.findByText("Boiling");
+            expect(dep).toBeDefined();
+          });
+  
+          // open add OT modal
+          const otPlanTab = await screen.getByText("OT Plan");
+          await act(() => fireEvent.press(otPlanTab));
+          await waitFor(async () => {
+            const addOTBtn = await screen.getByTestId("detail-addModal");//line407
+            await act(() => fireEvent.press(addOTBtn));
+          });
+          expect(screen.findByText('เพิ่มงานล่วงเวลา')).toBeDefined();
 
-        // go to detail page
-        await waitFor(async () => {
-          const target = await screen.getAllByText("รายละเอียด")[0];
-          await act(() => fireEvent.press(target));
-        });
-        // open add OT modal
-        const otPlanTab = await screen.getByText("OT Plan");
-        await act(() => fireEvent.press(otPlanTab));
-        await waitFor(async () => {
-          const addOTBtn = await screen.getByTestId("detail-addModal");//line407
-          await act(() => fireEvent.press(addOTBtn));
-        });
-        expect(screen.findByText('เพิ่มงานล่วงเวลา')).toBeDefined();
-        const method = "กำหนดเอง";
-        const dropdown = await screen.getByTestId("select-assign-method");
-        expect(dropdown).toBeDefined();
+
         try{
           try {
             const dropdown = await screen.getByTestId("select-assign-method");

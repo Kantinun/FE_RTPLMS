@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 6.1 (Python 3.10.6 on linux)" generated="20230622 18:30:15.780" rpa="false" schemaversion="4">
+<suite id="s1" name="FE RTPLMS" source="/home/guy/Desktop/FE_RTPLMS">
+<suite id="s1-s1" name="Tests" source="/home/guy/Desktop/FE_RTPLMS/tests">
+<suite id="s1-s1-s1" name="Robotframework" source="/home/guy/Desktop/FE_RTPLMS/tests/robotframework">
+<suite id="s1-s1-s1-s1" name="Open Application" source="/home/guy/Desktop/FE_RTPLMS/tests/robotframework/open_application.robot">
+<test id="s1-s1-s1-s1-t1" name="Test App" line="16">
+<kw name="Lunch Application">
+<kw name="Open Application" library="AppiumLibrary">
+<arg>${REMOTE_URL}</arg>
+<arg>platformName=${platformName}</arg>
+<arg>appium:platformVersion=${appium:platformVersion}</arg>
+<arg>appium:deviceName=${appium:deviceName}</arg>
+<arg>appium:automationName=${appium:automationName}</arg>
+<arg>appium:ensureWebviewsHavePages=${appium:ensureWebviewsHavePages}</arg>
+<arg>appium:nativeWebScreenshot=${appium:nativeWebScreenshot}</arg>
+<arg>appium:newCommandTimeout=${appium:newCommandTimeout}</arg>
+<arg>appium:connectHardwareKeyboard=${appium:connectHardwareKeyboard}</arg>
+<doc>Opens a new application to given Appium server.
+Capabilities of appium server, Android and iOS,
+Please check https://github.com/appium/appium/blob/master/docs/en/writing-running-appium/server-args.md
+| *Option*            | *Man.* | *Description*     |
+| remote_url          | Yes    | Appium server url |
+| alias               | no     | alias             |
+| strict_ssl          | No     | allows you to send commands to an invalid certificate host like a self-signed one. |</doc>
+<msg timestamp="20230622 18:30:16.271" level="WARN">Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('&lt;urllib3.connection.HTTPConnection object at 0x7fec9f6a5f30&gt;: Failed to establish a new connection: [Errno -2] Name or service not known')': /wd/hub/session</msg>
+<msg timestamp="20230622 18:30:16.349" level="WARN">Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('&lt;urllib3.connection.HTTPConnection object at 0x7fec9f6a4eb0&gt;: Failed to establish a new connection: [Errno -2] Name or service not known')': /wd/hub/session</msg>
+<msg timestamp="20230622 18:30:16.429" level="WARN">Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('&lt;urllib3.connection.HTTPConnection object at 0x7fec9f6a4dc0&gt;: Failed to establish a new connection: [Errno -2] Name or service not known')': /wd/hub/session</msg>
+<kw name="Capture Page Screenshot" library="AppiumLibrary">
+<doc>Takes a screenshot of the current page and embeds it into the log.</doc>
+<msg timestamp="20230622 18:30:16.510" level="FAIL">No application is open</msg>
+<status status="FAIL" starttime="20230622 18:30:16.509" endtime="20230622 18:30:16.514"/>
+</kw>
+<msg timestamp="20230622 18:30:16.515" level="WARN">Keyword 'Capture Page Screenshot' could not be run on failure: No application is open</msg>
+<msg timestamp="20230622 18:30:16.517" level="FAIL">MaxRetryError: HTTPConnectionPool(host='127.0.0.14723', port=80): Max retries exceeded with url: /wd/hub/session (Caused by NewConnectionError('&lt;urllib3.connection.HTTPConnection object at 0x7fec9f6a68f0&gt;: Failed to establish a new connection: [Errno -2] Name or service not known'))</msg>
+<status status="FAIL" starttime="20230622 18:30:16.177" endtime="20230622 18:30:16.519"/>
+</kw>
+<status status="FAIL" starttime="20230622 18:30:16.177" endtime="20230622 18:30:16.519"/>
+</kw>
+<status status="FAIL" starttime="20230622 18:30:16.175" endtime="20230622 18:30:16.520">MaxRetryError: HTTPConnectionPool(host='127.0.0.14723', port=80): Max retries exceeded with url: /wd/hub/session (Caused by NewConnectionError('&lt;urllib3.connection.HTTPConnection object at 0x7fec9f6a68f0&gt;: Failed to establish a new connection: [Errno -2] Name or service not known'))</status>
+</test>
+<status status="FAIL" starttime="20230622 18:30:16.040" endtime="20230622 18:30:16.521"/>
+</suite>
+<status status="FAIL" starttime="20230622 18:30:16.037" endtime="20230622 18:30:16.523"/>
+</suite>
+<status status="FAIL" starttime="20230622 18:30:16.035" endtime="20230622 18:30:16.525"/>
+</suite>
+<status status="FAIL" starttime="20230622 18:30:16.018" endtime="20230622 18:30:16.527"/>
+</suite>
+<statistics>
+<total>
+<stat pass="0" fail="1" skip="0">All Tests</stat>
+</total>
+<tag>
+</tag>
+<suite>
+<stat pass="0" fail="1" skip="0" id="s1" name="FE RTPLMS">FE RTPLMS</stat>
+<stat pass="0" fail="1" skip="0" id="s1-s1" name="Tests">FE RTPLMS.Tests</stat>
+<stat pass="0" fail="1" skip="0" id="s1-s1-s1" name="Robotframework">FE RTPLMS.Tests.Robotframework</stat>
+<stat pass="0" fail="1" skip="0" id="s1-s1-s1-s1" name="Open Application">FE RTPLMS.Tests.Robotframework.Open Application</stat>
+</suite>
+</statistics>
+<errors>
+<msg timestamp="20230622 18:30:16.271" level="WARN">Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('&lt;urllib3.connection.HTTPConnection object at 0x7fec9f6a5f30&gt;: Failed to establish a new connection: [Errno -2] Name or service not known')': /wd/hub/session</msg>
+<msg timestamp="20230622 18:30:16.349" level="WARN">Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('&lt;urllib3.connection.HTTPConnection object at 0x7fec9f6a4eb0&gt;: Failed to establish a new connection: [Errno -2] Name or service not known')': /wd/hub/session</msg>
+<msg timestamp="20230622 18:30:16.429" level="WARN">Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('&lt;urllib3.connection.HTTPConnection object at 0x7fec9f6a4dc0&gt;: Failed to establish a new connection: [Errno -2] Name or service not known')': /wd/hub/session</msg>
+<msg timestamp="20230622 18:30:16.515" level="WARN">Keyword 'Capture Page Screenshot' could not be run on failure: No application is open</msg>
+</errors>
+</robot>
